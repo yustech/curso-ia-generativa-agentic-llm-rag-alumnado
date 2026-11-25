@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 5. RAG: concepto, arquitectura y criterios de adopción</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 5 · Jueves 10 de diciembre de 2026 · 09:00-15:00 · Remoto</p><h1>RAG: concepto, arquitectura y criterios de adopción</h1><div class="objetivo"><p>Al terminar esta sesión sabrás explicar qué es la generación aumentada por recuperación (RAG), describir cada componente de su arquitectura, construir un RAG mínimo sin frameworks y, lo más importante para una consultora, decidir cuándo un RAG aporta valor y cuándo no.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="5">5</b><span>unidades</span></div><div class="cifra"><b data-cuenta="2">2</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 5 · M4 · RAG (Retrieval-Augmented Generation) (6 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n5"><a class="tarjeta" href="#/u5-1"><span class="n">5.1</span><span class="t">El problema que resuelve el RAG</span></a><a class="tarjeta" href="#/u5-2"><span class="n">5.2</span><span class="t">Arquitectura y flujo</span></a><a class="tarjeta" href="#/u5-3"><span class="n">5.3</span><span class="t">Lo que puede fallar en un RAG</span></a><a class="tarjeta" href="#/u5-4"><span class="n">5.4</span><span class="t">Cuándo usar RAG: criterios de adopción</span></a><a class="tarjeta" href="#/u5-5"><span class="n">5.5</span><span class="t">Registro de decisiones de arquitectura (ADR)</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 5 · Jueves 10 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: pregúntale al modelo por la política de vacaciones</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>55</td>
+<td>Teoría</td>
+<td>Teoría I: concepto, arquitectura y flujo RAG</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Laboratorio: un RAG mínimo desde cero</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:30</td>
+<td>50</td>
+<td>Teoría</td>
+<td>Teoría II: casos de uso y criterios de adopción</td>
+</tr>
+<tr>
+<td>12:20</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Reto 1: arquitectura RAG del reto del equipo</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>13:40</td>
+<td>56</td>
+<td>Práctica</td>
+<td>Reto 2: decisiones justificadas y revisión cruzada</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Cierre: preguntas de repaso</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 5</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Diagrama de arquitectura RAG del asistente</td>
+<td><code>docs/arquitectura_rag.md</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Tres decisiones justificadas en formato ADR</td>
+<td><code>docs/adr/</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 y 2 con los tests en verde</td>
+<td><code>sesion_05_rag_arquitectura/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u5-1" data-menu="5.1 El problema que resuelve el RAG" data-transition="fade"><div class="divisor"><span class="numero">5.1</span><h2>El problema que resuelve el RAG</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.1 El problema que resuelve el RAG</p><h2>El problema que resuelve el RAG <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>En la sesión 4 comprobaste que un LLM no conoce los documentos de Atlántica, inventa cuando no sabe y no cita fuentes. Hay tres formas de darle ese conocimiento:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Opción</th>
+<th>Cómo</th>
+<th>Problema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Meter todos los documentos en el prompt</td>
+<td>Contexto largo</td>
+<td>Caro, lento, limitado por la ventana y el modelo se pierde en el medio</td>
+</tr>
+<tr>
+<td>Reentrenar o ajustar el modelo con los documentos</td>
+<td>Ajuste fino</td>
+<td>Caro, hay que repetirlo con cada cambio, no cita fuentes y sigue alucinando</td>
+</tr>
+<tr>
+<td><strong>Recuperar solo los fragmentos relevantes y dárselos</strong></td>
+<td>RAG</td>
+<td>Hay que construir y mantener la recuperación</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.1 El problema que resuelve el RAG</p><h2>El problema que resuelve el RAG <span class="parte">2/2</span></h2></header><div class="cuerpo"><p><strong>RAG</strong> (<em>Retrieval-Augmented Generation</em>) significa: antes de generar, <strong>recuperar</strong> de una base de conocimiento los fragmentos más relevantes para la pregunta y <strong>aumentar</strong> el prompt con ellos. El modelo responde a partir de esos fragmentos y puede citarlos.</p><p>Es, con diferencia, el patrón de IA generativa más desplegado en empresas.</p></div></section>
+<section class="especial seccion" id="u5-2" data-menu="5.2 Arquitectura y flujo" data-transition="fade"><div class="divisor"><span class="numero">5.2</span><h2>Arquitectura y flujo</h2><ul class=puntos><li>Componentes</li><li>El troceado importa más de lo que parece</li><li>El prompt de un RAG</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.2 Arquitectura y flujo</p><h2>Arquitectura y flujo</h2></header><div class="cuerpo"><p>Un sistema RAG tiene dos flujos: uno que se ejecuta cuando cambian los documentos (ingesta) y otro en cada pregunta (consulta).</p><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>INGESTA (cuando cambian los documentos)
+Documentos ──► Carga y limpieza ──► Troceado ──► Embeddings ──► Índice (base vectorial)
+                                         │                            ▲
+                                         └── metadatos ───────────────┘
+
+CONSULTA (en cada pregunta)
+Pregunta ──► Embedding de la pregunta ──► Búsqueda en el índice ──► k trozos ──► (Reordenación)
+                                                                                     │
+Respuesta con citas ◄── LLM ◄── Prompt = instrucciones + trozos numerados + pregunta ◄┘</code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.2 Arquitectura y flujo</p><h2>Componentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Qué hace</th>
+<th>Decisiones clave</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cargador</td>
+<td>Lee PDF, Word, HTML, Markdown, bases de datos</td>
+<td>Qué fuentes, con qué permisos, cada cuánto se actualizan</td>
+</tr>
+<tr>
+<td>Limpieza</td>
+<td>Quita cabeceras repetidas, menús, ruido</td>
+<td>Conservar la estructura (títulos, tablas)</td>
+</tr>
+<tr>
+<td>Troceado (<em>chunking</em>)</td>
+<td>Divide en fragmentos recuperables</td>
+<td>Tamaño, solapamiento, respetar secciones</td>
+</tr>
+<tr>
+<td>Metadatos</td>
+<td>Documento, sección, fecha, clasificación, autor</td>
+<td>Sirven para filtrar y para citar</td>
+</tr>
+<tr>
+<td>Modelo de embeddings</td>
+<td>Convierte texto en vectores</td>
+<td>Idioma, calidad, dimensión, coste</td>
+</tr>
+<tr>
+<td>Índice</td>
+<td>Guarda los vectores y busca los más parecidos</td>
+<td>En memoria, Chroma, Qdrant, pgvector</td>
+</tr>
+<tr>
+<td>Recuperador</td>
+<td>Busca los <code>k</code> trozos más relevantes</td>
+<td><code>k</code>, búsqueda semántica, léxica o híbrida (sesión 6)</td>
+</tr>
+<tr>
+<td>Reordenador</td>
+<td>Reordena los candidatos con un modelo más preciso</td>
+<td>Opcional; mejora la precisión</td>
+</tr>
+<tr>
+<td>Constructor del prompt</td>
+<td>Junta instrucciones, trozos y pregunta</td>
+<td>Cómo numerar, cómo pedir citas, cuándo abstenerse</td>
+</tr>
+<tr>
+<td>Generador</td>
+<td>El LLM que responde</td>
+<td>Modelo, temperatura baja</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.2 Arquitectura y flujo</p><h2>El troceado importa más de lo que parece</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Estrategia</th>
+<th>Ventaja</th>
+<th>Inconveniente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tamaño fijo de caracteres con solapamiento</td>
+<td>Sencilla, predecible</td>
+<td>Corta frases y tablas por la mitad</td>
+</tr>
+<tr>
+<td>Por párrafos</td>
+<td>Respeta unidades de sentido</td>
+<td>Párrafos muy desiguales</td>
+</tr>
+<tr>
+<td><strong>Por secciones del documento</strong></td>
+<td>Cada trozo trata un tema y se puede citar («Política de vacaciones › 1. Vacaciones»)</td>
+<td>Secciones largas hay que subdividirlas</td>
+</tr>
+<tr>
+<td>Semántica (corta donde cambia el tema)</td>
+<td>Trozos coherentes</td>
+<td>Más compleja y costosa</td>
+</tr>
+</tbody>
+</table></div><p>Regla práctica: trozos de entre 300 y 1.500 caracteres, que tengan sentido por sí solos. Añade al principio de cada trozo el título del documento y de la sección: el trozo «Se solicitan con 15 días de antelación» no sirve de nada sin saber de qué habla.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.2 Arquitectura y flujo</p><h2>El prompt de un RAG</h2></header><div class="cuerpo"><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>Eres el asistente interno de Atlántica. Responde SOLO con la información de los fragmentos.
+Cita cada afirmación con el número del fragmento entre corchetes, por ejemplo [2].
+Si la respuesta no está en los fragmentos, responde exactamente: «No consta en la documentación».
+
+[1] 11_politica_vacaciones_teletrabajo.md › 1. Vacaciones
+Cada persona tiene 25 días laborables...
+
+[2] ...
+
+Pregunta: ¿Cuántos días de vacaciones tengo?</code></pre></div></div></section>
+<section class="especial seccion" id="u5-3" data-menu="5.3 Lo que puede fallar en un RAG" data-transition="fade"><div class="divisor"><span class="numero">5.3</span><h2>Lo que puede fallar en un RAG</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.3 Lo que puede fallar en un RAG</p><h2>Lo que puede fallar en un RAG <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Diagnosticar un RAG exige separar los dos problemas posibles:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Fallo de</th>
+<th>Causas típicas</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>La respuesta correcta no está en los trozos recuperados</td>
+<td><strong>Recuperación</strong></td>
+<td>Troceado malo, embeddings poco adecuados al idioma, <code>k</code> pequeño, la pregunta usa otras palabras</td>
+<td>Mejorar troceado, búsqueda híbrida, reordenación, reescribir la pregunta</td>
+</tr>
+<tr>
+<td>El trozo correcto está, pero la respuesta es mala</td>
+<td><strong>Generación</strong></td>
+<td>Prompt poco claro, modelo pequeño, demasiados trozos irrelevantes</td>
+<td>Mejor prompt, menos ruido, modelo mayor</td>
+</tr>
+<tr>
+<td>Responde con datos de un documento obsoleto</td>
+<td>Ingesta</td>
+<td>El índice no se actualiza</td>
+<td>Ingesta incremental, fechas en metadatos</td>
+</tr>
+<tr>
+<td>Muestra información a quien no debe verla</td>
+<td>Seguridad</td>
+<td>El índice ignora los permisos</td>
+<td>Filtrar por permisos antes de recuperar</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.3 Lo que puede fallar en un RAG</p><h2>Lo que puede fallar en un RAG <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Por eso en la sesión 7 medirás por separado la recuperación (¿está el trozo correcto entre los <code>k</code> primeros?) y la generación (¿la respuesta es fiel a los trozos?).</p></div></section>
+<section class="especial seccion" id="u5-4" data-menu="5.4 Cuándo usar RAG: criterios de adopción" data-transition="fade"><div class="divisor"><span class="numero">5.4</span><h2>Cuándo usar RAG: criterios de adopción</h2><ul class=puntos><li>Preguntas para evaluar un caso de uso con un cliente</li><li>Riesgos específicos del RAG</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.4 Cuándo usar RAG: criterios de adopción</p><h2>Cuándo usar RAG: criterios de adopción</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Situación</th>
+<th>Recomendación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Preguntas sobre documentación interna extensa que cambia</td>
+<td><strong>RAG</strong></td>
+</tr>
+<tr>
+<td>Hay que citar la fuente o auditar la respuesta</td>
+<td><strong>RAG</strong></td>
+</tr>
+<tr>
+<td>Los documentos caben enteros en el contexto y son pocos</td>
+<td>Contexto directo (más simple)</td>
+</tr>
+<tr>
+<td>Hay que consultar datos estructurados (pedidos, backlog, inventario)</td>
+<td><strong>Herramientas</strong> o consultas SQL, no RAG (sesiones 8 y 9)</td>
+</tr>
+<tr>
+<td>Hay que cambiar el estilo, el formato o enseñar una tarea muy específica</td>
+<td>Ajuste fino o few-shot, no RAG</td>
+</tr>
+<tr>
+<td>Respuestas sobre conocimiento general</td>
+<td>El modelo solo, sin RAG</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.4 Cuándo usar RAG: criterios de adopción</p><h2>Preguntas para evaluar un caso de uso con un cliente</h2></header><div class="cuerpo"><ol>
+<li><strong>¿Existen los documentos y son de calidad?</strong> Un RAG sobre documentación desactualizada o contradictoria da respuestas desactualizadas o contradictorias.</li>
+<li><strong>¿Con qué frecuencia cambian?</strong> Define la estrategia de actualización del índice.</li>
+<li><strong>¿Quién puede ver qué?</strong> Los permisos documentales deben respetarse en la recuperación.</li>
+<li><strong>¿Qué pasa si se equivoca?</strong> Determina el umbral de calidad y la revisión humana.</li>
+<li><strong>¿Cómo vamos a medir que funciona?</strong> Sin un conjunto de preguntas con su respuesta, no hay forma de saberlo.</li>
+<li><strong>¿Cuántas preguntas al día y con qué latencia?</strong> Dimensiona el hardware y el coste.</li>
+</ol></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.4 Cuándo usar RAG: criterios de adopción</p><h2>Riesgos específicos del RAG</h2></header><div class="cuerpo"><ul>
+<li><strong>Inyección indirecta de instrucciones</strong>: un documento puede contener texto como «ignora tus instrucciones y…». El modelo lo lee como parte del contexto. Mitigación: delimitar los fragmentos, instrucciones claras de que el contexto son datos y no órdenes, y no dar al asistente permisos peligrosos.</li>
+<li><strong>Fuga de información</strong>: el asistente recupera un documento confidencial y lo resume a quien no debería verlo.</li>
+<li><strong>Falsa sensación de fiabilidad</strong>: las citas dan apariencia de rigor aunque el modelo haya malinterpretado el fragmento.</li>
+</ul></div></section>
+<section class="especial seccion" id="u5-5" data-menu="5.5 Registro de decisiones de arquitectura (ADR)" data-transition="fade"><div class="divisor"><span class="numero">5.5</span><h2>Registro de decisiones de arquitectura (ADR)</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.5 Registro de decisiones de arquitectura (ADR)</p><h2>Registro de decisiones de arquitectura (ADR) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Un <strong>ADR</strong> documenta una decisión técnica relevante para que dentro de seis meses alguien sepa por qué se tomó. Atlántica los exige (<code>05_arquitectura_referencia.md</code>). Formato:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Markdown</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="gh"># ADR-001. Troceado por secciones del documento</span>
+
+<span class="k">-</span><span class="w"> </span><span class="gs">**Estado:**</span> aceptado · 10/12/2026
+<span class="k">-</span><span class="w"> </span><span class="gs">**Contexto:**</span> los documentos de Atlántica están estructurados en secciones numeradas y
+  el asistente debe citar la sección de la que obtiene cada dato.
+<span class="k">-</span><span class="w"> </span><span class="gs">**Decisión:**</span> trocear por secciones <span class="sb">`##`</span>, subdividiendo las de más de 1.500 caracteres por párrafos.
+<span class="k">-</span><span class="w"> </span><span class="gs">**Alternativas consideradas:**</span> tamaño fijo de 800 caracteres con solapamiento de 100 (corta tablas);
+  por párrafos (trozos demasiado pequeños sin contexto).
+<span class="k">-</span><span class="w"> </span><span class="gs">**Consecuencias:**</span> citas legibles; trozos de tamaño desigual; hay que revisar el troceado si
+  cambian las plantillas de los documentos.</code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">5.5 Registro de decisiones de arquitectura (ADR)</p><h2>Registro de decisiones de arquitectura (ADR) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Hoy escribiréis tres ADR del RAG de vuestro asistente.</p></div></section>
+<section data-menu="Errores frecuentes"><header class="cabecera"><p class="antetitulo">Sesión 5</p><h2>Errores frecuentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trozos sin contexto</td>
+<td>Se recuperan fragmentos que no se entienden solos</td>
+<td>Prefija título del documento y de la sección</td>
+</tr>
+<tr>
+<td><code>k</code> demasiado grande</td>
+<td>Respuestas confusas y lentas</td>
+<td>Empieza con <code>k</code> = 3-5 y mide</td>
+</tr>
+<tr>
+<td>No pedir abstención</td>
+<td>Inventa cuando la recuperación falla</td>
+<td>Instrucción explícita y probada</td>
+</tr>
+<tr>
+<td>Calcular embeddings en cada pregunta para todo el corpus</td>
+<td>Lentitud extrema</td>
+<td>Los embeddings de los documentos se calculan una vez y se guardan</td>
+</tr>
+<tr>
+<td>Usar RAG para datos estructurados</td>
+<td>Respuestas incorrectas sobre cifras</td>
+<td>Consultas o herramientas</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section data-menu="Para saber más"><header class="cabecera"><p class="antetitulo">Sesión 5</p><h2>Para saber más</h2></header><div class="cuerpo"><ul>
+<li>Lewis et al. (2020), <em>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</em>: <a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noopener">arxiv.org/abs/2005.11401</a></li>
+<li>Gao et al. (2024), <em>Retrieval-Augmented Generation for Large Language Models: A Survey</em>: <a href="https://arxiv.org/abs/2312.10997" target="_blank" rel="noopener">arxiv.org/abs/2312.10997</a></li>
+<li>Plantilla de ADR de Michael Nygard: <a href="https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions" target="_blank" rel="noopener">cognitect.com/blog/2011/11/15/documenting-architecture-decisions</a></li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Ejercicio 1. Cargar y trocear documentos (30 min)</li><li>Ejercicio 2. Un RAG mínimo desde cero (40 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa cada fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_05_rag_arquitectura<span class="w"> </span>-v</code></pre></div><p>Vas a construir un RAG completo <strong>sin ningún framework</strong>: cargador, troceado, índice vectorial, recuperación, prompt con citas y respuesta. Cuando en la sesión 10 uses LangChain o LlamaIndex sabrás exactamente qué hacen por dentro.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Cargar y trocear documentos (30 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Cargar y trocear documentos (30 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s05_ej1_documentos.py</code></p><ol>
+<li><code>leer_front_matter(texto)</code>: separa la cabecera <code>---</code> del cuerpo. Ojo: el valor puede contener <code>:</code>.</li>
+<li><code>cargar_documentos(carpeta)</code>: todos los <code>.md</code> en orden alfabético.</li>
+<li><code>trocear_por_caracteres(texto, tamano, solape)</code>: ventana deslizante. Valida los parámetros.</li>
+<li><code>trocear_por_secciones(documento)</code>: un trozo por cada sección <code>##</code>, con el título del documento y de la sección al principio del texto.</li>
+<li><code>estadisticas(textos)</code>.</li>
+</ol><p>Ejecuta el fichero y compara los dos troceados: número de trozos, longitud media y, sobre todo, <strong>lee un trozo de cada tipo</strong>. ¿Cuál entenderías sin ver el documento?</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 2. Un RAG mínimo desde cero (40 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. Un RAG mínimo desde cero (40 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Fichero: <code>s05_ej2_rag_minimo.py</code></p><ol>
+<li><code>coseno(a, b)</code> con NumPy.</li>
+<li><code>IndiceMemoria.agregar(trozos)</code>: <strong>una sola llamada</strong> a <code>llm.embeddings</code> para todos los textos (los tests lo comprueban: llamar una vez por trozo es un error de rendimiento clásico).</li>
+<li><code>IndiceMemoria.buscar(consulta, k)</code>: los <code>k</code> más similares, ordenados.</li>
+<li><code>construir_mensajes(pregunta, resultados)</code>: el formato exacto del docstring. Fíjate en la última frase del mensaje de sistema: es la primera defensa frente a la inyección indirecta de instrucciones.</li>
+<li><code>fuentes_citadas(respuesta, resultados)</code>: qué fragmentos ha citado realmente el modelo.</li>
+<li><code>responder(pregunta, indice, k)</code>.</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. Un RAG mínimo desde cero (40 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Ejecuta el fichero con el modelo real. Después prueba con 10 preguntas de <code>datos/atlantica/evaluacion/preguntas_rag.jsonl</code> y anota para cada una: ¿el trozo correcto está entre los recuperados?, ¿la respuesta es correcta?, ¿cita bien? Separa los fallos de <strong>recuperación</strong> de los de <strong>generación</strong>.</p></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Arquitectura RAG del asistente y decisiones justificadas</h2><ul class=puntos><li>Reto 1. Diseño de la arquitectura RAG (70 min)</li><li>Reto 2. Decisiones justificadas y revisión cruzada (56 min)</li><li>Entrega</li><li>Criterios de evaluación (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 5. Arquitectura RAG del asistente y decisiones justificadas</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>Entregables del equipo: <code>docs/arquitectura_rag.md</code> y tres ADR en <code>docs/adr/</code>.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 5. Arquitectura RAG del asistente y decisiones justificadas · Reto 1. Diseño de la arquitectura RAG (70 min)</p><h2>1. Inventario de fuentes (20 min)</h2></header><div class="cuerpo"><p>Haced una tabla con las fuentes de conocimiento que necesita vuestro asistente:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Fuente</th>
+<th>Formato</th>
+<th>Tamaño (tokens)</th>
+<th>Frecuencia de cambio</th>
+<th>Clasificación</th>
+<th>¿RAG, contexto fijo o herramienta?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div><p>Fuentes por reto:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Reto</th>
+<th>Fuentes principales</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 · DevAssist</td>
+<td>Guía de estilo, arquitectura de referencia, código de <code>tarifas/</code>, procedimiento de cambios</td>
+</tr>
+<tr>
+<td>R2 · InfraPilot</td>
+<td>Política de infraestructura, catálogo de módulos, procedimiento de cambios, política de seguridad</td>
+</tr>
+<tr>
+<td>R3 · PMO Copilot</td>
+<td>Metodología de proyectos, actas, backlog, informe de estado anterior</td>
+</tr>
+</tbody>
+</table></div><p>Pista: no todo es RAG. El backlog es un dato estructurado que se consulta con una herramienta (sesión 9); el catálogo de módulos quizá quepa entero en el contexto.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 5. Arquitectura RAG del asistente y decisiones justificadas · Reto 1. Diseño de la arquitectura RAG (70 min)</p><h2>2. Diagrama (30 min)</h2></header><div class="cuerpo"><p>Dibujad la arquitectura de vuestro asistente en Mermaid, con los flujos de ingesta y de consulta, y señalad qué componente es RAG, cuál es una herramienta y dónde interviene una persona.</p><pre class="mermaid">flowchart LR
+    subgraph Ingesta
+        D[Documentos de Atlántica] --&gt; T[Troceado por secciones] --&gt; E[Embeddings] --&gt; I[(Índice)]
+    end
+    subgraph Consulta
+        P[Pregunta] --&gt; EP[Embedding] --&gt; B[Búsqueda top-k] --&gt; PR[Prompt con fragmentos] --&gt; LLM --&gt; R[Respuesta con citas]
+        I --&gt; B
+    end
+    R --&gt; H{Revisión humana}</pre></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 5. Arquitectura RAG del asistente y decisiones justificadas · Reto 1. Diseño de la arquitectura RAG (70 min)</p><h2>3. Prueba de concepto (20 min)</h2></header><div class="cuerpo"><p>Adaptad vuestro <code>s05_ej2_rag_minimo.py</code> a las fuentes de vuestro reto y probadlo con 5 preguntas de vuestro conjunto dorado. Anotad qué recupera.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 5. Arquitectura RAG del asistente y decisiones justificadas · Reto 2. Decisiones justificadas y revisión cruzada (56 min)</p><h2>1. Tres ADR (36 min)</h2></header><div class="cuerpo"><p>Escribid tres ADR en <code>docs/adr/</code> con el formato del apartado 5.5. Temas obligatorios:</p><ol>
+<li><strong>Estrategia de troceado</strong> (con los datos del ejercicio 1).</li>
+<li><strong>Qué fuentes van por RAG, cuáles en contexto fijo y cuáles por herramienta.</strong></li>
+<li>Uno a elegir: modelo de embeddings, valor de <code>k</code>, política de abstención, o cómo se respetan los permisos de los documentos.</li>
+</ol><p>Cada ADR debe incluir al menos dos alternativas consideradas y sus consecuencias.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 5. Arquitectura RAG del asistente y decisiones justificadas · Reto 2. Decisiones justificadas y revisión cruzada (56 min)</p><h2>2. Revisión cruzada (20 min)</h2></header><div class="cuerpo"><p>Cada equipo revisa la arquitectura de otro (1 → 2 → 3 → 1) y deja tres comentarios en su repositorio (issue o fichero <code>docs/revision_cruzada.md</code>): un acierto, un riesgo y una pregunta.</p></div></section>
+<section class="ejercicio" data-menu="Entrega"><header class="cabecera"><p class="antetitulo">Práctica 5. Arquitectura RAG del asistente y decisiones justificadas</p><h2>Entrega</h2></header><div class="cuerpo"><ol>
+<li><code>docs/arquitectura_rag.md</code>: inventario de fuentes, diagrama y resultados de la prueba de concepto.</li>
+<li><code>docs/adr/ADR-001.md</code>, <code>ADR-002.md</code> y <code>ADR-003.md</code>.</li>
+<li>Respuesta a la revisión cruzada recibida.</li>
+<li>Commit: <code>Sesión 5: arquitectura RAG y ADR</code>.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 5. Arquitectura RAG del asistente y decisiones justificadas</p><h2>Criterios de evaluación (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Inventario</td>
+<td>Completo y con la vía correcta para cada fuente</td>
+</tr>
+<tr>
+<td>Diagrama</td>
+<td>Ingesta, consulta, herramientas y punto humano claros</td>
+</tr>
+<tr>
+<td>ADR</td>
+<td>Contexto, alternativas y consecuencias reales; decisiones basadas en datos</td>
+</tr>
+<tr>
+<td>Revisión cruzada</td>
+<td>Comentarios útiles dados y respondidos</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 5</p><h1>RAG: concepto, arquitectura y criterios de adopción</h1><div class="acciones"><a class="boton" href="sesion_06.html">Sesión 6. Embeddings, búsqueda semántica y bases de datos vectoriales <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 5. RAG: concepto, arquitectura y criterios de adopción</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 5. RAG: concepto, arquitectura y criterios de adopción</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a> · <a href="sesion_06.html">Sesión 6 →</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  // Los diagramas se dibujan fuera de la diapositiva (sin la escala de reveal.js) para que
+  // mermaid mida bien los textos, y después se insertan ya dibujados.
+  if (!window.mermaid) { return; }
+  var fuente = getComputedStyle(document.querySelector(".reveal")).fontFamily;
+  mermaid.initialize({ startOnLoad: false, theme: "default", fontFamily: fuente, themeVariables: { fontFamily: fuente, fontSize: "16px" } });
+  document.querySelectorAll("pre.mermaid").forEach(function (pre, i) {
+    mermaid.render("diagrama-" + i, pre.textContent).then(function (r) {
+      var div = document.createElement("div");
+      div.className = "diagrama";
+      div.innerHTML = r.svg;
+      pre.replaceWith(div);
+      var seccion = div.closest("section");
+      if (window.cursoAjustar && seccion) { window.cursoAjustar(seccion); }
+    });
+  });
+}());
+</script>
+<style>.reveal .diagrama { text-align: center; margin: 8px 0 14px; } .reveal .diagrama svg { width: 100%; max-width: 100% !important; height: 370px; }</style>
+</body>
+</html>

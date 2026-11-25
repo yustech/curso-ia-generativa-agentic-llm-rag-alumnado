@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 4. Limitaciones y alucinaciones · Prompt engineering</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 4 · Miércoles 9 de diciembre de 2026 · 09:00-15:00 · Remoto</p><h1>Limitaciones y alucinaciones · Prompt engineering</h1><div class="objetivo"><p>Al terminar esta sesión sabrás detectar cuándo una respuesta de un LLM no es fiable, diseñar prompts reproducibles orientados a una tarea y, sobre todo, medir si un prompt es mejor que otro. Con esta sesión se cierra el Hito 1: fundamentos y prompting.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="7">7</b><span>unidades</span></div><div class="cifra"><b data-cuenta="5">5</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 4 · M2 · Introducción a GenAI y LLM (2 h) + M3 · Prompt Engineering (4 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n7"><a class="tarjeta" href="#/u4-1"><span class="n">4.1</span><span class="t">Limitaciones de los LLM</span></a><a class="tarjeta" href="#/u4-2"><span class="n">4.2</span><span class="t">Alucinaciones</span></a><a class="tarjeta" href="#/u4-3"><span class="n">4.3</span><span class="t">Principios de diseño de prompts</span></a><a class="tarjeta" href="#/u4-4"><span class="n">4.4</span><span class="t">Zero-shot, one-shot y few-shot</span></a><a class="tarjeta" href="#/u4-5"><span class="n">4.5</span><span class="t">Chain of Thought</span></a><a class="tarjeta" href="#/u4-6"><span class="n">4.6</span><span class="t">Prompts estructurados y salidas estructuradas</span></a><a class="tarjeta" href="#/u4-7"><span class="n">4.7</span><span class="t">Optimización y evaluación de respuestas</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 4 · Miércoles 9 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Módulo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>M2</td>
+<td>Activación: caza la alucinación</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>45</td>
+<td>Teoría</td>
+<td>M2</td>
+<td>Teoría: limitaciones de los LLM y tipos de alucinación</td>
+</tr>
+<tr>
+<td>10:00</td>
+<td>60</td>
+<td>Práctica</td>
+<td>M2</td>
+<td>Laboratorio: banco de pruebas de alucinaciones</td>
+</tr>
+<tr>
+<td>11:00</td>
+<td>10</td>
+<td>Pausa</td>
+<td>M3</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:10</td>
+<td>60</td>
+<td>Teoría</td>
+<td>M3</td>
+<td>Teoría: principios de diseño de prompts</td>
+</tr>
+<tr>
+<td>12:10</td>
+<td>66</td>
+<td>Práctica</td>
+<td>M3</td>
+<td>Laboratorio: técnicas de prompting y salidas estructuradas</td>
+</tr>
+<tr>
+<td>13:16</td>
+<td>80</td>
+<td>Práctica</td>
+<td>M3</td>
+<td>Reto: rediseño de prompts y evaluación con rúbrica</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>M3</td>
+<td>Cierre: Hito 1 y preguntas de repaso</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 4</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Plantilla de prompt estructurado del asistente (versiones 1 y 2)</td>
+<td><code>prompts/sistema_v1.md</code> y <code>prompts/sistema_v2.md</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Rúbrica de evaluación de respuestas</td>
+<td><code>docs/rubrica_respuestas.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Conjunto dorado v0 (15 casos) y comparación de versiones</td>
+<td><code>evals/golden_set.jsonl</code> y <code>docs/evaluacion_prompts.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 5 con los tests en verde</td>
+<td><code>sesion_04_alucinaciones_prompting/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u4-1" data-menu="4.1 Limitaciones de los LLM" data-transition="fade"><div class="divisor"><span class="numero">4.1</span><h2>Limitaciones de los LLM</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.1 Limitaciones de los LLM</p><h2>Limitaciones de los LLM <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Un LLM es extraordinario con el lenguaje y frágil en otras cosas. Conocer sus límites es lo que te permite diseñar alrededor de ellos.</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Limitación</th>
+<th>Por qué ocurre</th>
+<th>Cómo se mitiga</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Conocimiento congelado</td>
+<td>Solo sabe lo que había en sus datos hasta la fecha de corte</td>
+<td>Darle la información actual en el contexto (RAG, herramientas)</td>
+</tr>
+<tr>
+<td>No conoce datos privados</td>
+<td>Nunca vio los documentos de Atlántica</td>
+<td>RAG con los documentos internos</td>
+</tr>
+<tr>
+<td>Aritmética y conteo</td>
+<td>Procesa tokens, no dígitos ni letras</td>
+<td>Que llame a una función de cálculo</td>
+</tr>
+<tr>
+<td>Razonamiento de varios pasos frágil</td>
+<td>Predice tokens; no ejecuta un algoritmo</td>
+<td>Descomponer la tarea, pedir razonamiento, verificar</td>
+</tr>
+<tr>
+<td>Sensibilidad al prompt</td>
+<td>Pequeños cambios de redacción cambian la salida</td>
+<td>Plantillas versionadas y evaluadas</td>
+</tr>
+<tr>
+<td>No determinista</td>
+<td>Muestrea tokens</td>
+<td>Temperatura baja, validación de la salida</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.1 Limitaciones de los LLM</p><h2>Limitaciones de los LLM <span class="parte">2/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Limitación</th>
+<th>Por qué ocurre</th>
+<th>Cómo se mitiga</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Contexto limitado</td>
+<td>La ventana tiene un tamaño y el medio se recuerda peor</td>
+<td>Seleccionar lo relevante</td>
+</tr>
+<tr>
+<td>Sesgos</td>
+<td>Reproduce patrones de los datos de entrenamiento</td>
+<td>Evaluar por grupos, instrucciones explícitas</td>
+</tr>
+<tr>
+<td>Complacencia</td>
+<td>Tiende a dar la razón al usuario y aceptar premisas falsas</td>
+<td>Instrucciones de corregir premisas; evaluación específica</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u4-2" data-menu="4.2 Alucinaciones" data-transition="fade"><div class="divisor"><span class="numero">4.2</span><h2>Alucinaciones</h2><ul class=puntos><li>Tipos de alucinación</li><li>Cómo se reducen</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.2 Alucinaciones</p><h2>Alucinaciones</h2></header><div class="cuerpo"><p>Una <strong>alucinación</strong> es una respuesta fluida y segura que es falsa o no está respaldada por las fuentes. No es un error ocasional: es una consecuencia directa de cómo funcionan los modelos. Un LLM genera el texto más plausible, no el más verdadero, y cuando no sabe algo produce algo con la forma de una respuesta correcta.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.2 Alucinaciones</p><h2>Tipos de alucinación</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Ejemplo</th>
+<th>Peligro</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hecho inventado</td>
+<td>Un premio que la empresa nunca ganó</td>
+<td>Alto: parece cierto</td>
+</tr>
+<tr>
+<td>Cita o referencia inventada</td>
+<td>Artículos científicos o URL que no existen</td>
+<td>Muy alto en informes y documentación</td>
+</tr>
+<tr>
+<td>Aceptar una premisa falsa</td>
+<td>Explicar «por qué Python dejó de tener tipado dinámico»</td>
+<td>Alto: refuerza el error del usuario</td>
+</tr>
+<tr>
+<td>Infidelidad a la fuente (intrínseca)</td>
+<td>Resumir un acta y cambiar quién es responsable de una acción</td>
+<td>Muy alto en RAG y en documentación</td>
+</tr>
+<tr>
+<td>Extrapolación (extrínseca)</td>
+<td>Añadir datos que no están en el documento</td>
+<td>Alto en RAG</td>
+</tr>
+<tr>
+<td>Cálculo erróneo</td>
+<td>Un precio mal multiplicado</td>
+<td>Alto en todo lo económico</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.2 Alucinaciones</p><h2>Cómo se reducen</h2></header><div class="cuerpo"><ol>
+<li><strong>Darle la información</strong> en lugar de pedirle que la recuerde (RAG, herramientas).</li>
+<li><strong>Permitir la abstención explícitamente</strong>: «si la información no está en el contexto, responde "No consta en la documentación"».</li>
+<li><strong>Exigir citas</strong> de la fuente y comprobarlas.</li>
+<li><strong>Temperatura baja</strong> en tareas factuales.</li>
+<li><strong>Verificar</strong> con reglas, con otro modelo o con una persona.</li>
+<li><strong>Medir</strong> la tasa de alucinación con un banco de pruebas, que es lo que harás hoy.</li>
+</ol><p>Ninguna técnica elimina las alucinaciones por completo. El objetivo de diseño es que sean <strong>raras, detectables y de bajo impacto</strong>.</p></div></section>
+<section class="especial seccion" id="u4-3" data-menu="4.3 Principios de diseño de prompts" data-transition="fade"><div class="divisor"><span class="numero">4.3</span><h2>Principios de diseño de prompts</h2><ul class=puntos><li>Reglas prácticas</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.3 Principios de diseño de prompts</p><h2>Principios de diseño de prompts</h2></header><div class="cuerpo"><p>Un prompt de un sistema profesional no es una pregunta: es una <strong>especificación</strong>. Los componentes de un buen prompt de sistema:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Qué contiene</th>
+<th>Ejemplo para InfraPilot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rol</td>
+<td>Quién es el asistente</td>
+<td>«Eres el asistente de infraestructura de Atlántica Logística»</td>
+</tr>
+<tr>
+<td>Objetivo</td>
+<td>Qué tiene que conseguir</td>
+<td>«Convertir peticiones de entornos en propuestas de Terraform conformes a la política»</td>
+</tr>
+<tr>
+<td>Contexto</td>
+<td>Información estable que necesita</td>
+<td>Política resumida, catálogo de módulos</td>
+</tr>
+<tr>
+<td>Instrucciones</td>
+<td>Pasos o reglas de comportamiento</td>
+<td>«Si falta el centro de coste, pídelo antes de proponer nada»</td>
+</tr>
+<tr>
+<td>Formato de salida</td>
+<td>Estructura exacta de la respuesta</td>
+<td>«Devuelve JSON con los campos…»</td>
+</tr>
+<tr>
+<td>Restricciones</td>
+<td>Lo que no debe hacer nunca</td>
+<td>«Nunca propongas buckets públicos. Nunca apliques cambios»</td>
+</tr>
+<tr>
+<td>Ejemplos</td>
+<td>Pares entrada-salida</td>
+<td>Una petición válida y una no conforme</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.3 Principios de diseño de prompts</p><h2>Reglas prácticas</h2></header><div class="cuerpo"><ul>
+<li><strong>Sé específico.</strong> «Resume» es ambiguo; «resume en tres viñetas de menos de 20 palabras para un director» no lo es.</li>
+<li><strong>Separa instrucciones y datos</strong> con delimitadores (<code>&lt;documento&gt;...&lt;/documento&gt;</code>). Ayuda al modelo y reduce la inyección de instrucciones.</li>
+<li><strong>Di qué hacer, no solo qué no hacer.</strong></li>
+<li><strong>Pon las reglas en el mensaje de sistema</strong> y los datos de cada petición en el mensaje de usuario.</li>
+<li><strong>Pide un formato verificable</strong> (JSON con esquema) siempre que otro programa vaya a leer la salida.</li>
+<li><strong>Versiona los prompts</strong> como el código: <code>sistema_v1.md</code>, <code>sistema_v2.md</code>, con un registro de qué cambió y por qué.</li>
+</ul></div></section>
+<section class="especial seccion" id="u4-4" data-menu="4.4 Zero-shot, one-shot y few-shot" data-transition="fade"><div class="divisor"><span class="numero">4.4</span><h2>Zero-shot, one-shot y few-shot</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.4 Zero-shot, one-shot y few-shot</p><h2>Zero-shot, one-shot y few-shot</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Técnica</th>
+<th>Qué es</th>
+<th>Cuándo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Zero-shot</td>
+<td>Solo instrucciones, sin ejemplos</td>
+<td>Tareas comunes y claras</td>
+</tr>
+<tr>
+<td>One-shot</td>
+<td>Un ejemplo</td>
+<td>Para fijar el formato</td>
+</tr>
+<tr>
+<td>Few-shot</td>
+<td>Varios ejemplos (3-5 suele bastar)</td>
+<td>Para fijar criterio en casos ambiguos, estilo propio o categorías de la empresa</td>
+</tr>
+</tbody>
+</table></div><p>Los ejemplos se pueden escribir dentro del mensaje de sistema o, mejor, como pares de mensajes <code>user</code> / <code>assistant</code> previos a la petición real: el modelo los interpreta como turnos ya resueltos.</p><p>Cuidado con los ejemplos: el modelo <strong>copia sus patrones</strong>, también los malos. Si todos tus ejemplos son de prioridad P2, sesgarás la salida hacia P2. Varía los ejemplos y cubre los casos frontera.</p></div></section>
+<section class="especial seccion" id="u4-5" data-menu="4.5 Chain of Thought" data-transition="fade"><div class="divisor"><span class="numero">4.5</span><h2>Chain of Thought</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.5 Chain of Thought</p><h2>Chain of Thought <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Pedir al modelo que <strong>razone paso a paso antes de responder</strong> (<em>Chain of Thought</em>) mejora los resultados en problemas de varios pasos: cálculos, lógica o decisiones con varias reglas. El razonamiento ocupa tokens y da al modelo «espacio» para llegar a la respuesta.</p><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>Razona paso a paso y termina con una línea que empiece por «Respuesta final:».</code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.5 Chain of Thought</p><h2>Chain of Thought <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Tres matices profesionales:</p><ol>
+<li><strong>Separa el razonamiento de la respuesta</strong> para poder extraer solo la respuesta (lo harás en el ejercicio 3).</li>
+<li><strong>Los modelos de razonamiento</strong> (como <code>qwen3:4b</code>) ya lo hacen internamente. Pedirles CoT explícito aporta poco y gasta más.</li>
+<li><strong>El razonamiento no es una explicación fiable</strong> de por qué el modelo respondió algo. No lo uses como justificación ante un cliente.</li>
+</ol></div></section>
+<section class="especial seccion" id="u4-6" data-menu="4.6 Prompts estructurados y salidas estructuradas" data-transition="fade"><div class="divisor"><span class="numero">4.6</span><h2>Prompts estructurados y salidas estructuradas</h2><ul class=puntos><li>Salida con esquema</li><li>Prompts estructurados</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.6 Prompts estructurados y salidas estructuradas</p><h2>Salida con esquema <span class="parte">1/3</span></h2></header><div class="cuerpo"><p>Si un programa va a leer la respuesta, pídela en JSON y <strong>valídala</strong>. Con la API compatible con OpenAI, el servidor puede obligar al modelo a cumplir un esquema JSON (<em>structured outputs</em>). En el curso lo hace <code>llm.estructurado()</code> a partir de un modelo Pydantic:</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.6 Prompts estructurados y salidas estructuradas</p><h2>Salida con esquema <span class="parte">2/3</span></h2></header><div class="cuerpo"><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">comun</span><span class="w"> </span><span class="kn">import</span> <span class="n">llm</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Incidencia</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">categoria</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"transporte"</span><span class="p">,</span> <span class="s2">"almacén"</span><span class="p">,</span> <span class="s2">"sistemas"</span><span class="p">]</span>
+    <span class="n">prioridad</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"P1"</span><span class="p">,</span> <span class="s2">"P2"</span><span class="p">,</span> <span class="s2">"P3"</span><span class="p">,</span> <span class="s2">"P4"</span><span class="p">]</span>
+    <span class="n">resumen</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+
+<span class="n">resultado</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">estructurado</span><span class="p">(</span><span class="s2">"Faro está caído en todos los centros desde las 8:00."</span><span class="p">,</span> <span class="n">Incidencia</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">resultado</span><span class="o">.</span><span class="n">prioridad</span><span class="p">)</span>   <span class="c1"># P1, ya validado</span></code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.6 Prompts estructurados y salidas estructuradas</p><h2>Salida con esquema <span class="parte">3/3</span></h2></header><div class="cuerpo"><p>La validación no garantiza que el contenido sea correcto, solo que tiene la forma correcta. Añade <strong>reglas de negocio</strong> encima: por ejemplo, toda P1 requiere intervención humana.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.6 Prompts estructurados y salidas estructuradas</p><h2>Prompts estructurados</h2></header><div class="cuerpo"><p>Un prompt estructurado organiza el mensaje de sistema en secciones con títulos (Rol, Objetivo, Contexto, Instrucciones, Formato, Restricciones). Es más fácil de leer, de revisar entre compañeros y de mejorar por partes. Lo implementarás como una clase en el ejercicio 2.</p></div></section>
+<section class="especial seccion" id="u4-7" data-menu="4.7 Optimización y evaluación de respuestas" data-transition="fade"><div class="divisor"><span class="numero">4.7</span><h2>Optimización y evaluación de respuestas</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.7 Optimización y evaluación de respuestas</p><h2>Optimización y evaluación de respuestas <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Mejorar un prompt «a ojo» probando dos o tres preguntas es la forma más habitual de engañarse. El método profesional es:</p><ol>
+<li><strong>Conjunto dorado</strong>: entre 15 y 50 casos representativos con la respuesta esperada (incluye casos frontera, ambiguos y maliciosos).</li>
+<li><strong>Rúbrica</strong>: qué es una respuesta correcta. Por ejemplo: exactitud (0-2), cita la fuente (0-1), formato (0-1), sabe abstenerse (0-1).</li>
+<li><strong>Métrica automática</strong> cuando se pueda (coincidencia de valores, JSON válido, palabras clave) y <strong>revisión humana o LLM como juez</strong> cuando no (sesión 12).</li>
+<li><strong>Comparar versiones</strong> del prompt con el mismo conjunto y quedarse con la mejor.</li>
+<li><strong>Repetir</strong> cada vez que cambies el prompt, el modelo o los datos: es una prueba de regresión.</li>
+</ol></div></section>
+<section><header class="cabecera"><p class="antetitulo">4.7 Optimización y evaluación de respuestas</p><h2>Optimización y evaluación de respuestas <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Hoy empiezas el conjunto dorado de tu reto con 15 casos. Llegará a 30 o más antes del proyecto final, y es la pieza que más pesa en la evaluación del proyecto.</p></div></section>
+<section data-menu="Errores frecuentes"><header class="cabecera"><p class="antetitulo">Sesión 4</p><h2>Errores frecuentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pedir JSON solo con palabras</td>
+<td>A veces llega con texto alrededor</td>
+<td>Usa <code>response_format</code> con esquema y valida</td>
+</tr>
+<tr>
+<td>Ejemplos few-shot todos iguales</td>
+<td>El modelo responde siempre lo mismo</td>
+<td>Varía los ejemplos</td>
+</tr>
+<tr>
+<td>Evaluar con las mismas preguntas que usaste para escribir el prompt</td>
+<td>Resultados optimistas</td>
+<td>Separa casos de desarrollo y de evaluación</td>
+</tr>
+<tr>
+<td>Instrucciones contradictorias</td>
+<td>Comportamiento errático</td>
+<td>Revisa el prompt completo entre dos personas</td>
+</tr>
+<tr>
+<td>Confiar en el razonamiento visible</td>
+<td>Explicaciones convincentes de respuestas erróneas</td>
+<td>Verifica la respuesta, no el razonamiento</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section data-menu="Para saber más"><header class="cabecera"><p class="antetitulo">Sesión 4</p><h2>Para saber más</h2></header><div class="cuerpo"><ul>
+<li>Guía de ingeniería de prompts de Anthropic: <a href="https://docs.anthropic.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" rel="noopener">docs.anthropic.com</a></li>
+<li>Guía de prompting de OpenAI: <a href="https://platform.openai.com/docs/guides/prompt-engineering" target="_blank" rel="noopener">platform.openai.com/docs/guides/prompt-engineering</a></li>
+<li>Wei et al. (2022), <em>Chain-of-Thought Prompting Elicits Reasoning in Large Language Models</em>: <a href="https://arxiv.org/abs/2201.11903" target="_blank" rel="noopener">arxiv.org/abs/2201.11903</a></li>
+<li>Ji et al. (2023), <em>Survey of Hallucination in Natural Language Generation</em>: <a href="https://arxiv.org/abs/2202.03629" target="_blank" rel="noopener">arxiv.org/abs/2202.03629</a></li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Ejercicio 1. Banco de pruebas de alucinaciones (laboratorio de M2, 60 min)</li><li>Ejercicio 2. Plantilla de prompt estructurado (laboratorio de M3, 20 min)</li><li>Ejercicio 3. Zero-shot, few-shot y cadena de pensamiento (laboratorio de M3, 25 min)</li><li>Ejercicio 4. Salida estructurada y reglas de negocio (laboratorio de M3, 21 min)</li><li>Ejercicio 5. Evaluar y comparar versiones de un prompt (reto, 30 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa cada fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_04_alucinaciones_prompting<span class="w"> </span>-v</code></pre></div></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Banco de pruebas de alucinaciones (laboratorio de M2, 60 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Banco de pruebas de alucinaciones (laboratorio de M2, 60 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Fichero: <code>s04_ej1_banco_alucinaciones.py</code></p><p>El fichero <code>datos/atlantica/casos_alucinacion.jsonl</code> tiene 10 preguntas diseñadas para provocar alucinaciones. Cada una indica cómo se evalúa (<code>criterio</code>): el modelo debe abstenerse, dar un valor exacto, rechazar una premisa falsa o requiere revisión manual.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Banco de pruebas de alucinaciones (laboratorio de M2, 60 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><ol>
+<li><code>cargar_casos(ruta)</code>: lee el JSONL.</li>
+<li><code>contiene_alguna(texto, marcas)</code>: sin distinguir mayúsculas ni tildes. La función <code>_normalizar</code> ya está hecha.</li>
+<li><code>numeros_en(texto)</code>: extrae los números en formato canónico. Es el paso más delicado: en español, <code>3.536,5049</code> y <code>3536,5049</code> son el mismo número que <code>3536.5049</code>, y <code>48.379</code> es cuarenta y ocho mil. Lee bien el docstring y los tests.</li>
+<li><code>evaluar(caso, respuesta)</code>: devuelve «correcta», «alucinacion» o «revisar» según el criterio.</li>
+<li><code>ejecutar(casos, sistema)</code> y <code>resumen(resultados)</code>.</li>
+</ol><p>Ejecuta el fichero. Compara la tasa de alucinación <strong>sin instrucciones</strong> y <strong>con el sistema prudente</strong>. Revisa a mano los casos «revisar» (A02 y A05): ¿son reales las referencias que da?</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 2. Plantilla de prompt estructurado (laboratorio de M3, 20 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. Plantilla de prompt estructurado (laboratorio de M3, 20 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s04_ej2_plantilla_prompt.py</code></p><ol>
+<li><code>sistema()</code>: construye el mensaje de sistema con las secciones no vacías, en el orden y con los títulos del docstring. Instrucciones numeradas; restricciones con viñetas.</li>
+<li><code>mensajes(entrada)</code>: sistema, pares de ejemplos y la entrada entre <code>&lt;entrada&gt;</code> y <code>&lt;/entrada&gt;</code>.</li>
+<li><code>huella()</code>: los 8 primeros caracteres del SHA-256 del prompt. Anótala junto a cada resultado de evaluación para saber qué versión lo produjo.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Ejercicio 3. Zero-shot, few-shot y cadena de pensamiento (laboratorio de M3, 25 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. Zero-shot, few-shot y cadena de pensamiento (laboratorio de M3, 25 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s04_ej3_tecnicas.py</code></p><ol>
+<li><code>normalizar_categoria(texto)</code>: la categoría que aparece <strong>antes</strong> en el texto.</li>
+<li><code>zero_shot(incidencia)</code> y <code>mensajes_few_shot(incidencia)</code> / <code>few_shot(incidencia)</code>.</li>
+<li><code>extraer_respuesta_final(texto)</code>: lo que va tras la <strong>última</strong> «Respuesta final:».</li>
+<li><code>con_razonamiento(pregunta)</code>.</li>
+</ol><p>Ejecuta el fichero y anota: ¿cambia la clasificación entre zero-shot y few-shot? ¿Acierta el cálculo del precio con razonamiento? ¿Y sin él?</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 4. Salida estructurada y reglas de negocio (laboratorio de M3, 21 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 4. Salida estructurada y reglas de negocio (laboratorio de M3, 21 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s04_ej4_salida_estructurada.py</code></p><ol>
+<li><code>clasificar(texto)</code>: una línea con <code>llm.estructurado</code>.</li>
+<li><code>problemas_de_negocio(c)</code>: las tres reglas del docstring. El esquema garantiza la forma; estas reglas, la coherencia.</li>
+<li><code>corregir(c)</code>: una copia corregida con <code>model_copy(update=...)</code>. El original no se modifica.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Ejercicio 5. Evaluar y comparar versiones de un prompt (reto, 30 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 5. Evaluar y comparar versiones de un prompt (reto, 30 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s04_ej5_evaluar_prompts.py</code></p><ol>
+<li><code>cargar_golden(ruta)</code>.</li>
+<li><code>palabras_clave(texto)</code> y <code>puntuar(respuesta, esperado)</code>: una métrica sencilla de cobertura de palabras clave. No es perfecta (no entiende sinónimos ni negaciones), pero es rápida, gratuita y suficiente para comparar versiones. En la sesión 12 la complementarás con un LLM como juez.</li>
+<li><code>evaluar_version(nombre, responder, casos)</code> y <code>comparar(resultados)</code>.</li>
+</ol><p>Ejecuta el fichero: compara un prompt sin contexto con otro que incluye la política de infraestructura. Es tu primera evidencia de por qué hace falta RAG.</p></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Rediseño de prompts y evaluación con rúbrica (Hito 1)</h2><ul class=puntos><li>1. Conjunto dorado v0 (20 min)</li><li>2. Rúbrica de evaluación de respuestas (15 min)</li><li>3. Prompt de sistema v1 y v2 (30 min)</li><li>4. Informe de evaluación (15 min)</li><li>Entrega del Hito 1</li><li>Criterios de evaluación (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 4. Rediseño de prompts y evaluación con rúbrica (Hito 1)</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>Duración: 80 minutos de reto más lo que no terminéis en el laboratorio.
+Entregables del equipo: <code>prompts/sistema_v1.md</code>, <code>prompts/sistema_v2.md</code>, <code>docs/rubrica_respuestas.md</code>, <code>evals/golden_set.jsonl</code> y <code>docs/evaluacion_prompts.md</code>.</p></div></section>
+<section class="ejercicio" data-menu="1. Conjunto dorado v0 (20 min)"><header class="cabecera"><p class="antetitulo">Práctica 4. Rediseño de prompts y evaluación con rúbrica (Hito 1)</p><h2>1. Conjunto dorado v0 (20 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><ol>
+<li>Copiad a <code>evals/golden_set.jsonl</code> el conjunto inicial de vuestro reto (<code>datos/atlantica/evaluacion/golden_e1_devassist.jsonl</code>, <code>golden_e2_infrapilot.jsonl</code> o <code>golden_e3_pmo.jsonl</code>).</li>
+<li>Añadid <strong>5 casos propios</strong> hasta llegar a 15. Que haya al menos uno de cada tipo:</li>
+</ol><div class="tabla"><table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Normativa</td>
+<td>Pregunta cuya respuesta está en un documento</td>
+</tr>
+<tr>
+<td>Tarea</td>
+<td>Lo que el asistente tiene que hacer (revisar, generar, extraer)</td>
+</tr>
+<tr>
+<td>Ambigua</td>
+<td>Falta información: el asistente debe preguntar</td>
+</tr>
+<tr>
+<td>Fuera de alcance</td>
+<td>La respuesta no está en ninguna parte: debe abstenerse</td>
+</tr>
+<tr>
+<td>Seguridad</td>
+<td>Intento de saltarse las reglas: debe negarse</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 4. Rediseño de prompts y evaluación con rúbrica (Hito 1)</p><h2>1. Conjunto dorado v0 (20 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Formato de cada línea:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">JSON</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="p">{</span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"E2-11"</span><span class="p">,</span><span class="w"> </span><span class="nt">"entrada"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"esperado"</span><span class="p">:</span><span class="w"> </span><span class="s2">"..."</span><span class="p">,</span><span class="w"> </span><span class="nt">"debe_citar"</span><span class="p">:</span><span class="w"> </span><span class="s2">"06_politica_infraestructura_cloud.md"</span><span class="p">,</span><span class="w"> </span><span class="nt">"tipo"</span><span class="p">:</span><span class="w"> </span><span class="s2">"normativa"</span><span class="p">}</span></code></pre></div></div></section>
+<section class="ejercicio" data-menu="2. Rúbrica de evaluación de respuestas (15 min)"><header class="cabecera"><p class="antetitulo">Práctica 4. Rediseño de prompts y evaluación con rúbrica (Hito 1)</p><h2>2. Rúbrica de evaluación de respuestas (15 min)</h2></header><div class="cuerpo"><p>Escribid en <code>docs/rubrica_respuestas.md</code> qué es una buena respuesta para vuestro asistente. Partid de esta base y adaptadla:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exactitud</td>
+<td>Incorrecta o inventada</td>
+<td>Parcialmente correcta</td>
+<td>Correcta y completa</td>
+</tr>
+<tr>
+<td>Fundamento</td>
+<td>Sin fuente</td>
+<td>Fuente imprecisa</td>
+<td>Cita el documento correcto</td>
+</tr>
+<tr>
+<td>Formato</td>
+<td>No respeta el formato pedido</td>
+<td>Parcialmente</td>
+<td>Exacto</td>
+</tr>
+<tr>
+<td>Prudencia</td>
+<td>Inventa cuando no sabe o hace lo que no debe</td>
+<td></td>
+<td>Se abstiene, pregunta o se niega cuando corresponde</td>
+</tr>
+</tbody>
+</table></div><p>Puntuación máxima: 8. Una respuesta es <strong>aceptable</strong> con 6 o más y ningún 0 en Prudencia.</p></div></section>
+<section class="ejercicio" data-menu="3. Prompt de sistema v1 y v2 (30 min)"><header class="cabecera"><p class="antetitulo">Práctica 4. Rediseño de prompts y evaluación con rúbrica (Hito 1)</p><h2>3. Prompt de sistema v1 y v2 (30 min)</h2></header><div class="cuerpo"><ol>
+<li>Con la clase <code>PlantillaPrompt</code> del ejercicio 2, escribid la <strong>versión 1</strong> del prompt de sistema de vuestro asistente: rol, objetivo, instrucciones, formato y restricciones. Sin contexto documental todavía.</li>
+<li>Evaluadla con vuestro conjunto dorado usando <code>evaluar_version</code> del ejercicio 5 y revisad a mano 5 respuestas con la rúbrica.</li>
+<li>Escribid la <strong>versión 2</strong> atacando los fallos observados. Podéis añadir ejemplos few-shot, mejorar las restricciones y pegar en el contexto el fragmento de normativa más relevante (todavía sin RAG).</li>
+<li>Evaluad la versión 2 con el mismo conjunto.</li>
+</ol><p>Guardad cada versión en <code>prompts/sistema_vN.md</code> con su huella (<code>huella()</code>), la fecha y qué cambió.</p></div></section>
+<section class="ejercicio" data-menu="4. Informe de evaluación (15 min)"><header class="cabecera"><p class="antetitulo">Práctica 4. Rediseño de prompts y evaluación con rúbrica (Hito 1)</p><h2>4. Informe de evaluación (15 min)</h2></header><div class="cuerpo"><p>En <code>docs/evaluacion_prompts.md</code>:</p><ul>
+<li>Tabla comparativa de las dos versiones (salida de <code>comparar</code>).</li>
+<li>Puntuación con la rúbrica de 5 respuestas de cada versión.</li>
+<li>Los 3 fallos más graves que persisten y por qué creéis que ocurren. Spoiler: muchos se resolverán con RAG en la sesión 5.</li>
+</ul></div></section>
+<section class="ejercicio" data-menu="Entrega del Hito 1"><header class="cabecera"><p class="antetitulo">Práctica 4. Rediseño de prompts y evaluación con rúbrica (Hito 1)</p><h2>Entrega del Hito 1</h2></header><div class="cuerpo"><p>Con esta práctica se cierra el Hito 1. Comprobad que el repositorio del equipo tiene: mapa conceptual, clasificación de casos, matriz de riesgos, comparativa de herramientas, cuaderno de experimentos y los entregables de hoy.</p><p>Commit: <code>Sesión 4: prompts v1 y v2, rúbrica y conjunto dorado v0</code>.</p></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 4. Rediseño de prompts y evaluación con rúbrica (Hito 1)</p><h2>Criterios de evaluación (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Conjunto dorado</td>
+<td>15 casos de los cinco tipos, con respuestas esperadas precisas</td>
+</tr>
+<tr>
+<td>Prompt</td>
+<td>Estructurado, con restricciones concretas y formato verificable</td>
+</tr>
+<tr>
+<td>Método</td>
+<td>Las dos versiones se evalúan con el mismo conjunto y la misma rúbrica</td>
+</tr>
+<tr>
+<td>Análisis</td>
+<td>Los fallos se explican y se relacionan con limitaciones de los LLM</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 4</p><h1>Limitaciones y alucinaciones · Prompt engineering</h1><div class="acciones"><a class="boton" href="sesion_05.html">Sesión 5. RAG: concepto, arquitectura y criterios de adopción <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 4. Limitaciones y alucinaciones · Prompt engineering</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 4. Limitaciones y alucinaciones · Prompt engineering</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a> · <a href="sesion_05.html">Sesión 5 →</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+
+</body>
+</html>

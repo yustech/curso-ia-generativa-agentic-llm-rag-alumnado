@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 13. Casos de negocio y desarrollo de software · Definición del proyecto final</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 13 · Martes 22 de diciembre de 2026 · 09:00-15:00 · Remoto</p><h1>Casos de negocio y desarrollo de software · Definición del proyecto final</h1><div class="objetivo"><p>Esta sesión une las piezas y mira hacia el cliente. En la primera parte verás los casos de uso de IA generativa más habituales en negocio y en desarrollo de software, cómo evaluar su viabilidad y qué hace falta para llevar un prototipo a producción: evaluación de extremo a extremo, pruebas de seguridad y pruebas de carga (con la demostración de vLLM). En la segunda cerrarás la definición del proyecto final de tu equipo.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="7">7</b><span>unidades</span></div><div class="cifra"><b data-cuenta="4">4</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 13 · M6 · Aplicaciones prácticas de IA Generativa (4 h) + M7 · Proyecto final y evaluación (2 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n7"><a class="tarjeta" href="#/u13-1"><span class="n">13.1</span><span class="t">Casos de uso en negocio</span></a><a class="tarjeta" href="#/u13-2"><span class="n">13.2</span><span class="t">Casos de uso en desarrollo de software</span></a><a class="tarjeta" href="#/u13-3"><span class="n">13.3</span><span class="t">Evaluar la viabilidad</span></a><a class="tarjeta" href="#/u13-4"><span class="n">13.4</span><span class="t">Del prototipo a producción</span></a><a class="tarjeta" href="#/u13-5"><span class="n">13.5</span><span class="t">Evaluación de extremo a extremo</span></a><a class="tarjeta" href="#/u13-6"><span class="n">13.6</span><span class="t">Red teaming y OWASP Top 10 para LLM</span></a><a class="tarjeta" href="#/u13-7"><span class="n">13.7</span><span class="t">Qué se evalúa en el proyecto final</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 13 · Martes 22 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Módulo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>M6</td>
+<td>Activación: de la demo al cliente</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>45</td>
+<td>Teoría</td>
+<td>M6</td>
+<td>Teoría: casos de negocio y de desarrollo de software</td>
+</tr>
+<tr>
+<td>10:00</td>
+<td>70</td>
+<td>Práctica</td>
+<td>M6</td>
+<td>Laboratorio integrador: evaluación de extremo a extremo y red teaming</td>
+</tr>
+<tr>
+<td>11:10</td>
+<td>10</td>
+<td>Pausa</td>
+<td>M6</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>30</td>
+<td>Teoría</td>
+<td>M6</td>
+<td>Teoría: del prototipo a producción (demo de vLLM)</td>
+</tr>
+<tr>
+<td>11:50</td>
+<td>70</td>
+<td>Práctica</td>
+<td>M6</td>
+<td>Laboratorio: prueba de carga y panel de métricas</td>
+</tr>
+<tr>
+<td>13:00</td>
+<td>30</td>
+<td>Teoría</td>
+<td>M7</td>
+<td>Teoría: qué se evalúa en el proyecto final</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>66</td>
+<td>Práctica</td>
+<td>M7</td>
+<td>Taller: canvas, propuesta técnica y plan de validación</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>M7</td>
+<td>Cierre: ensayo relámpago de la demo</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 13</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Canvas del caso de uso</td>
+<td><code>docs/canvas_caso_uso.md</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Propuesta técnica</td>
+<td><code>docs/propuesta_tecnica.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Plan de validación con resultados de evaluación, seguridad y carga</td>
+<td><code>docs/plan_validacion.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 4 con los tests en verde</td>
+<td><code>sesion_13_casos_produccion/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u13-1" data-menu="13.1 Casos de uso en negocio" data-transition="fade"><div class="divisor"><span class="numero">13.1</span><h2>Casos de uso en negocio</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.1 Casos de uso en negocio</p><h2>Casos de uso en negocio <span class="parte">1/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Área</th>
+<th>Casos frecuentes</th>
+<th>Patrón técnico</th>
+<th>Riesgo típico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Atención al cliente</td>
+<td>Respuesta a consultas, clasificación y enrutado de tickets, resumen de conversaciones</td>
+<td>RAG + clasificación + traspaso a persona</td>
+<td>Prometer lo que la empresa no puede cumplir</td>
+</tr>
+<tr>
+<td>Ventas y marketing</td>
+<td>Propuestas comerciales, fichas de producto, análisis de oportunidades</td>
+<td>Generación con plantilla y datos del CRM</td>
+<td>Datos inventados en propuestas</td>
+</tr>
+<tr>
+<td>Recursos humanos</td>
+<td>Asistente de políticas internas, onboarding</td>
+<td>RAG</td>
+<td>Alto riesgo regulatorio si toca selección o evaluación</td>
+</tr>
+<tr>
+<td>Jurídico y cumplimiento</td>
+<td>Revisión de contratos frente a una política, extracción de cláusulas</td>
+<td>Extracción + comparación</td>
+<td>Errores con consecuencias legales: revisión humana obligatoria</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.1 Casos de uso en negocio</p><h2>Casos de uso en negocio <span class="parte">2/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Área</th>
+<th>Casos frecuentes</th>
+<th>Patrón técnico</th>
+<th>Riesgo típico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Operaciones</td>
+<td>Análisis de incidencias, informes, procedimientos</td>
+<td>Agente de solo lectura + documentación</td>
+<td>Acciones sin supervisión</td>
+</tr>
+<tr>
+<td>Dirección</td>
+<td>Informes de estado y cuadros de mando narrados</td>
+<td>Generación controlada</td>
+<td>Cifras incorrectas</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u13-2" data-menu="13.2 Casos de uso en desarrollo de software" data-transition="fade"><div class="divisor"><span class="numero">13.2</span><h2>Casos de uso en desarrollo de software</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.2 Casos de uso en desarrollo de software</p><h2>Casos de uso en desarrollo de software <span class="parte">1/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Caso</th>
+<th>Qué se automatiza</th>
+<th>Control imprescindible</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Asistentes de código en el IDE</td>
+<td>Autocompletado, explicaciones, refactorizaciones</td>
+<td>Revisión de código humana y pruebas</td>
+</tr>
+<tr>
+<td>Generación de pruebas</td>
+<td>Pruebas unitarias a partir de código o criterios de aceptación</td>
+<td>Que las pruebas fallen cuando el código está mal (pruebas de mutación)</td>
+</tr>
+<tr>
+<td>Revisión de merge requests</td>
+<td>Detección de incumplimientos de estilo, errores, vulnerabilidades</td>
+<td>Análisis estático determinista + criterio humano</td>
+</tr>
+<tr>
+<td>Documentación</td>
+<td>Docstrings, README, notas de versión, documentación de API</td>
+<td>Coherencia con el código</td>
+</tr>
+<tr>
+<td>Migración y modernización</td>
+<td>Traducir código heredado, actualizar dependencias</td>
+<td>Pruebas de regresión</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.2 Casos de uso en desarrollo de software</p><h2>Casos de uso en desarrollo de software <span class="parte">2/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Caso</th>
+<th>Qué se automatiza</th>
+<th>Control imprescindible</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Infraestructura como código</td>
+<td>Generar Terraform o Kubernetes a partir de peticiones</td>
+<td>Validación de política y plan revisado</td>
+</tr>
+<tr>
+<td>Análisis de incidencias</td>
+<td>Resumir registros, proponer causa raíz</td>
+<td>Solo lectura; la acción la hace una persona</td>
+</tr>
+</tbody>
+</table></div><p>Los tres retos del curso son tres de estos casos. Lo que habéis aprendido con ellos (RAG para la normativa, herramientas deterministas para lo verificable, confirmación humana para lo que tiene efectos) se aplica a todos.</p></div></section>
+<section class="especial seccion" id="u13-3" data-menu="13.3 Evaluar la viabilidad" data-transition="fade"><div class="divisor"><span class="numero">13.3</span><h2>Evaluar la viabilidad</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.3 Evaluar la viabilidad</p><h2>Evaluar la viabilidad</h2></header><div class="cuerpo"><p>Antes de construir, un consultor responde cuatro preguntas:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Pregunta</th>
+<th>Cómo se responde</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>¿Aporta valor suficiente?</td>
+<td>Horas ahorradas (con el tiempo de revisión), mejora de calidad, ingresos</td>
+</tr>
+<tr>
+<td>¿Hay datos?</td>
+<td>Documentos, sistemas con API, conjunto de evaluación posible</td>
+</tr>
+<tr>
+<td>¿Qué riesgo tiene?</td>
+<td>Impacto de un error, regulación (Reglamento Europeo de IA, RGPD), reputación</td>
+</tr>
+<tr>
+<td>¿Cuánto cuesta?</td>
+<td>Implantación (desarrollo, integración, formación) y operación (infraestructura, mantenimiento, supervisión)</td>
+</tr>
+</tbody>
+</table></div><p>Con esos números: beneficio mensual, meses de recuperación y retorno del primer año (ejercicio 4). Un caso con buen retorno pero datos inmaduros o riesgo alto empieza como <strong>piloto acotado</strong>, no como proyecto completo.</p></div></section>
+<section class="especial seccion" id="u13-4" data-menu="13.4 Del prototipo a producción" data-transition="fade"><div class="divisor"><span class="numero">13.4</span><h2>Del prototipo a producción</h2><ul class=puntos><li>Servir modelos a muchos usuarios: vLLM</li><li>Métricas de rendimiento</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.4 Del prototipo a producción</p><h2>Del prototipo a producción</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Dimensión</th>
+<th>Prototipo</th>
+<th>Producción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Calidad</td>
+<td>Funciona con mis ejemplos</td>
+<td>Medida con un conjunto dorado y umbrales, con prueba de regresión en cada cambio</td>
+</tr>
+<tr>
+<td>Seguridad</td>
+<td>Prompt con instrucciones</td>
+<td>Pruebas de ataque, guardarraíles en código, mínimo privilegio, auditoría</td>
+</tr>
+<tr>
+<td>Rendimiento</td>
+<td>Una persona en mi portátil</td>
+<td>Muchos usuarios a la vez con latencia acotada</td>
+</tr>
+<tr>
+<td>Coste</td>
+<td>Despreciable</td>
+<td>Calculado y vigilado por petición</td>
+</tr>
+<tr>
+<td>Operación</td>
+<td>Lo arranco yo</td>
+<td>Despliegue, monitorización, alertas, actualizaciones de modelo</td>
+</tr>
+<tr>
+<td>Gobierno</td>
+<td>—</td>
+<td>Ficha del sistema, inventario de IA, clasificación de riesgo, responsable</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.4 Del prototipo a producción</p><h2>Servir modelos a muchos usuarios: vLLM <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Ollama es excelente para desarrollar y para pocos usuarios. Con muchos usuarios simultáneos, el estándar en servidores propios es <strong>vLLM</strong>, que aporta:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Técnica</th>
+<th>Qué hace</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Continuous batching</em></td>
+<td>Agrupa en tiempo real las peticiones de muchos usuarios para aprovechar la GPU</td>
+</tr>
+<tr>
+<td><em>PagedAttention</em></td>
+<td>Gestiona la caché KV en bloques, como la memoria virtual, sin desperdiciar memoria</td>
+</tr>
+<tr>
+<td>Paralelismo tensorial</td>
+<td>Reparte un modelo grande entre varias GPU</td>
+</tr>
+<tr>
+<td>API compatible con OpenAI</td>
+<td>Tu código no cambia: cambia la URL</td>
+</tr>
+</tbody>
+</table></div><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="c1"># En el servidor compartido (lo arranca el docente):</span>
+vllm<span class="w"> </span>serve<span class="w"> </span>&lt;modelo&gt;<span class="w"> </span>--port<span class="w"> </span><span class="m">8000</span><span class="w"> </span>--api-key<span class="w"> </span>&lt;clave&gt;<span class="w"> </span>--max-model-len<span class="w"> </span><span class="m">16384</span><span class="w"> </span>--gpu-memory-utilization<span class="w"> </span><span class="m">0</span>.45</code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.4 Del prototipo a producción</p><h2>Servir modelos a muchos usuarios: vLLM <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Requiere Linux y GPU NVIDIA, y usa modelos en formato de Hugging Face (no GGUF). Por eso en el curso solo está en el servidor.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.4 Del prototipo a producción</p><h2>Métricas de rendimiento</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Qué mide</th>
+<th>Para quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Latencia p50 / p95</td>
+<td>Tiempo de respuesta típico y del 5 % más lento</td>
+<td>Experiencia de la persona usuaria</td>
+</tr>
+<tr>
+<td>Tiempo hasta el primer token</td>
+<td>Cuándo empieza a verse la respuesta</td>
+<td>Interfaces con streaming</td>
+</tr>
+<tr>
+<td>Tokens por segundo (agregado)</td>
+<td>Capacidad total del servidor</td>
+<td>Dimensionamiento</td>
+</tr>
+<tr>
+<td>Peticiones por segundo</td>
+<td>Rendimiento del servicio</td>
+<td>Dimensionamiento</td>
+</tr>
+<tr>
+<td>Tasa de errores</td>
+<td>Peticiones fallidas o con timeout</td>
+<td>Fiabilidad</td>
+</tr>
+</tbody>
+</table></div><p>Una prueba de carga mide estas métricas con 1, 2, 4, 8… usuarios simultáneos. Con Ollama la latencia crece casi linealmente al aumentar usuarios; con vLLM crece mucho menos porque agrupa las peticiones.</p></div></section>
+<section class="especial seccion" id="u13-5" data-menu="13.5 Evaluación de extremo a extremo" data-transition="fade"><div class="divisor"><span class="numero">13.5</span><h2>Evaluación de extremo a extremo</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.5 Evaluación de extremo a extremo</p><h2>Evaluación de extremo a extremo</h2></header><div class="cuerpo"><p>La evaluación final del asistente combina lo que has ido construyendo:</p><ol>
+<li><strong>Conjunto dorado</strong> de 30 o más casos de todos los tipos (normativa, tarea, ambigua, fuera de alcance, seguridad).</li>
+<li><strong>Ejecución automática</strong> del asistente completo (RAG, herramientas, guardarraíles) midiendo la latencia.</li>
+<li><strong>Juez</strong> con rúbrica (0 incorrecta, 1 parcial, 2 correcta) calibrado con revisión humana de una muestra.</li>
+<li><strong>Métricas</strong>: exactitud global y por tipo, latencia p50 y p95.</li>
+<li><strong>Línea base</strong> guardada y <strong>detección de regresiones</strong> en cada cambio de prompt, modelo o datos.</li>
+</ol></div></section>
+<section class="especial seccion" id="u13-6" data-menu="13.6 Red teaming y OWASP Top 10 para LLM" data-transition="fade"><div class="divisor"><span class="numero">13.6</span><h2>Red teaming y OWASP Top 10 para LLM</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.6 Red teaming y OWASP Top 10 para LLM</p><h2>Red teaming y OWASP Top 10 para LLM <span class="parte">1/3</span></h2></header><div class="cuerpo"><p>El <strong>red teaming</strong> es atacar tu propio sistema para encontrar sus debilidades antes que otros. La referencia es el OWASP Top 10 para aplicaciones LLM (versión 2025):</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.6 Red teaming y OWASP Top 10 para LLM</p><h2>Red teaming y OWASP Top 10 para LLM <span class="parte">2/3</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Código</th>
+<th>Riesgo</th>
+<th>Ataque de ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LLM01</td>
+<td>Inyección de prompt</td>
+<td>«Ignora tus instrucciones…», directa o escondida en un documento</td>
+</tr>
+<tr>
+<td>LLM02</td>
+<td>Divulgación de información sensible</td>
+<td>Pedir credenciales o datos de otros usuarios</td>
+</tr>
+<tr>
+<td>LLM03</td>
+<td>Cadena de suministro</td>
+<td>Modelos o servidores MCP de origen dudoso</td>
+</tr>
+<tr>
+<td>LLM04</td>
+<td>Envenenamiento de datos y modelos</td>
+<td>Documentos manipulados en el índice del RAG</td>
+</tr>
+<tr>
+<td>LLM05</td>
+<td>Gestión insegura de la salida</td>
+<td>La salida contiene código o HTML que otro sistema ejecuta</td>
+</tr>
+<tr>
+<td>LLM06</td>
+<td>Autonomía excesiva</td>
+<td>Que el agente aplique cambios sin aprobación</td>
+</tr>
+<tr>
+<td>LLM07</td>
+<td>Filtrado del prompt de sistema</td>
+<td>Pedir que revele sus instrucciones</td>
+</tr>
+<tr>
+<td>LLM08</td>
+<td>Debilidades de vectores y embeddings</td>
+<td>Acceso a documentos de otro cliente en un índice compartido</td>
+</tr>
+<tr>
+<td>LLM09</td>
+<td>Desinformación</td>
+<td>Que confirme una premisa falsa sobre la política</td>
+</tr>
+<tr>
+<td>LLM10</td>
+<td>Consumo no acotado</td>
+<td>Peticiones que generan salidas enormes o bucles caros</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.6 Red teaming y OWASP Top 10 para LLM</p><h2>Red teaming y OWASP Top 10 para LLM <span class="parte">3/3</span></h2></header><div class="cuerpo"><p>En el ejercicio 2 automatizarás un conjunto de ataques con detectores. Las defensas ya las conoces: guardarraíles en capas (sesión 8), herramientas de mínimo privilegio (sesión 9), confirmación humana y límites de longitud y de pasos.</p></div></section>
+<section class="especial seccion" id="u13-7" data-menu="13.7 Qué se evalúa en el proyecto final" data-transition="fade"><div class="divisor"><span class="numero">13.7</span><h2>Qué se evalúa en el proyecto final</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">13.7 Qué se evalúa en el proyecto final</p><h2>Qué se evalúa en el proyecto final</h2></header><div class="cuerpo"><p>El proyecto final es el asistente de tu equipo terminado. Los criterios mínimos del programa del curso:</p><ol>
+<li>Asistente basado en LLM con una necesidad y unos usuarios definidos.</li>
+<li>Componente RAG con fuentes identificadas, estrategia de indexación y pruebas de recuperación.</li>
+<li>Al menos una herramienta o acción controlada.</li>
+<li>Métricas y conjunto de pruebas para calidad, relevancia y robustez.</li>
+<li>Controles de privacidad, seguridad, uso responsable y supervisión humana.</li>
+<li>Documentación reproducible, demo funcional y explicación de las decisiones.</li>
+</ol><p>El enunciado completo, la rúbrica y el formato de la demo están en <a href="../proyecto_final.html"><code>proyecto_final/README.md</code></a>.</p></div></section>
+<section data-menu="Errores frecuentes"><header class="cabecera"><p class="antetitulo">Sesión 13</p><h2>Errores frecuentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Calcular el ahorro sin el tiempo de revisión</td>
+<td>Retorno irreal</td>
+<td>Medirlo en el TO-BE</td>
+</tr>
+<tr>
+<td>Probar seguridad solo con ataques obvios</td>
+<td>Falsa confianza</td>
+<td>Ataques indirectos y por categorías</td>
+</tr>
+<tr>
+<td>Medir rendimiento con un solo usuario</td>
+<td>Sorpresas en producción</td>
+<td>Prueba de carga con concurrencia creciente</td>
+</tr>
+<tr>
+<td>Cambiar el prompt sin volver a evaluar</td>
+<td>Regresiones silenciosas</td>
+<td>Línea base y comparación automática</td>
+</tr>
+<tr>
+<td>Definir el proyecto final sin conjunto dorado</td>
+<td>No se puede demostrar que funciona</td>
+<td>Plan de validación antes de seguir construyendo</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section data-menu="Para saber más"><header class="cabecera"><p class="antetitulo">Sesión 13</p><h2>Para saber más</h2></header><div class="cuerpo"><ul>
+<li>OWASP, <em>Top 10 for LLM Applications 2025</em>: <a href="https://genai.owasp.org/llm-top-10/" target="_blank" rel="noopener">genai.owasp.org/llm-top-10</a></li>
+<li>Documentación de vLLM: <a href="https://docs.vllm.ai/" target="_blank" rel="noopener">docs.vllm.ai</a></li>
+<li>Kwon et al. (2023), <em>Efficient Memory Management for Large Language Model Serving with PagedAttention</em>: <a href="https://arxiv.org/abs/2309.06180" target="_blank" rel="noopener">arxiv.org/abs/2309.06180</a></li>
+<li>NIST, <em>AI Risk Management Framework</em>: <a href="https://www.nist.gov/itl/ai-risk-management-framework" target="_blank" rel="noopener">nist.gov/itl/ai-risk-management-framework</a></li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Ejercicio 1. Evaluación de extremo a extremo (laboratorio integrador, 40 min)</li><li>Ejercicio 2. Red teaming (laboratorio integrador, 30 min)</li><li>Ejercicio 3. Prueba de carga (laboratorio de producción, 40 min)</li><li>Ejercicio 4. Viabilidad del caso de negocio (laboratorio de producción, 20 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa cada fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_13_casos_produccion<span class="w"> </span>-v</code></pre></div></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Evaluación de extremo a extremo (laboratorio integrador, 40 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Evaluación de extremo a extremo (laboratorio integrador, 40 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s13_ej1_evaluacion_e2e.py</code></p><ol>
+<li><code>percentil(valores, p)</code>: con interpolación lineal; el test lo compara con <code>numpy.percentile</code>.</li>
+<li><code>juzgar(entrada, esperado, respuesta)</code>: juez con salida <code>Veredicto</code> (0, 1 o 2).</li>
+<li><code>evaluar(asistente, casos)</code>: ejecuta, mide y juzga. Si el asistente falla, puntuación 0 sin llamar al juez.</li>
+<li><code>metricas(filas)</code> y <code>regresiones(actual, base, tolerancia, factor_latencia)</code>.</li>
+</ol><p>Ejecuta el fichero: evalúa un agente de ejemplo con el conjunto dorado de InfraPilot y guarda la línea base en <code>salidas/linea_base.json</code>. Ejecútalo otra vez: compara con la línea base.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 2. Red teaming (laboratorio integrador, 30 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. Red teaming (laboratorio integrador, 30 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s13_ej2_red_teaming.py</code></p><ol>
+<li><code>rechaza(respuesta)</code>.</li>
+<li><code>superado(ataque, respuesta)</code>: tres tipos de detector.</li>
+<li><code>ejecutar(asistente, ataques)</code> e <code>informe(filas)</code>.</li>
+</ol><p>Ejecuta el fichero: ataca a un asistente con un prompt de sistema defensivo. ¿Qué categorías resiste? Añade dos ataques propios a la lista.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 3. Prueba de carga (laboratorio de producción, 40 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. Prueba de carga (laboratorio de producción, 40 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s13_ej3_carga.py</code></p><ol>
+<li><code>una_peticion(cliente, modelo, prompt, max_tokens)</code>: asíncrona con <code>AsyncOpenAI</code>.</li>
+<li><code>prueba_carga(cliente, modelo, usuarios, peticiones_por_usuario, prompt)</code>: tareas concurrentes con <code>asyncio.gather</code>.</li>
+<li><code>resumen(resultados, duracion)</code>.</li>
+</ol><p>Ejecuta primero contra Ollama en tu portátil y después contra el servidor (Ollama y vLLM) con la URL que te dé el docente:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>python<span class="w"> </span>sesion_13_casos_produccion/ejercicios/s13_ej3_carga.py<span class="w"> </span>--usuarios<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="m">4</span>
+python<span class="w"> </span>sesion_13_casos_produccion/ejercicios/s13_ej3_carga.py<span class="w"> </span>--url<span class="w"> </span>&lt;URL<span class="w"> </span>vLLM&gt;/v1<span class="w"> </span>--clave<span class="w"> </span>&lt;clave&gt;<span class="w"> </span>--modelo<span class="w"> </span>&lt;modelo&gt;<span class="w"> </span>--usuarios<span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="m">4</span><span class="w"> </span><span class="m">8</span><span class="w"> </span><span class="m">16</span></code></pre></div></div></section>
+<section class="ejercicio" data-menu="Ejercicio 4. Viabilidad del caso de negocio (laboratorio de producción, 20 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 4. Viabilidad del caso de negocio (laboratorio de producción, 20 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s13_ej4_viabilidad.py</code></p><ol>
+<li><code>beneficio_mensual</code>, <code>meses_recuperacion</code>, <code>roi_primer_anio</code> y <code>recomendacion</code>.</li>
+</ol><p>Calcula el caso de negocio de tu reto con los tiempos de tu mapa AS-IS/TO-BE de la sesión 11.</p></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Canvas, propuesta técnica y plan de validación del proyecto final</h2><ul class=puntos><li>Parte 1. Laboratorio integrador con el asistente del equipo (durante los laboratorios de M6)</li><li>Parte 2. Taller: definición del proyecto final (66 min)</li><li>Entrega</li><li>Criterios de evaluación (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 13. Canvas, propuesta técnica y plan de validación del proyecto final</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>Entregables del equipo: <code>docs/canvas_caso_uso.md</code>, <code>docs/propuesta_tecnica.md</code> y <code>docs/plan_validacion.md</code>.</p></div></section>
+<section class="ejercicio" data-menu="Parte 1. Laboratorio integrador con el asistente del equipo (durante los laboratorios de M6)"><header class="cabecera"><p class="antetitulo">Práctica 13. Canvas, propuesta técnica y plan de validación del proyecto final</p><h2>Parte 1. Laboratorio integrador con el asistente del equipo (durante los laboratorios de M6)</h2></header><div class="cuerpo"><p>Aplicad los ejercicios a <strong>vuestro asistente completo</strong>:</p><ol>
+<li><strong>Evaluación de extremo a extremo</strong> con vuestro conjunto dorado, ampliado a <strong>30 casos o más</strong>. Guardad la línea base.</li>
+<li><strong>Red teaming</strong> con los ataques del ejercicio 2 adaptados a vuestro reto y al menos 4 propios (por ejemplo, para PMO Copilot, un acta con una instrucción escondida; para InfraPilot, una petición que intenta colar un bucket público con otro nombre).</li>
+<li><strong>Prueba de carga</strong> de vuestro asistente contra el servidor compartido con 1, 4 y 8 usuarios.</li>
+<li><strong>Caso de negocio</strong> con el ejercicio 4.</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 13. Canvas, propuesta técnica y plan de validación del proyecto final · Parte 2. Taller: definición del proyecto final (66 min)</p><h2>1. Canvas del caso de uso (20 min)</h2></header><div class="cuerpo"><p>Rellenad <code>docs/canvas_caso_uso.md</code> con la plantilla <code>plantillas/canvas_caso_uso.md</code>: problema, usuarios, propuesta de valor, datos y fuentes, solución, métricas de éxito, riesgos y controles, costes y beneficio, y clasificación según el Reglamento Europeo de IA.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 13. Canvas, propuesta técnica y plan de validación del proyecto final · Parte 2. Taller: definición del proyecto final (66 min)</p><h2>2. Propuesta técnica (26 min)</h2></header><div class="cuerpo"><p>Rellenad <code>docs/propuesta_tecnica.md</code> con la plantilla <code>plantillas/propuesta_tecnica.md</code>: arquitectura (diagrama Mermaid actualizado), modelo y motor de inferencia, RAG (fuentes, troceado, búsqueda), herramientas con sus permisos, guardarraíles, framework elegido (enlace al ADR), requisitos de hardware y despliegue.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 13. Canvas, propuesta técnica y plan de validación del proyecto final · Parte 2. Taller: definición del proyecto final (66 min)</p><h2>3. Plan de validación (20 min)</h2></header><div class="cuerpo"><p>Rellenad <code>docs/plan_validacion.md</code> con la plantilla <code>plantillas/plan_validacion.md</code>: conjunto dorado, métricas y umbrales de aceptación, resultados de hoy (evaluación, red teaming, carga), regresiones vigiladas y política de revisión humana.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 13. Canvas, propuesta técnica y plan de validación del proyecto final · Parte 2. Taller: definición del proyecto final (66 min)</p><h2>Cierre: ensayo relámpago (24 min)</h2></header><div class="cuerpo"><p>Cada equipo hace un ensayo de <strong>5 minutos</strong> del arranque de su demo (problema, solución y una pregunta en directo) y recibe comentarios.</p></div></section>
+<section class="ejercicio" data-menu="Entrega"><header class="cabecera"><p class="antetitulo">Práctica 13. Canvas, propuesta técnica y plan de validación del proyecto final</p><h2>Entrega</h2></header><div class="cuerpo"><ol>
+<li><code>docs/canvas_caso_uso.md</code>, <code>docs/propuesta_tecnica.md</code> y <code>docs/plan_validacion.md</code>.</li>
+<li><code>evals/golden_set.jsonl</code> con 30 casos o más y <code>salidas/linea_base.json</code>.</li>
+<li>Commit: <code>Sesión 13: definición del proyecto final y plan de validación</code>.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 13. Canvas, propuesta técnica y plan de validación del proyecto final</p><h2>Criterios de evaluación (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Canvas</td>
+<td>Problema, valor y riesgos concretos, con números del caso de negocio</td>
+</tr>
+<tr>
+<td>Propuesta técnica</td>
+<td>Arquitectura completa y coherente con las decisiones registradas</td>
+</tr>
+<tr>
+<td>Plan de validación</td>
+<td>30 o más casos, umbrales, resultados reales de evaluación, seguridad y carga</td>
+</tr>
+<tr>
+<td>Ensayo</td>
+<td>Mensaje claro y demo en directo funcionando</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 13</p><h1>Casos de negocio y desarrollo de software · Definición del proyecto final</h1><div class="acciones"><a class="boton" href="sesion_14.html">Sesión 14. Proyecto final: demo, defensa y evaluación <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 13. Casos de negocio y desarrollo de software · Definición del proyecto final</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 13. Casos de negocio y desarrollo de software · Definición del proyecto final</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a> · <a href="sesion_14.html">Sesión 14 →</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+
+</body>
+</html>

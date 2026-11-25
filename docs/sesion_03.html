@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qué es un LLM: tokens, contexto y modelos fundacionales · Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</title>
+<style>
+:root {
+  --fondo: #fbfaf7; --panel: #ffffff; --texto: #1f2328; --suave: #5b6470;
+  --borde: #e2ddd3; --acento: #2f6f9f; --acento-suave: #e8f1f8;
+  --codigo: #f4f1ea; --tabla: #f7f4ee;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+    --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+    --codigo: #22272e; --tabla: #20252b;
+  }
+}
+:root[data-theme="dark"] {
+  --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+  --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+  --codigo: #22272e; --tabla: #20252b;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body {
+  margin: 0; background: var(--fondo); color: var(--texto);
+  font: 17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--acento); }
+header.barra {
+  position: sticky; top: 0; z-index: 5; display: flex; gap: 1rem;
+  align-items: center; padding: .7rem 1.25rem; background: var(--panel);
+  border-bottom: 1px solid var(--borde);
+}
+header.barra .curso { font-weight: 650; text-decoration: none; color: var(--texto); }
+header.barra nav { margin-left: auto; display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+header.barra button {
+  font: inherit; font-size: .85rem; padding: .25rem .6rem; cursor: pointer;
+  background: transparent; color: var(--suave); border: 1px solid var(--borde); border-radius: 6px;
+}
+.pagina { display: grid; grid-template-columns: 17rem minmax(0, 1fr); max-width: 78rem; margin: 0 auto; }
+aside.indice {
+  position: sticky; top: 3.4rem; align-self: start; max-height: calc(100vh - 3.4rem);
+  overflow: auto; padding: 1.5rem 1rem 2rem 1.25rem; font-size: .9rem;
+}
+aside.indice .rotulo { text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; color: var(--suave); }
+aside.indice ul { list-style: none; margin: .4rem 0 0; padding: 0; }
+aside.indice ul ul { padding-left: .9rem; margin: 0; }
+aside.indice a { display: block; padding: .18rem 0; color: var(--suave); text-decoration: none; }
+aside.indice a:hover { color: var(--acento); }
+main { padding: 2rem 1.5rem 5rem; min-width: 0; max-width: 52rem; }
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 1rem; text-wrap: balance; }
+h2 { font-size: 1.5rem; margin: 2.8rem 0 .8rem; padding-top: .6rem; border-top: 1px solid var(--borde); }
+h3 { font-size: 1.15rem; margin: 2rem 0 .5rem; }
+hr { display: none; }
+p, li { text-wrap: pretty; }
+code { font: .88em/1.5 ui-monospace, "Cascadia Code", Consolas, Menlo, monospace; background: var(--codigo); padding: .12em .35em; border-radius: 4px; }
+.codehilite, pre { background: var(--codigo); border: 1px solid var(--borde); border-radius: 8px; overflow-x: auto; }
+.codehilite pre { border: 0; margin: 0; }
+pre { padding: .9rem 1rem; margin: 1rem 0; }
+pre code { background: none; padding: 0; font-size: .9rem; }
+.tabla { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--borde); vertical-align: top; }
+th { background: var(--tabla); font-weight: 600; }
+.pie { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--borde); font-size: .95rem; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: 1.1rem 1.2rem; }
+.tarjeta .num { color: var(--acento); font-weight: 650; font-size: .85rem; letter-spacing: .04em; text-transform: uppercase; }
+.tarjeta h3 { margin: .2rem 0 .5rem; }
+.tarjeta .enlaces { display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+.tarjeta.pendiente { opacity: .6; }
+.portada { max-width: 62rem; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+.portada .entrada { color: var(--suave); max-width: 44rem; }
+@media (max-width: 860px) {
+  .pagina { grid-template-columns: 1fr; }
+  aside.indice { display: none; }
+  main { padding: 1.5rem 1rem 4rem; }
+  body { font-size: 16px; }
+}
+@media print {
+  header.barra, aside.indice, .pie { display: none; }
+  .pagina { display: block; }
+  body { font-size: 11pt; background: #fff; color: #000; }
+  h2 { break-after: avoid; } pre, table { break-inside: avoid; }
+}
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.codehilite .hll { background-color: #ffffcc }
+.codehilite { background: #f0f0f0; }
+.codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #F00 } /* Error */
+.codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666 } /* Operator */
+.codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #007020 } /* Comment.Preproc */
+.codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.codehilite .gr { color: #F00 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #888 } /* Generic.Output */
+.codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #04D } /* Generic.Traceback */
+.codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+.codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #902000 } /* Keyword.Type */
+.codehilite .m { color: #40A070 } /* Literal.Number */
+.codehilite .s { color: #4070A0 } /* Literal.String */
+.codehilite .na { color: #4070A0 } /* Name.Attribute */
+.codehilite .nb { color: #007020 } /* Name.Builtin */
+.codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #60ADD5 } /* Name.Constant */
+.codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #007020 } /* Name.Exception */
+.codehilite .nf { color: #06287E } /* Name.Function */
+.codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+.codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #BB60D5 } /* Name.Variable */
+.codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #BBB } /* Text.Whitespace */
+.codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+.codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+.codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+.codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+.codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+.codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+.codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+.codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+.codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+.codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+.codehilite .sr { color: #235388 } /* Literal.String.Regex */
+.codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+.codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+.codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #06287E } /* Name.Function.Magic */
+.codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+.codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+.codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) pre { line-height: 125%; }
+:root:not([data-theme="light"]) td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) .codehilite .hll { background-color: #6e7681 }
+:root:not([data-theme="light"]) .codehilite { background: #0d1117; color: #E6EDF3 }
+:root:not([data-theme="light"]) .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root:not([data-theme="light"]) .codehilite .err { color: #F85149 } /* Error */
+:root:not([data-theme="light"]) .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root:not([data-theme="light"]) .codehilite .g { color: #E6EDF3 } /* Generic */
+:root:not([data-theme="light"]) .codehilite .k { color: #FF7B72 } /* Keyword */
+:root:not([data-theme="light"]) .codehilite .l { color: #A5D6FF } /* Literal */
+:root:not([data-theme="light"]) .codehilite .n { color: #E6EDF3 } /* Name */
+:root:not([data-theme="light"]) .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root:not([data-theme="light"]) .codehilite .x { color: #E6EDF3 } /* Other */
+:root:not([data-theme="light"]) .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root:not([data-theme="light"]) .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root:not([data-theme="light"]) .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root:not([data-theme="light"]) .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root:not([data-theme="light"]) .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root:not([data-theme="light"]) .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root:not([data-theme="light"]) .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root:not([data-theme="light"]) .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root:not([data-theme="light"]) .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root:not([data-theme="light"]) .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root:not([data-theme="light"]) .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root:not([data-theme="light"]) .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root:not([data-theme="light"]) .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root:not([data-theme="light"]) .codehilite .go { color: #8B949E } /* Generic.Output */
+:root:not([data-theme="light"]) .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root:not([data-theme="light"]) .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root:not([data-theme="light"]) .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root:not([data-theme="light"]) .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root:not([data-theme="light"]) .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root:not([data-theme="light"]) .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root:not([data-theme="light"]) .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root:not([data-theme="light"]) .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root:not([data-theme="light"]) .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root:not([data-theme="light"]) .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root:not([data-theme="light"]) .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root:not([data-theme="light"]) .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root:not([data-theme="light"]) .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root:not([data-theme="light"]) .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root:not([data-theme="light"]) .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root:not([data-theme="light"]) .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root:not([data-theme="light"]) .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root:not([data-theme="light"]) .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root:not([data-theme="light"]) .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root:not([data-theme="light"]) .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root:not([data-theme="light"]) .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root:not([data-theme="light"]) .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root:not([data-theme="light"]) .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root:not([data-theme="light"]) .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root:not([data-theme="light"]) .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root:not([data-theme="light"]) .codehilite .py { color: #79C0FF } /* Name.Property */
+:root:not([data-theme="light"]) .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root:not([data-theme="light"]) .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root:not([data-theme="light"]) .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root:not([data-theme="light"]) .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root:not([data-theme="light"]) .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root:not([data-theme="light"]) .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root:not([data-theme="light"]) .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root:not([data-theme="light"]) .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root:not([data-theme="light"]) .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root:not([data-theme="light"]) .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root:not([data-theme="light"]) .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root:not([data-theme="light"]) .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root:not([data-theme="light"]) .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root:not([data-theme="light"]) .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root:not([data-theme="light"]) .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root:not([data-theme="light"]) .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root:not([data-theme="light"]) .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root:not([data-theme="light"]) .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root:not([data-theme="light"]) .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root:not([data-theme="light"]) .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root:not([data-theme="light"]) .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root:not([data-theme="light"]) .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root:not([data-theme="light"]) .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root:not([data-theme="light"]) .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root:not([data-theme="light"]) .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root:not([data-theme="light"]) .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root:not([data-theme="light"]) .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root:not([data-theme="light"]) .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root:not([data-theme="light"]) .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root:not([data-theme="light"]) .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+}
+:root[data-theme="dark"] pre { line-height: 125%; }
+:root[data-theme="dark"] td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] .codehilite .hll { background-color: #6e7681 }
+:root[data-theme="dark"] .codehilite { background: #0d1117; color: #E6EDF3 }
+:root[data-theme="dark"] .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root[data-theme="dark"] .codehilite .err { color: #F85149 } /* Error */
+:root[data-theme="dark"] .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root[data-theme="dark"] .codehilite .g { color: #E6EDF3 } /* Generic */
+:root[data-theme="dark"] .codehilite .k { color: #FF7B72 } /* Keyword */
+:root[data-theme="dark"] .codehilite .l { color: #A5D6FF } /* Literal */
+:root[data-theme="dark"] .codehilite .n { color: #E6EDF3 } /* Name */
+:root[data-theme="dark"] .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root[data-theme="dark"] .codehilite .x { color: #E6EDF3 } /* Other */
+:root[data-theme="dark"] .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root[data-theme="dark"] .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root[data-theme="dark"] .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root[data-theme="dark"] .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root[data-theme="dark"] .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root[data-theme="dark"] .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root[data-theme="dark"] .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root[data-theme="dark"] .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root[data-theme="dark"] .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root[data-theme="dark"] .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root[data-theme="dark"] .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root[data-theme="dark"] .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root[data-theme="dark"] .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root[data-theme="dark"] .codehilite .go { color: #8B949E } /* Generic.Output */
+:root[data-theme="dark"] .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root[data-theme="dark"] .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root[data-theme="dark"] .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root[data-theme="dark"] .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root[data-theme="dark"] .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root[data-theme="dark"] .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root[data-theme="dark"] .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root[data-theme="dark"] .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root[data-theme="dark"] .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root[data-theme="dark"] .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root[data-theme="dark"] .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root[data-theme="dark"] .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root[data-theme="dark"] .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root[data-theme="dark"] .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root[data-theme="dark"] .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root[data-theme="dark"] .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root[data-theme="dark"] .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root[data-theme="dark"] .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root[data-theme="dark"] .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root[data-theme="dark"] .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root[data-theme="dark"] .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root[data-theme="dark"] .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root[data-theme="dark"] .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root[data-theme="dark"] .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root[data-theme="dark"] .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root[data-theme="dark"] .codehilite .py { color: #79C0FF } /* Name.Property */
+:root[data-theme="dark"] .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root[data-theme="dark"] .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root[data-theme="dark"] .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root[data-theme="dark"] .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root[data-theme="dark"] .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root[data-theme="dark"] .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root[data-theme="dark"] .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root[data-theme="dark"] .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root[data-theme="dark"] .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root[data-theme="dark"] .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root[data-theme="dark"] .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root[data-theme="dark"] .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root[data-theme="dark"] .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root[data-theme="dark"] .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root[data-theme="dark"] .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root[data-theme="dark"] .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root[data-theme="dark"] .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root[data-theme="dark"] .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root[data-theme="dark"] .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root[data-theme="dark"] .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root[data-theme="dark"] .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root[data-theme="dark"] .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root[data-theme="dark"] .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root[data-theme="dark"] .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root[data-theme="dark"] .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root[data-theme="dark"] .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root[data-theme="dark"] .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root[data-theme="dark"] .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root[data-theme="dark"] .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root[data-theme="dark"] .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+.codehilite { background: var(--codigo) !important; }
+.aviso-profe { border-left: 4px solid #c98a12; background: var(--acento-suave); padding: .6rem 1rem; border-radius: 6px; margin: 0 0 1.4rem; font-size: .95rem; }
+.ficha { display: flex; flex-wrap: wrap; gap: .4rem .8rem; margin: -.4rem 0 1.4rem; font-size: .9rem; color: var(--suave); }
+.ficha span { background: var(--acento-suave); padding: .1rem .6rem; border-radius: 20px; }
+.tarjeta .num.profe { color: #c98a12; }
+.seccion-indice { margin-top: 3rem; }
+pre.mermaid { background: var(--panel); text-align: center; }
+</style>
+
+</head>
+<body>
+<header class="barra">
+  <a class="curso" href="index.html">Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</a>
+  <nav><a href="sesion_03.html">Apuntes</a> <a href="sesion_03_ejercicios.html">Ejercicios</a> <a href="sesion_03_practica.html">Práctica</a> <a href="presentacion/sesion_03.html">Presentación</a></nav>
+  <button type="button" data-cambiar-tema>Claro / oscuro</button>
+</header>
+<div class="pagina">
+<aside class="indice"><div class="rotulo">En esta página</div><div class="toc">
+<ul>
+<li><a href="#agenda-de-la-sesion">Agenda de la sesión</a></li>
+<li><a href="#lo-que-entregas-hoy">Lo que entregas hoy</a></li>
+<li><a href="#31-que-es-un-llm">3.1 Qué es un LLM</a><ul>
+<li><a href="#el-flujo-completo-de-una-peticion">El flujo completo de una petición</a></li>
+</ul>
+</li>
+<li><a href="#32-tokenizacion">3.2 Tokenización</a><ul>
+<li><a href="#cuanto-cuesta-una-tarea">Cuánto cuesta una tarea</a></li>
+</ul>
+</li>
+<li><a href="#33-dentro-del-modelo-embeddings-y-atencion">3.3 Dentro del modelo: embeddings y atención</a><ul>
+<li><a href="#embeddings-de-tokens">Embeddings de tokens</a></li>
+<li><a href="#la-arquitectura-transformer">La arquitectura Transformer</a></li>
+<li><a href="#mezcla-de-expertos-moe">Mezcla de expertos (MoE)</a></li>
+</ul>
+</li>
+<li><a href="#34-la-ventana-de-contexto">3.4 La ventana de contexto</a><ul>
+<li><a href="#fijar-el-contexto-en-ollama">Fijar el contexto en Ollama</a></li>
+</ul>
+</li>
+<li><a href="#35-parametros-de-muestreo">3.5 Parámetros de muestreo</a></li>
+<li><a href="#36-modelos-fundacionales">3.6 Modelos fundacionales</a><ul>
+<li><a href="#modelos-que-razonan">Modelos que razonan</a></li>
+<li><a href="#cuantizacion">Cuantización</a></li>
+<li><a href="#cuanta-memoria-necesita-un-modelo">Cuánta memoria necesita un modelo</a></li>
+<li><a href="#ficha-del-modelo-y-licencia">Ficha del modelo y licencia</a></li>
+</ul>
+</li>
+<li><a href="#errores-frecuentes">Errores frecuentes</a></li>
+<li><a href="#para-saber-mas">Para saber más</a></li>
+</ul>
+</div>
+</aside>
+<main>
+<h1 id="sesion-3-que-es-un-llm-tokens-contexto-y-modelos-fundacionales">Sesión 3. Qué es un LLM: tokens, contexto y modelos fundacionales</h1>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Horario</th>
+<th>Modalidad</th>
+<th>Módulos</th>
+<th>Hito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Viernes 4 de diciembre de 2026</td>
+<td>09:00-15:00</td>
+<td>Remoto</td>
+<td>M2 · Introducción a GenAI y LLM (6 h)</td>
+<td>H1 · Fundamentos y prompting</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Objetivo:</strong> Explicar el flujo básico de un LLM y anticipar el impacto del contexto y la tokenización.</p>
+<p>Al terminar esta sesión sabrás explicar qué ocurre dentro de un LLM desde que recibe un texto hasta que devuelve una respuesta, y podrás anticipar tres cosas que deciden el éxito de un proyecto: cuántos tokens consume una tarea, qué cabe en la ventana de contexto y cuánta memoria necesita un modelo.</p>
+<p>Es una sesión de experimentos. Cada afirmación de los apuntes la vas a comprobar con código y la vas a anotar en el cuaderno de experimentos de tu equipo.</p>
+<h3 id="agenda-de-la-sesion">Agenda de la sesión</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: ¿cuántos tokens tiene esta frase?</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>55</td>
+<td>Teoría</td>
+<td>Teoría I: anatomía de un LLM</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Laboratorio: experimentos de tokenización y coste</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:30</td>
+<td>50</td>
+<td>Teoría</td>
+<td>Teoría II: ventana de contexto y modelos fundacionales (demo de Colibri)</td>
+</tr>
+<tr>
+<td>12:20</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Reto 1: la aguja en el pajar (longitud de contexto)</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>13:40</td>
+<td>56</td>
+<td>Práctica</td>
+<td>Reto 2: instrucciones, muestreo y benchmark local frente a servidor</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Cierre: conclusiones del cuaderno</td>
+</tr>
+</tbody>
+</table></div>
+<p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p>
+<h2 id="lo-que-entregas-hoy">Lo que entregas hoy</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cuaderno de experimentos con evidencias y conclusiones</td>
+<td><code>docs/cuaderno_experimentos.md</code> (o <code>.ipynb</code>) del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 4 con los tests en verde</td>
+<td><code>sesion_03_llm_tokens_contexto/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="31-que-es-un-llm">3.1 Qué es un LLM</h2>
+<p>Un modelo de lenguaje grande (<em>Large Language Model</em>) es una red neuronal con miles de millones de <strong>parámetros</strong> entrenada para una sola tarea: dado un texto, predecir el siguiente fragmento. Todo lo demás (responder preguntas, traducir, programar, resumir) emerge de hacer esa tarea muy bien con muchísimos datos.</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Qué es</th>
+<th>Orden de magnitud</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parámetros (pesos)</td>
+<td>Los números que el entrenamiento ajusta</td>
+<td>De 1.000 millones (1B) a más de 1 billón</td>
+</tr>
+<tr>
+<td>Vocabulario</td>
+<td>Los tokens que el modelo conoce</td>
+<td>32.000 a 260.000 tokens</td>
+</tr>
+<tr>
+<td>Ventana de contexto</td>
+<td>Cuántos tokens puede ver a la vez (entrada + salida)</td>
+<td>De 4.000 a más de 1 millón</td>
+</tr>
+<tr>
+<td>Datos de preentrenamiento</td>
+<td>Texto con el que aprendió</td>
+<td>Billones de tokens</td>
+</tr>
+</tbody>
+</table></div>
+<p>Cuando leas <code>qwen3:4b</code> o <code>granite4:micro</code>, el número es el tamaño: 4B son unos 4.000 millones de parámetros. Más parámetros suele significar más conocimiento y mejor razonamiento, pero también más memoria y menos velocidad.</p>
+<h3 id="el-flujo-completo-de-una-peticion">El flujo completo de una petición</h3>
+<div class="codehilite"><pre><span></span><code>Texto ──► Tokenizador ──► IDs de tokens ──► Embeddings ──► N capas Transformer ──► Probabilidades del siguiente token
+                                                                                          │
+              Texto de salida ◄── Detokenizador ◄── Token elegido (muestreo) ◄──────────┘
+                                                         │
+                                                         └─► se añade a la entrada y se repite
+</code></pre></div>
+
+<hr />
+<h2 id="32-tokenizacion">3.2 Tokenización</h2>
+<p>Un <strong>token</strong> es la unidad mínima que procesa el modelo: una palabra frecuente, un trozo de palabra, un signo o un espacio. Los tokenizadores modernos (BPE y similares) aprenden de los datos qué fragmentos son frecuentes y los convierten en tokens.</p>
+<p>Lo que tienes que saber de los tokens:</p>
+<ul>
+<li><strong>No son palabras.</strong> En inglés, una palabra son unos 1,3 tokens de media; en español, algo más, porque los tokenizadores se entrenaron con más inglés.</li>
+<li><strong>El coste y el límite de contexto se miden en tokens</strong>, no en palabras ni en caracteres.</li>
+<li><strong>Los números y los nombres raros se trocean mucho.</strong> <code>48.379</code> pueden ser varios tokens. Por eso los LLM fallan con la aritmética y con contar letras: no «ven» los caracteres.</li>
+<li><strong>Cada familia de modelos tiene su propio tokenizador.</strong> El mismo texto ocupa distinto en Qwen que en Granite.</li>
+</ul>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">tiktoken</span>
+
+<span class="n">codificador</span> <span class="o">=</span> <span class="n">tiktoken</span><span class="o">.</span><span class="n">get_encoding</span><span class="p">(</span><span class="s2">"o200k_base"</span><span class="p">)</span>
+<span class="n">tokens</span> <span class="o">=</span> <span class="n">codificador</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"La logística inversa recupera los palés vacíos."</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">),</span> <span class="p">[</span><span class="n">codificador</span><span class="o">.</span><span class="n">decode</span><span class="p">([</span><span class="n">t</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">])</span>
+</code></pre></div>
+
+<p><code>tiktoken</code> es el tokenizador de los modelos de OpenAI. Lo usamos como referencia rápida porque no necesita descargar ningún modelo, salvo un fichero pequeño la primera vez. Para el recuento exacto del modelo que usas, Ollama devuelve los tokens procesados en cada respuesta (ejemplo 2).</p>
+<h3 id="cuanto-cuesta-una-tarea">Cuánto cuesta una tarea</h3>
+<p>Si usas un servicio de pago, el precio va por millón de tokens, con tarifas distintas para la entrada y la salida (la salida suele ser entre 3 y 5 veces más cara). Si usas modelos locales, el coste es de tiempo: los tokens de salida se generan de uno en uno.</p>
+<div class="codehilite"><pre><span></span><code>coste = tokens_entrada × precio_entrada / 1.000.000 + tokens_salida × precio_salida / 1.000.000
+</code></pre></div>
+
+<hr />
+<h2 id="33-dentro-del-modelo-embeddings-y-atencion">3.3 Dentro del modelo: embeddings y atención</h2>
+<h3 id="embeddings-de-tokens">Embeddings de tokens</h3>
+<p>Cada token se convierte en un vector de miles de números (su <em>embedding</em>). Tokens con significado parecido tienen vectores parecidos. Lo trabajarás en profundidad en la sesión 6.</p>
+<h3 id="la-arquitectura-transformer">La arquitectura Transformer</h3>
+<p>El Transformer procesa todos los tokens a la vez y, en cada capa, deja que cada token «mire» a los demás mediante el mecanismo de <strong>atención</strong>: para cada token calcula cuánto le importa cada uno de los anteriores y mezcla su información. Así, en «el camión que salió de Vigo llegó tarde porque <strong>se</strong> averió», la atención permite relacionar «se» con «camión».</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Variante</th>
+<th>Qué hace</th>
+<th>Ejemplos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Solo codificador</td>
+<td>Entiende texto; no genera</td>
+<td>Modelos de embeddings, BERT</td>
+</tr>
+<tr>
+<td>Solo decodificador</td>
+<td>Genera texto token a token</td>
+<td>Todos los LLM de chat actuales</td>
+</tr>
+<tr>
+<td>Codificador-decodificador</td>
+<td>Transforma una secuencia en otra</td>
+<td>Modelos de traducción clásicos</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="mezcla-de-expertos-moe">Mezcla de expertos (MoE)</h3>
+<p>En un modelo denso, todos los parámetros trabajan en cada token. En un modelo <strong>MoE</strong>, cada capa tiene muchos «expertos» y un enrutador elige unos pocos para cada token. Un modelo MoE de 35B con 3B activos tiene el conocimiento de un modelo grande pero calcula como uno pequeño. Eso sí: <strong>necesita tener todos los expertos accesibles</strong>, por eso ocupa mucha memoria. Colibri explota justo esa idea: guarda los expertos en disco y solo carga los que necesita.</p>
+<hr />
+<h2 id="34-la-ventana-de-contexto">3.4 La ventana de contexto</h2>
+<p>La ventana de contexto es el número máximo de tokens que el modelo puede considerar a la vez: mensaje de sistema, historial, documentos que le pases <strong>y</strong> la respuesta que genera.</p>
+<p>Lo que pasa cuando te acercas al límite:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Efecto</th>
+<th>Explicación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Truncado</td>
+<td>Si la entrada no cabe, el servidor corta (normalmente el principio). En Ollama, por defecto la ventana es pequeña: si no la amplías con <code>num_ctx</code>, el modelo «olvida» el inicio de documentos largos</td>
+</tr>
+<tr>
+<td>Más memoria</td>
+<td>Cada token del contexto ocupa memoria en la <strong>caché KV</strong> (claves y valores de la atención). Duplicar el contexto duplica esa memoria</td>
+</tr>
+<tr>
+<td>Más lentitud</td>
+<td>Procesar la entrada (<em>prefill</em>) cuesta más cuanto más larga es</td>
+</tr>
+<tr>
+<td>Perdido en el medio</td>
+<td>Los modelos recuerdan mejor la información del principio y del final que la del medio de un contexto largo</td>
+</tr>
+</tbody>
+</table></div>
+<p>Por eso el RAG (sesión 5) no consiste en meter todos los documentos en el contexto, sino en meter <strong>solo los fragmentos relevantes</strong>.</p>
+<h3 id="fijar-el-contexto-en-ollama">Fijar el contexto en Ollama</h3>
+<p>En la API nativa, la ventana se fija con la opción <code>num_ctx</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">comun</span><span class="w"> </span><span class="kn">import</span> <span class="n">ollama</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">ollama</span><span class="o">.</span><span class="n">chat_nativo</span><span class="p">(</span><span class="s2">"Resume este texto: ..."</span><span class="p">,</span> <span class="n">opciones</span><span class="o">=</span><span class="p">{</span><span class="s2">"num_ctx"</span><span class="p">:</span> <span class="mi">8192</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">"prompt_eval_count"</span><span class="p">],</span> <span class="s2">"tokens de entrada procesados"</span><span class="p">)</span>
+</code></pre></div>
+
+<p>En LM Studio se ajusta al cargar el modelo (<em>Context Length</em>).</p>
+<hr />
+<h2 id="35-parametros-de-muestreo">3.5 Parámetros de muestreo</h2>
+<p>El modelo devuelve una probabilidad para cada token posible. <strong>Cómo se elige</strong> uno es configurable:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Qué hace</th>
+<th>Efecto práctico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>temperature</code></td>
+<td>Divide las puntuaciones antes de convertirlas en probabilidades. Baja: casi siempre el más probable. Alta: más variedad</td>
+<td>0 para extracción, clasificación y código; 0,7-1 para redacción creativa</td>
+</tr>
+<tr>
+<td><code>top_p</code></td>
+<td>Solo considera los tokens más probables cuya probabilidad acumulada llega a <code>p</code></td>
+<td>0,9 evita tokens absurdos con temperatura alta</td>
+</tr>
+<tr>
+<td><code>top_k</code></td>
+<td>Solo considera los <code>k</code> tokens más probables</td>
+<td>Alternativa más brusca a <code>top_p</code></td>
+</tr>
+<tr>
+<td><code>seed</code></td>
+<td>Semilla del generador aleatorio</td>
+<td>Reproducibilidad de experimentos</td>
+</tr>
+<tr>
+<td><code>max_tokens</code></td>
+<td>Límite de tokens generados</td>
+<td>Controla coste y tiempo</td>
+</tr>
+<tr>
+<td><code>repeat_penalty</code></td>
+<td>Penaliza repetir tokens recientes</td>
+<td>Evita bucles en modelos pequeños</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Temperatura 0 no garantiza respuestas idénticas</strong> en todos los motores (el cálculo en GPU no siempre es determinista), pero se acerca mucho.</p>
+<hr />
+<h2 id="36-modelos-fundacionales">3.6 Modelos fundacionales</h2>
+<p>Un <strong>modelo fundacional</strong> es un modelo grande preentrenado de forma general que sirve de base para muchas tareas. Del modelo base al asistente que usas hay varias fases (sesión 2): preentrenamiento, ajuste con instrucciones, alineamiento y, en algunos, entrenamiento para razonar.</p>
+<h3 id="modelos-que-razonan">Modelos que razonan</h3>
+<p>Algunos modelos (como <code>qwen3:4b</code>) generan primero un razonamiento interno y después la respuesta. Ollama separa ese razonamiento en el campo <code>reasoning</code>. Mejora la calidad en problemas de varios pasos, pero <strong>gasta muchos más tokens y tiempo</strong>: en el laboratorio de la sesión 2 viste que tarda bastante más que <code>granite4:micro</code> en responder lo mismo.</p>
+<h3 id="cuantizacion">Cuantización</h3>
+<p>Los pesos se entrenan con 16 bits por parámetro. <strong>Cuantizar</strong> es representarlos con menos bits (8, 5, 4...) a cambio de una pequeña pérdida de calidad. Es lo que permite ejecutar un modelo de 8B en un portátil.</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Formato</th>
+<th>Bits por parámetro (aprox.)</th>
+<th>Memoria de un modelo de 8B</th>
+<th>Calidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FP16 / BF16</td>
+<td>16</td>
+<td>~15 GB</td>
+<td>Referencia</td>
+</tr>
+<tr>
+<td>Q8_0</td>
+<td>8,5</td>
+<td>~8 GB</td>
+<td>Casi idéntica</td>
+</tr>
+<tr>
+<td>Q5_K_M</td>
+<td>5,7</td>
+<td>~5,4 GB</td>
+<td>Muy buena</td>
+</tr>
+<tr>
+<td>Q4_K_M</td>
+<td>4,8</td>
+<td>~4,5 GB</td>
+<td>Buena: el estándar en local</td>
+</tr>
+<tr>
+<td>Q2_K</td>
+<td>3</td>
+<td>~3 GB</td>
+<td>Notablemente peor</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>GGUF</strong> es el formato de fichero de llama.cpp, el motor que usan por dentro Ollama y LM Studio. Contiene los pesos cuantizados, el tokenizador y la plantilla de chat.</p>
+<h3 id="cuanta-memoria-necesita-un-modelo">Cuánta memoria necesita un modelo</h3>
+<div class="codehilite"><pre><span></span><code>memoria_pesos ≈ parámetros × bits / 8
+memoria_caché_KV ≈ 2 × capas × cabezas_kv × dimensión_cabeza × tokens_de_contexto × 2 bytes
+memoria_total ≈ (pesos + caché KV) × 1,1   (margen del motor)
+</code></pre></div>
+
+<p>En un portátil de 16 GB, el sistema operativo, el IDE y el navegador ocupan 6-7 GB: quedan unos 8 GB para el modelo y su contexto. Por eso el curso usa modelos de 3-4B en local y el servidor para los grandes. Lo calcularás en el ejercicio 2.</p>
+<h3 id="ficha-del-modelo-y-licencia">Ficha del modelo y licencia</h3>
+<p>Antes de usar un modelo en un proyecto revisa su ficha (<em>model card</em>): tamaño, ventana de contexto, idiomas, si admite herramientas, datos de entrenamiento declarados, resultados en evaluaciones y licencia. En Ollama: <code>ollama show granite4:micro</code>.</p>
+<hr />
+<h2 id="errores-frecuentes">Errores frecuentes</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No ampliar <code>num_ctx</code> con documentos largos</td>
+<td>El modelo ignora el principio del documento</td>
+<td>Fija <code>num_ctx</code> suficiente (y vigila la memoria)</td>
+</tr>
+<tr>
+<td>Medir velocidad en la primera llamada</td>
+<td>Tiempos enormes</td>
+<td>La primera llamada carga el modelo: descártala</td>
+</tr>
+<tr>
+<td>Comparar tokens de modelos distintos con tiktoken</td>
+<td>Cifras que no cuadran</td>
+<td>Usa <code>prompt_eval_count</code> de Ollama para el modelo concreto</td>
+</tr>
+<tr>
+<td>Pedir aritmética exacta al LLM</td>
+<td>Resultados erróneos con seguridad</td>
+<td>Que el modelo llame a una función de cálculo (sesión 9)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="para-saber-mas">Para saber más</h2>
+<ul>
+<li>Andrej Karpathy, <em>Let's build the GPT Tokenizer</em> (vídeo y código): <a href="https://github.com/karpathy/minbpe" target="_blank" rel="noopener">github.com/karpathy/minbpe</a></li>
+<li>Jay Alammar, <em>The Illustrated Transformer</em>: <a href="https://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">jalammar.github.io/illustrated-transformer</a></li>
+<li>Liu et al. (2023), <em>Lost in the Middle</em>: <a href="https://arxiv.org/abs/2307.03172" target="_blank" rel="noopener">arxiv.org/abs/2307.03172</a></li>
+<li>Documentación de los parámetros de Ollama: <a href="https://docs.ollama.com/modelfile" target="_blank" rel="noopener">docs.ollama.com/modelfile</a></li>
+</ul>
+<div class="pie"><a href="sesion_02.html">&larr; Anterior</a><a href="index.html">Índice del curso</a><a href="sesion_04.html">Siguiente &rarr;</a></div>
+</main>
+</div>
+<script>
+(function () {
+  var raiz = document.documentElement, guardado = null;
+  try { guardado = localStorage.getItem("tema"); } catch (e) {}
+  if (guardado) raiz.setAttribute("data-theme", guardado);
+  document.addEventListener("click", function (ev) {
+    if (!ev.target.matches("[data-cambiar-tema]")) return;
+    var oscuro = raiz.getAttribute("data-theme") === "dark" ||
+      (!raiz.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+    var nuevo = oscuro ? "light" : "dark";
+    raiz.setAttribute("data-theme", nuevo);
+    try { localStorage.setItem("tema", nuevo); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

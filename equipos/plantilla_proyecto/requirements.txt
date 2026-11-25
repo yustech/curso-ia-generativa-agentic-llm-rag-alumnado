@@ -1,0 +1,7 @@
+openai>=1.40
+pydantic>=2
+python-dotenv
+numpy
+rank-bm25
+streamlit
+pytest

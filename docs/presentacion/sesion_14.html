@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 14. Proyecto final: demo, defensa y evaluación</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 14 · Miércoles 23 de diciembre de 2026 · 09:00-15:00 · Presencial</p><h1>Proyecto final: demo, defensa y evaluación</h1><div class="objetivo"><p>Último día del curso, presencial. Por la mañana terminas y pruebas el asistente de tu equipo y lo presentas ante un comité como si fuera un cliente. Por la tarde haces la prueba individual y una defensa breve de las decisiones técnicas. Cerramos con una retrospectiva del curso.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="8">8</b><span>unidades</span></div><div class="cifra"><b data-cuenta="1">1</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 14 · M7 · Proyecto final y evaluación (6 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n8"><a class="tarjeta" href="#/u14-1"><span class="n">14.1</span><span class="t">Orden del día</span></a><a class="tarjeta" href="#/u14-2"><span class="n">14.2</span><span class="t">Checklist final del MVP (antes de las 10:45)</span></a><a class="tarjeta" href="#/u14-3"><span class="n">14.3</span><span class="t">Estructura de la demo (15 minutos)</span></a><a class="tarjeta" href="#/u14-4"><span class="n">14.4</span><span class="t">Preguntas típicas del comité</span></a><a class="tarjeta" href="#/u14-5"><span class="n">14.5</span><span class="t">Prueba individual</span></a><a class="tarjeta" href="#/u14-6"><span class="n">14.6</span><span class="t">Defensa individual</span></a><a class="tarjeta" href="#/u14-7"><span class="n">14.7</span><span class="t">Evaluación del curso</span></a><a class="tarjeta" href="#/u14-8"><span class="n">14.8</span><span class="t">Y después del curso</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 14 · Miércoles 23 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: orden del día y criterios</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>100</td>
+<td>Práctica</td>
+<td>Finalización, pruebas y ensayo</td>
+</tr>
+<tr>
+<td>10:55</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:05</td>
+<td>90</td>
+<td>Práctica</td>
+<td>Demo Day: 3 equipos × (15 min de demo + 15 min de preguntas)</td>
+</tr>
+<tr>
+<td>12:35</td>
+<td>16</td>
+<td>Práctica</td>
+<td>Evaluación entre pares</td>
+</tr>
+<tr>
+<td>12:51</td>
+<td>60</td>
+<td>Teoría</td>
+<td>Prueba individual teórico-práctica</td>
+</tr>
+<tr>
+<td>13:51</td>
+<td>45</td>
+<td>Teoría</td>
+<td>Defensa individual de decisiones</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Retrospectiva y cierre del curso</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 14</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MVP del asistente</td>
+<td>Repositorio del equipo, etiqueta <code>v1.0</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Documentación reproducible</td>
+<td><code>README.md</code>, <code>docs/</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Presentación</td>
+<td><code>docs/presentacion.md</code> (o el formato del equipo)</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Informe de evaluación</td>
+<td><code>docs/informe_evaluacion.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Prueba individual</td>
+<td>En papel o en el formulario que indique el docente</td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div><p>El enunciado completo y la rúbrica del proyecto están en <a href="../proyecto_final.html"><code>proyecto_final/README.md</code></a>.</p></div></section>
+<section class="especial seccion" id="u14-1" data-menu="14.1 Orden del día" data-transition="fade"><div class="divisor"><span class="numero">14.1</span><h2>Orden del día</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">14.1 Orden del día</p><h2>Orden del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Qué</th>
+<th>Detalle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>Activación</td>
+<td>Orden del día, criterios y turnos de la demo</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>Finalización y pruebas</td>
+<td>Último ciclo de evaluación, congelación del código, etiqueta <code>v1.0</code>, ensayo</td>
+</tr>
+<tr>
+<td>10:55</td>
+<td>Pausa</td>
+<td></td>
+</tr>
+<tr>
+<td>11:05</td>
+<td>Demo Day</td>
+<td>Tres equipos × (15 min de demo + 15 min de preguntas del comité)</td>
+</tr>
+<tr>
+<td>12:35</td>
+<td>Evaluación entre pares</td>
+<td>Cada persona valora a los otros dos equipos y a su propio equipo</td>
+</tr>
+<tr>
+<td>12:51</td>
+<td>Prueba individual</td>
+<td>60 minutos</td>
+</tr>
+<tr>
+<td>13:51</td>
+<td>Defensa individual</td>
+<td>3-4 minutos por persona: una pregunta sobre una decisión del proyecto</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>Retrospectiva y cierre</td>
+<td>Qué te llevas, qué harías distinto, próximos pasos</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u14-2" data-menu="14.2 Checklist final del MVP (antes de las 10:45)" data-transition="fade"><div class="divisor"><span class="numero">14.2</span><h2>Checklist final del MVP (antes de las 10:45)</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">14.2 Checklist final del MVP (antes de las 10:45)</p><h2>Checklist final del MVP (antes de las 10:45)</h2></header><div class="cuerpo"><ul>
+<li>[ ] <code>python comprobar_entorno.py</code> sin errores en el portátil de la demo.</li>
+<li>[ ] El asistente arranca con una sola orden documentada en el README (<code>streamlit run app.py</code>).</li>
+<li>[ ] El índice del RAG se reconstruye con una orden documentada.</li>
+<li>[ ] <code>pytest tests -v</code> en verde.</li>
+<li>[ ] Evaluación final ejecutada sobre el conjunto dorado (30 o más casos) y resultados en <code>docs/informe_evaluacion.md</code>, comparados con la línea base.</li>
+<li>[ ] Red teaming ejecutado y resultados en el informe.</li>
+<li>[ ] Las acciones con efectos piden confirmación humana.</li>
+<li>[ ] No hay <code>.env</code>, claves ni datos personales en el repositorio.</li>
+<li>[ ] <code>python sesion_14_proyecto_final/ejercicios/s14_ej1_verificar_entrega.py &lt;repositorio&gt;</code> devuelve «Entrega completa: sí».</li>
+<li>[ ] Commit final y etiqueta: <code>git tag v1.0 &amp;&amp; git push --tags</code>.</li>
+<li>[ ] <strong>Plan B de la demo</strong>: capturas o un vídeo corto por si falla algo en directo, y el modelo descargado en local por si falla la red.</li>
+</ul></div></section>
+<section class="especial seccion" id="u14-3" data-menu="14.3 Estructura de la demo (15 minutos)" data-transition="fade"><div class="divisor"><span class="numero">14.3</span><h2>Estructura de la demo (15 minutos)</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">14.3 Estructura de la demo (15 minutos)</p><h2>Estructura de la demo (15 minutos)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Minutos</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0-2</td>
+<td>El problema del cliente y a quién ayuda el asistente (con los números del AS-IS)</td>
+</tr>
+<tr>
+<td>2-4</td>
+<td>La solución en una diapositiva: arquitectura y decisiones clave</td>
+</tr>
+<tr>
+<td>4-10</td>
+<td><strong>Demo en directo</strong>: un caso normal, un caso que requiere herramienta y confirmación humana, un caso sin respuesta (abstención) y un intento de ataque</td>
+</tr>
+<tr>
+<td>10-13</td>
+<td>Cómo sabemos que funciona: métricas de evaluación, seguridad y rendimiento, y sus límites</td>
+</tr>
+<tr>
+<td>13-15</td>
+<td>Valor de negocio, riesgos pendientes y siguientes pasos</td>
+</tr>
+</tbody>
+</table></div><p>Consejos: empieza por el problema, no por la tecnología; enseña también lo que <strong>no</strong> funciona y cómo lo controláis; reparte la palabra entre las cuatro personas.</p></div></section>
+<section class="especial seccion" id="u14-4" data-menu="14.4 Preguntas típicas del comité" data-transition="fade"><div class="divisor"><span class="numero">14.4</span><h2>Preguntas típicas del comité</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">14.4 Preguntas típicas del comité</p><h2>Preguntas típicas del comité</h2></header><div class="cuerpo"><ul>
+<li>¿Qué pasa si el modelo se equivoca en este caso? ¿Quién lo detecta?</li>
+<li>¿Por qué un agente y no un workflow (o al revés)?</li>
+<li>¿Cómo sabéis que la versión de hoy es mejor que la de hace una semana?</li>
+<li>¿Qué datos salen del portátil o del servidor? ¿Qué clasificación tienen?</li>
+<li>¿Cuánto costaría en producción para 200 usuarios? ¿Qué motor usaríais?</li>
+<li>¿Qué haríais con dos semanas más?</li>
+<li>¿Qué decisión técnica cambiaríais si empezarais hoy?</li>
+</ul></div></section>
+<section class="especial seccion" id="u14-5" data-menu="14.5 Prueba individual" data-transition="fade"><div class="divisor"><span class="numero">14.5</span><h2>Prueba individual</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">14.5 Prueba individual</p><h2>Prueba individual</h2></header><div class="cuerpo"><p>60 minutos, sin conexión al modelo. Consta de preguntas de respuesta corta y de casos prácticos sobre todo el temario (fundamentos, prompting, RAG, agentes, aplicaciones, seguridad y evaluación). Cuenta un 20 % de la nota del curso junto con la defensa individual.</p><p>Para prepararla: repasa las preguntas de repaso del cierre de cada sesión y las tablas de «Errores frecuentes» de los apuntes.</p></div></section>
+<section class="especial seccion" id="u14-6" data-menu="14.6 Defensa individual" data-transition="fade"><div class="divisor"><span class="numero">14.6</span><h2>Defensa individual</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">14.6 Defensa individual</p><h2>Defensa individual</h2></header><div class="cuerpo"><p>El comité hace a cada persona una pregunta sobre una decisión del proyecto en la que haya participado («¿por qué elegisteis esa estrategia de troceado?», «¿qué hace vuestro agente si la herramienta falla?»). Se valora que la respuesta sea concreta, con datos, y que reconozca las alternativas.</p></div></section>
+<section class="especial seccion" id="u14-7" data-menu="14.7 Evaluación del curso" data-transition="fade"><div class="divisor"><span class="numero">14.7</span><h2>Evaluación del curso</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">14.7 Evaluación del curso</p><h2>Evaluación del curso</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Peso</th>
+<th>Evidencias</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Laboratorios y entregables de sesión</td>
+<td>40 %</td>
+<td>Los entregables de las 14 sesiones</td>
+</tr>
+<tr>
+<td>Proyecto final integrador</td>
+<td>40 %</td>
+<td>MVP, arquitectura, pruebas, trazabilidad y presentación</td>
+</tr>
+<tr>
+<td>Evaluación individual</td>
+<td>20 %</td>
+<td>Prueba teórico-práctica y defensa de decisiones</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u14-8" data-menu="14.8 Y después del curso" data-transition="fade"><div class="divisor"><span class="numero">14.8</span><h2>Y después del curso</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">14.8 Y después del curso</p><h2>Y después del curso</h2></header><div class="cuerpo"><p>Lo que has construido es el esqueleto de muchos proyectos reales: un asistente con RAG, herramientas con contrato, guardarraíles, evaluación continua y una interfaz. Para seguir:</p><ul>
+<li>Cambia el modelo por uno mayor del servidor y vuelve a ejecutar la evaluación: ¿cuánto mejora y cuánto cuesta?</li>
+<li>Sustituye la base vectorial embebida por pgvector o Qdrant.</li>
+<li>Despliega el asistente con Docker y vLLM.</li>
+<li>Añade observabilidad con OpenTelemetry o una herramienta como Langfuse.</li>
+<li>Lee las fichas de los modelos nuevos que vayan saliendo con los criterios de la sesión 3, y evalúa antes de cambiar.</li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Ejercicio 1. Verificador de la entrega (en la finalización, 20 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa el fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_14_proyecto_final<span class="w"> </span>-v</code></pre></div></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Verificador de la entrega (en la finalización, 20 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Verificador de la entrega (en la finalización, 20 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Fichero: <code>s14_ej1_verificar_entrega.py</code></p><p>Un pequeño programa que revisa automáticamente si el repositorio de tu equipo cumple los requisitos de entrega. Es el tipo de comprobación que se pone en un pipeline de integración continua.</p><ol>
+<li><code>comprobar_documentos(raiz)</code>: los seis documentos existen y no están vacíos.</li>
+<li><code>comprobar_golden(raiz, minimo)</code>: 30 o más casos válidos y los cinco tipos.</li>
+<li><code>contar_pruebas(raiz)</code>: cuenta funciones <code>test_*</code> con <code>ast</code>, sin ejecutarlas.</li>
+<li><code>buscar_secretos(raiz)</code>: ni <code>.env</code> ni patrones de claves en el código.</li>
+<li><code>verificar(raiz)</code> e <code>informe(filas)</code>.</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Verificador de la entrega (en la finalización, 20 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Ejecútalo sobre el repositorio de tu equipo antes de etiquetar la <code>v1.0</code>:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>python<span class="w"> </span>sesion_14_proyecto_final/ejercicios/s14_ej1_verificar_entrega.py<span class="w"> </span>../repositorio-del-equipo</code></pre></div></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Proyecto final</h2><ul class=puntos><li>1. Finalización y pruebas (100 min)</li><li>2. Demo Day (15 + 15 min por equipo)</li><li>3. Evaluación entre pares (16 min)</li><li>Entrega final</li><li>Criterios de evaluación del laboratorio de hoy (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 14. Proyecto final</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>El enunciado completo, los requisitos mínimos, la estructura del repositorio y la rúbrica están en <a href="../proyecto_final.html"><code>proyecto_final/README.md</code></a>. Lo que se hace hoy:</p></div></section>
+<section class="ejercicio" data-menu="1. Finalización y pruebas (100 min)"><header class="cabecera"><p class="antetitulo">Práctica 14. Proyecto final</p><h2>1. Finalización y pruebas (100 min)</h2></header><div class="cuerpo"><ol>
+<li>Último ciclo de mejora: ejecutad la evaluación de extremo a extremo y el red teaming, corregid lo que podáis y <strong>volved a evaluar</strong>.</li>
+<li>Actualizad <code>docs/informe_evaluacion.md</code> con los resultados finales comparados con la línea base de la sesión 13.</li>
+<li>Pasad el checklist del apartado 14.2 de los apuntes y el verificador del ejercicio 1.</li>
+<li>Etiquetad la versión: <code>git tag v1.0</code>.</li>
+<li>Ensayad la demo completa una vez, cronometrada, con el reparto de la palabra.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="2. Demo Day (15 + 15 min por equipo)"><header class="cabecera"><p class="antetitulo">Práctica 14. Proyecto final</p><h2>2. Demo Day (15 + 15 min por equipo)</h2></header><div class="cuerpo"><p>Seguid la estructura del apartado 14.3. El comité está formado por el docente y, si es posible, personas de la consultora en el papel de cliente.</p></div></section>
+<section class="ejercicio" data-menu="3. Evaluación entre pares (16 min)"><header class="cabecera"><p class="antetitulo">Práctica 14. Proyecto final</p><h2>3. Evaluación entre pares (16 min)</h2></header><div class="cuerpo"><p>Cada persona rellena el formulario que facilite el docente:</p><ul>
+<li>Para cada uno de los otros dos equipos: valor para el cliente, calidad técnica y claridad de la demo (de 1 a 5) y un comentario constructivo.</li>
+<li>Para su propio equipo: contribución de cada miembro (de 1 a 5) con una frase que lo justifique.</li>
+</ul></div></section>
+<section class="ejercicio" data-menu="Entrega final"><header class="cabecera"><p class="antetitulo">Práctica 14. Proyecto final</p><h2>Entrega final</h2></header><div class="cuerpo"><p>Repositorio del equipo con la etiqueta <code>v1.0</code> y:</p><ol>
+<li>MVP del asistente funcionando con una orden.</li>
+<li><code>README.md</code> con instalación, uso, arquitectura y limitaciones.</li>
+<li><code>docs/</code>: ficha del agente, canvas, propuesta técnica, plan de validación, informe de evaluación, ADR y presentación.</li>
+<li><code>evals/golden_set.jsonl</code> con 30 o más casos y los resultados de la evaluación final.</li>
+<li><code>tests/</code> con 10 o más pruebas en verde.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación del laboratorio de hoy (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 14. Proyecto final</p><h2>Criterios de evaluación del laboratorio de hoy (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><p>Esta nota cuenta en el bloque de laboratorios; la demo y la defensa se puntúan con la rúbrica del proyecto final.</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entrega</td>
+<td>Etiqueta <code>v1.0</code> a tiempo y el verificador devuelve «Entrega completa: sí»</td>
+</tr>
+<tr>
+<td>Último ciclo de mejora</td>
+<td>El informe de evaluación compara con la línea base y muestra mejoras medidas, sin regresiones ocultas</td>
+</tr>
+<tr>
+<td>Reproducibilidad</td>
+<td>Una persona ajena al equipo instala y ejecuta el asistente siguiendo solo el README</td>
+</tr>
+<tr>
+<td>Evaluación entre pares</td>
+<td>Formularios completos con comentarios concretos y constructivos</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 14</p><h1>Proyecto final: demo, defensa y evaluación</h1><div class="acciones"><a class="boton" href="index.html">Volver a la presentación del curso <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 14. Proyecto final: demo, defensa y evaluación</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 14. Proyecto final: demo, defensa y evaluación</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+
+</body>
+</html>

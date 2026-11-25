@@ -1,0 +1,21 @@
+# Entorno
+.venv/
+venv/
+.env
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Generado al trabajar
+trazas/
+indices/
+salidas/
+*.log
+.pip_install.log
+.streamlit/
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

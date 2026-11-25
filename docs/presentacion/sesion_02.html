@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 2. IA responsable, panorama de herramientas y fundamentos de la IA generativa</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 2 · Jueves 3 de diciembre de 2026 · 08:00-14:00 · Por confirmar</p><h1>IA responsable, panorama de herramientas y fundamentos de la IA generativa</h1><div class="objetivo"><p>Al terminar esta sesión sabrás identificar los riesgos de un caso de uso de IA y proponer controles concretos, conocerás el panorama de herramientas para trabajar con modelos y entenderás qué hace «generativo» a un modelo. Además harás tus primeras llamadas a un LLM desde Python.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="5">5</b><span>unidades</span></div><div class="cifra"><b data-cuenta="3">3</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 2 · M1 · Introducción a la Inteligencia Artificial (2 h) + M2 · Introducción a GenAI y LLM (4 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n5"><a class="tarjeta" href="#/u2-1"><span class="n">2.1</span><span class="t">Ética y riesgos de la IA</span></a><a class="tarjeta" href="#/u2-2"><span class="n">2.2</span><span class="t">Marco normativo</span></a><a class="tarjeta" href="#/u2-3"><span class="n">2.3</span><span class="t">Panorama de herramientas</span></a><a class="tarjeta" href="#/u2-4"><span class="n">2.4</span><span class="t">Fundamentos de la IA generativa</span></a><a class="tarjeta" href="#/u2-5"><span class="n">2.5</span><span class="t">Primeras llamadas a un LLM desde Python</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 2 · Jueves 3 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Módulo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>08:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>M1</td>
+<td>Activación: cuando la IA se equivoca en público</td>
+</tr>
+<tr>
+<td>08:15</td>
+<td>45</td>
+<td>Teoría</td>
+<td>M1</td>
+<td>Teoría: ética, privacidad, sesgos y marco regulatorio; panorama de herramientas</td>
+</tr>
+<tr>
+<td>09:00</td>
+<td>60</td>
+<td>Práctica</td>
+<td>M1</td>
+<td>Laboratorio: matriz de riesgos y controles del reto</td>
+</tr>
+<tr>
+<td>10:00</td>
+<td>10</td>
+<td>Pausa</td>
+<td>M2</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>60</td>
+<td>Teoría</td>
+<td>M2</td>
+<td>Teoría: fundamentos de la IA generativa</td>
+</tr>
+<tr>
+<td>11:10</td>
+<td>66</td>
+<td>Práctica</td>
+<td>M2</td>
+<td>Laboratorio: primeras llamadas a un LLM local desde Python</td>
+</tr>
+<tr>
+<td>12:16</td>
+<td>80</td>
+<td>Práctica</td>
+<td>M2</td>
+<td>Reto: comparación guiada de herramientas y modelos</td>
+</tr>
+<tr>
+<td>13:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>M2</td>
+<td>Cierre: conclusiones y preguntas de repaso</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 2</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Matriz de riesgos y controles del reto</td>
+<td><code>docs/matriz_riesgos.md</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Cuadro comparativo de herramientas y modelos</td>
+<td><code>docs/comparativa_herramientas.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 3 con los tests en verde</td>
+<td><code>sesion_02_ia_responsable_genai/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u2-1" data-menu="2.1 Ética y riesgos de la IA" data-transition="fade"><div class="divisor"><span class="numero">2.1</span><h2>Ética y riesgos de la IA</h2><ul class=puntos><li>Principios de uso responsable</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.1 Ética y riesgos de la IA</p><h2>Ética y riesgos de la IA <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Un sistema de IA puede funcionar técnicamente y aun así causar daño. Estos son los riesgos que vas a revisar en cualquier proyecto:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Riesgo</th>
+<th>Qué es</th>
+<th>Ejemplo</th>
+<th>Control típico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sesgo y discriminación</td>
+<td>El sistema trata peor a un grupo porque los datos reflejan desigualdades</td>
+<td>Un filtro de currículos que descarta más mujeres</td>
+<td>Medir resultados por grupo; no usar IA en decisiones sobre personas sin evaluación</td>
+</tr>
+<tr>
+<td>Privacidad</td>
+<td>Datos personales expuestos, usados sin base legal o enviados a terceros</td>
+<td>Pegar datos de conductores en un chatbot externo</td>
+<td>Modelos locales, minimización, anonimización</td>
+</tr>
+<tr>
+<td>Alucinación</td>
+<td>El modelo afirma con seguridad algo falso</td>
+<td>Inventar una política de reembolsos</td>
+<td>RAG con citas, abstención, revisión humana</td>
+</tr>
+<tr>
+<td>Seguridad</td>
+<td>El sistema es manipulable o filtra información</td>
+<td>Inyección de instrucciones en un correo</td>
+<td>Separar instrucciones y datos, mínimos privilegios</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.1 Ética y riesgos de la IA</p><h2>Ética y riesgos de la IA <span class="parte">2/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Riesgo</th>
+<th>Qué es</th>
+<th>Ejemplo</th>
+<th>Control típico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Autonomía excesiva</td>
+<td>Un agente actúa más allá de lo que debería</td>
+<td>Borrar registros de auditoría para liberar disco</td>
+<td>Permisos de solo lectura, confirmación humana</td>
+</tr>
+<tr>
+<td>Propiedad intelectual</td>
+<td>Generar contenido que copia obras protegidas o filtrar código propio</td>
+<td>Publicar código generado con licencia incompatible</td>
+<td>Revisión de licencias, no enviar código a servicios no aprobados</td>
+</tr>
+<tr>
+<td>Transparencia</td>
+<td>La persona no sabe que habla con una IA ni por qué decide algo</td>
+<td>Chatbot que se hace pasar por un agente humano</td>
+<td>Avisar de que es IA, explicar la base de la respuesta</td>
+</tr>
+<tr>
+<td>Impacto ambiental y coste</td>
+<td>Consumo de energía y de dinero desproporcionado</td>
+<td>Usar un modelo enorme para clasificar tres categorías</td>
+<td>Elegir el modelo más pequeño que cumple</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.1 Ética y riesgos de la IA</p><h2>Principios de uso responsable</h2></header><div class="cuerpo"><p>Casi todos los marcos (OCDE, UNESCO, Comisión Europea) coinciden en seis principios: <strong>supervisión humana, robustez y seguridad, privacidad, transparencia, equidad y rendición de cuentas</strong>. En la práctica de una consultora se traducen en preguntas que debes saber responder antes de desplegar:</p><ol>
+<li>¿Quién revisa la salida antes de que tenga efectos?</li>
+<li>¿Cómo sé que funciona? ¿Con qué conjunto de pruebas lo he medido?</li>
+<li>¿Qué datos entran en el modelo y dónde se procesan?</li>
+<li>¿Sabe la persona usuaria que habla con una IA?</li>
+<li>¿Puede el sistema tratar peor a algún grupo?</li>
+<li>¿Quién responde si se equivoca?</li>
+</ol></div></section>
+<section class="especial seccion" id="u2-2" data-menu="2.2 Marco normativo" data-transition="fade"><div class="divisor"><span class="numero">2.2</span><h2>Marco normativo</h2><ul class=puntos><li>RGPD</li><li>Reglamento Europeo de IA</li><li>La política de Atlántica</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.2 Marco normativo</p><h2>RGPD</h2></header><div class="cuerpo"><p>El Reglamento General de Protección de Datos se aplica siempre que un sistema de IA trate datos personales. Las ideas que más afectan a tus proyectos:</p><ul>
+<li><strong>Base legal y finalidad</strong>: no puedes reutilizar datos para entrenar o alimentar un modelo con una finalidad distinta sin base legal.</li>
+<li><strong>Minimización</strong>: envía al modelo solo los datos que necesita.</li>
+<li><strong>Decisiones automatizadas</strong> (artículo 22): las personas tienen derecho a no ser objeto de decisiones basadas únicamente en tratamiento automatizado que les afecten significativamente.</li>
+<li><strong>Transferencias internacionales</strong>: enviar datos a un servicio fuera del Espacio Económico Europeo requiere garantías. Es una de las razones para usar modelos locales.</li>
+</ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.2 Marco normativo</p><h2>Reglamento Europeo de IA <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>El Reglamento (UE) 2024/1689 clasifica los sistemas de IA por nivel de riesgo y entra en aplicación de forma escalonada entre 2025 y 2027:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th>Ejemplos</th>
+<th>Consecuencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Riesgo inaceptable</td>
+<td>Puntuación social, manipulación que explota vulnerabilidades, reconocimiento de emociones en el trabajo</td>
+<td>Prohibido</td>
+</tr>
+<tr>
+<td>Alto riesgo</td>
+<td>Selección de personal, evaluación de trabajadores, acceso a servicios esenciales, infraestructuras críticas</td>
+<td>Gestión de riesgos, calidad de datos, documentación técnica, registro, supervisión humana y evaluación de conformidad</td>
+</tr>
+<tr>
+<td>Riesgo limitado</td>
+<td>Chatbots, contenido generado (deepfakes)</td>
+<td>Obligaciones de transparencia: informar de que es IA y marcar el contenido sintético</td>
+</tr>
+<tr>
+<td>Riesgo mínimo</td>
+<td>Filtros de spam, asistentes internos de redacción</td>
+<td>Códigos de conducta voluntarios</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.2 Marco normativo</p><h2>Reglamento Europeo de IA <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Además, los proveedores de <strong>modelos de IA de uso general</strong> (los LLM fundacionales) tienen obligaciones propias de documentación, transparencia sobre los datos de entrenamiento y respeto de los derechos de autor.</p><p>Como consultor no tienes que ser jurista, pero sí saber <strong>clasificar preliminarmente</strong> un caso de uso y saber cuándo hay que implicar a cumplimiento normativo.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.2 Marco normativo</p><h2>La política de Atlántica</h2></header><div class="cuerpo"><p>Lee <code>datos/atlantica/documentos/03_politica_uso_ia.md</code>. Es un ejemplo realista de cómo una empresa aterriza estas normas: herramientas aprobadas, revisión humana obligatoria, prohibición de decisiones automatizadas sobre personas, inventario de casos de uso y clasificación de riesgo. Tu asistente de equipo tendrá que cumplirla.</p></div></section>
+<section class="especial seccion" id="u2-3" data-menu="2.3 Panorama de herramientas" data-transition="fade"><div class="divisor"><span class="numero">2.3</span><h2>Panorama de herramientas</h2><ul class=puntos><li>Dos formas de acceder a un modelo</li><li>Motores de inferencia del curso</li><li>El resto del ecosistema</li><li>Licencias: una pregunta que siempre debes hacer</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.3 Panorama de herramientas</p><h2>Dos formas de acceder a un modelo</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th></th>
+<th>Servicio en la nube (API de un proveedor)</th>
+<th>Modelo de pesos abiertos en infraestructura propia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ejemplos</td>
+<td>Servicios comerciales de OpenAI, Anthropic, Google o Mistral</td>
+<td>Llama, Qwen, Gemma, Mistral, Granite, gpt-oss ejecutados con Ollama, LM Studio o vLLM</td>
+</tr>
+<tr>
+<td>Calidad máxima disponible</td>
+<td>La más alta</td>
+<td>Algo menor, pero suficiente para muchas tareas concretas</td>
+</tr>
+<tr>
+<td>Privacidad</td>
+<td>Los datos salen de la empresa (con contrato y garantías)</td>
+<td>Los datos no salen</td>
+</tr>
+<tr>
+<td>Coste</td>
+<td>Por token, variable</td>
+<td>Hardware fijo; coste marginal casi nulo</td>
+</tr>
+<tr>
+<td>Operación</td>
+<td>Ninguna</td>
+<td>La tuya: servidores, actualizaciones, monitorización</td>
+</tr>
+<tr>
+<td>Cuándo elegirlo</td>
+<td>Prototipos rápidos, tareas que exigen el mejor modelo, datos públicos</td>
+<td>Datos confidenciales, volumen alto, requisitos de soberanía</td>
+</tr>
+</tbody>
+</table></div><p>En este curso trabajas con la segunda opción, que es la que más valor aporta a los clientes que no pueden sacar sus datos.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.3 Panorama de herramientas</p><h2>Motores de inferencia del curso</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Motor</th>
+<th>Papel</th>
+<th>Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ollama</strong></td>
+<td>Motor principal</td>
+<td>Instalación sencilla, catálogo de modelos, API compatible con OpenAI, herramientas y JSON Schema</td>
+</tr>
+<tr>
+<td><strong>LM Studio</strong></td>
+<td>Exploración</td>
+<td>Interfaz gráfica para descargar, comparar y ajustar parámetros de modelos; también ofrece servidor local</td>
+</tr>
+<tr>
+<td><strong>Colibri</strong></td>
+<td>Laboratorio de frontera</td>
+<td>Ejecuta modelos de mezcla de expertos (MoE) de cientos de miles de millones de parámetros leyendo los expertos desde disco; muy lento con los modelos grandes, ideal para entender la inferencia</td>
+</tr>
+<tr>
+<td><strong>vLLM</strong></td>
+<td>Producción</td>
+<td>Servidor para muchos usuarios a la vez; solo en el servidor compartido (sesión 13)</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.3 Panorama de herramientas</p><h2>El resto del ecosistema</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Categoría</th>
+<th>Herramientas</th>
+<th>Sesión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Asistentes de código</td>
+<td>GitHub Copilot, Continue, asistentes integrados en IDE</td>
+<td>13</td>
+</tr>
+<tr>
+<td>Frameworks de aplicaciones</td>
+<td>LangChain, LangGraph, LlamaIndex</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Protocolo de herramientas</td>
+<td>Model Context Protocol (MCP)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Bases vectoriales</td>
+<td>Chroma, Qdrant, pgvector</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Evaluación y observabilidad</td>
+<td>Ragas, DeepEval, promptfoo, Langfuse</td>
+<td>7 y 13</td>
+</tr>
+<tr>
+<td>Interfaces</td>
+<td>Streamlit, Gradio, Open WebUI</td>
+<td>11</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.3 Panorama de herramientas</p><h2>Licencias: una pregunta que siempre debes hacer</h2></header><div class="cuerpo"><p>«Pesos abiertos» no significa «uso libre». Antes de proponer un modelo a un cliente, lee su licencia:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Licencia</th>
+<th>Ejemplos</th>
+<th>Uso comercial</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Apache 2.0 o MIT</td>
+<td>Granite, Qwen (mayoría), Mistral (algunos), gpt-oss</td>
+<td>Sí, sin restricciones relevantes</td>
+</tr>
+<tr>
+<td>Licencias propias permisivas con condiciones</td>
+<td>Llama, Gemma</td>
+<td>Sí, con condiciones (atribución, políticas de uso, límites de usuarios)</td>
+</tr>
+<tr>
+<td>Licencias no comerciales</td>
+<td>Algunos modelos de investigación</td>
+<td>No</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u2-4" data-menu="2.4 Fundamentos de la IA generativa" data-transition="fade"><div class="divisor"><span class="numero">2.4</span><h2>Fundamentos de la IA generativa</h2><ul class=puntos><li>Qué significa «generar»</li><li>Cómo genera texto un LLM</li><li>De un modelo base a un asistente</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.4 Fundamentos de la IA generativa</p><h2>Qué significa «generar»</h2></header><div class="cuerpo"><p>Un modelo generativo aprende la distribución de probabilidad de los datos con los que se entrena y puede producir muestras nuevas que parecen de esa distribución. No copia ni busca: <strong>muestrea</strong>.</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Familia</th>
+<th>Cómo genera</th>
+<th>Uso principal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Modelos autorregresivos (Transformer decodificador)</td>
+<td>Predicen el siguiente token, una y otra vez</td>
+<td>Texto y código (LLM)</td>
+</tr>
+<tr>
+<td>Modelos de difusión</td>
+<td>Parten de ruido y lo eliminan paso a paso</td>
+<td>Imagen, audio y vídeo</td>
+</tr>
+<tr>
+<td>GAN y autoencoders variacionales</td>
+<td>Un generador y un evaluador compiten / un espacio latente que se muestrea</td>
+<td>Imagen sintética, datos sintéticos (hoy menos usados)</td>
+</tr>
+<tr>
+<td>Multimodales</td>
+<td>Combinan codificadores de imagen o audio con un LLM</td>
+<td>Describir imágenes, entender documentos escaneados</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.4 Fundamentos de la IA generativa</p><h2>Cómo genera texto un LLM</h2></header><div class="cuerpo"><ol>
+<li>El texto de entrada se trocea en <strong>tokens</strong>.</li>
+<li>El modelo calcula, para cada token posible del vocabulario, la probabilidad de que sea el siguiente.</li>
+<li>Se <strong>elige</strong> uno (según la temperatura y otros parámetros de muestreo).</li>
+<li>El token elegido se añade a la entrada y se repite el proceso hasta un token de fin o hasta el límite.</li>
+</ol><p>Consecuencias directas que tienes que tener presentes:</p><ul>
+<li><strong>Es probabilístico</strong>: la misma pregunta puede dar respuestas distintas.</li>
+<li><strong>No consulta una base de datos</strong>: responde con lo que «suena» más probable según lo aprendido. Por eso alucina.</li>
+<li><strong>Su coste crece con los tokens</strong>: de entrada y, sobre todo, de salida.</li>
+</ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.4 Fundamentos de la IA generativa</p><h2>De un modelo base a un asistente</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Qué aprende</th>
+<th>Datos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Preentrenamiento</td>
+<td>A predecir el siguiente token: gramática, hechos, estilos, código</td>
+<td>Billones de tokens de texto público</td>
+</tr>
+<tr>
+<td>Ajuste con instrucciones</td>
+<td>A seguir órdenes y conversar</td>
+<td>Decenas o cientos de miles de pares instrucción-respuesta</td>
+</tr>
+<tr>
+<td>Alineamiento con preferencias</td>
+<td>A preferir respuestas útiles, honestas e inofensivas</td>
+<td>Comparaciones de respuestas valoradas por personas o por otros modelos</td>
+</tr>
+<tr>
+<td>Entrenamiento para razonar (opcional)</td>
+<td>A «pensar» paso a paso antes de responder</td>
+<td>Problemas con solución verificable</td>
+</tr>
+</tbody>
+</table></div><p>Lo verás con detalle en la sesión 3.</p></div></section>
+<section class="especial seccion" id="u2-5" data-menu="2.5 Primeras llamadas a un LLM desde Python" data-transition="fade"><div class="divisor"><span class="numero">2.5</span><h2>Primeras llamadas a un LLM desde Python</h2><ul class=puntos><li>Mensajes y roles</li><li>Parámetros básicos</li><li>El mismo código con otro motor</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.5 Primeras llamadas a un LLM desde Python</p><h2>Mensajes y roles <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>La API de chat recibe una lista de mensajes. Cada mensaje tiene un <strong>rol</strong>:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Rol</th>
+<th>Para qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>system</code></td>
+<td>Instrucciones de comportamiento: quién es el asistente, qué puede y qué no puede hacer, formato</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td>Lo que pide la persona</td>
+</tr>
+<tr>
+<td><code>assistant</code></td>
+<td>Lo que respondió el modelo antes (para mantener la conversación)</td>
+</tr>
+<tr>
+<td><code>tool</code></td>
+<td>El resultado de una herramienta (sesiones 7 a 9)</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.5 Primeras llamadas a un LLM desde Python</p><h2>Mensajes y roles <span class="parte">2/2</span></h2></header><div class="cuerpo"><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">from</span><span class="w"> </span><span class="nn">comun</span><span class="w"> </span><span class="kn">import</span> <span class="n">llm</span>
+
+<span class="n">mensajes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Eres el asistente interno de Atlántica. Respondes en español y en menos de 80 palabras."</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"¿Qué es un operador logístico?"</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">llm</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="n">mensajes</span><span class="p">))</span></code></pre></div><p><strong>El modelo no tiene memoria.</strong> Cada llamada es independiente: para mantener una conversación tienes que reenviar todo el historial. Lo implementarás en el ejercicio 2.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.5 Primeras llamadas a un LLM desde Python</p><h2>Parámetros básicos</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Qué controla</th>
+<th>Valor típico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>temperature</code></td>
+<td>Aleatoriedad del muestreo</td>
+<td>0-0.3 para tareas precisas; 0.7-1 para creatividad</td>
+</tr>
+<tr>
+<td><code>max_tokens</code></td>
+<td>Longitud máxima de la respuesta</td>
+<td>Limítalo siempre en producción</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>Qué modelo responde</td>
+<td>Según la tarea y el hardware</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">2.5 Primeras llamadas a un LLM desde Python</p><h2>El mismo código con otro motor</h2></header><div class="cuerpo"><p>Abre LM Studio, ve a <em>Developer</em> y pulsa <em>Start Server</em>. Cambia en <code>.env</code>:</p><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>LLM_BASE_URL=http://localhost:1234/v1</code></pre></div><p>Ejecuta el mismo programa: ahora responde LM Studio. Esta independencia del motor es una decisión de arquitectura que conviene tomar en todos los proyectos.</p></div></section>
+<section data-menu="Errores frecuentes"><header class="cabecera"><p class="antetitulo">Sesión 2</p><h2>Errores frecuentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pensar que el modelo recuerda la conversación</td>
+<td>Responde como si no hubieras dicho nada antes</td>
+<td>Reenvía el historial completo</td>
+</tr>
+<tr>
+<td>Poner las instrucciones en el mensaje de usuario</td>
+<td>El modelo las sigue a medias</td>
+<td>Las reglas de comportamiento van en <code>system</code></td>
+</tr>
+<tr>
+<td>Comparar modelos con una sola pregunta</td>
+<td>Conclusiones que no se sostienen</td>
+<td>Usa varias preguntas y repite cada una</td>
+</tr>
+<tr>
+<td>Olvidar que LM Studio y Ollama usan puertos distintos</td>
+<td>Error de conexión</td>
+<td>Ollama: 11434 · LM Studio: 1234</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section data-menu="Para saber más"><header class="cabecera"><p class="antetitulo">Sesión 2</p><h2>Para saber más</h2></header><div class="cuerpo"><ul>
+<li>Reglamento (UE) 2024/1689 de Inteligencia Artificial: <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" target="_blank" rel="noopener">eur-lex.europa.eu</a></li>
+<li>Agencia Española de Protección de Datos, guías sobre IA: <a href="https://www.aepd.es/" target="_blank" rel="noopener">aepd.es</a></li>
+<li>Referencia de la API de chat compatible con OpenAI en Ollama: <a href="https://docs.ollama.com/openai" target="_blank" rel="noopener">docs.ollama.com/openai</a></li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Ejercicio 1. Matriz de riesgos (dentro del laboratorio de M1, 30 min)</li><li>Ejercicio 2. Primeras llamadas y conversación con memoria (35 min)</li><li>Ejercicio 3. Comparar modelos (30 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa cada fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_02_ia_responsable_genai<span class="w"> </span>-v</code></pre></div><p>Los tests usan un modelo falso y determinista, así que no dependen de Ollama. Después ejecuta cada fichero con el modelo real para ver el resultado.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Matriz de riesgos (dentro del laboratorio de M1, 30 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Matriz de riesgos (dentro del laboratorio de M1, 30 min) <span class="parte">1/3</span></h2></header><div class="cuerpo"><p>Fichero: <code>s02_ej1_matriz_riesgos.py</code></p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Matriz de riesgos (dentro del laboratorio de M1, 30 min) <span class="parte">2/3</span></h2></header><div class="cuerpo"><p>El modelo Pydantic <code>Riesgo</code> ya está definido: valida que la probabilidad y el impacto estén entre 1 y 5 y que la categoría sea una de las permitidas.</p><ol>
+<li><code>exposicion(riesgo)</code>: probabilidad × impacto.</li>
+<li><code>nivel(valor)</code>: <code>"bajo"</code> hasta 6, <code>"medio"</code> de 7 a 14 y <code>"alto"</code> desde 15. Es el criterio de la metodología de Atlántica (<code>09_metodologia_proyectos.md</code>): desde 15 se escala a dirección.</li>
+<li><code>ordenar(riesgos)</code>: de mayor a menor exposición; a igual exposición, por <code>id</code> ascendente.</li>
+<li><code>sin_control(riesgos)</code>: ids de los riesgos medios o altos sin ningún control. Es el aviso más útil de una matriz.</li>
+<li><code>a_markdown(riesgos)</code>: tabla con las columnas <code>Id</code>, <code>Riesgo</code>, <code>Categoría</code>, <code>P</code>, <code>I</code>, <code>Exposición</code>, <code>Nivel</code> y <code>Controles</code>, ordenada por exposición. Los controles se separan con <code>;</code> y, si no hay, se escribe <code>(ninguno)</code>.</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Matriz de riesgos (dentro del laboratorio de M1, 30 min) <span class="parte">3/3</span></h2></header><div class="cuerpo"><p>Ejecuta el fichero para ver la matriz del ejemplo (chatbot de seguimiento de envíos). Úsala como modelo para la de tu reto.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 2. Primeras llamadas y conversación con memoria (35 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. Primeras llamadas y conversación con memoria (35 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s02_ej2_primeras_llamadas.py</code></p><ol>
+<li><code>preguntar(pregunta, sistema, temperatura)</code>: una llamada suelta con <code>llm.chat(...)</code>.</li>
+<li><code>Conversacion.enviar(texto)</code>: añade el mensaje del usuario al historial, llama al modelo con <strong>todo</strong> el historial, añade la respuesta como mensaje <code>assistant</code> y la devuelve.</li>
+<li><code>Conversacion.turnos</code>: cuántos mensajes de usuario hay.</li>
+<li><code>medir(funcion, *args, **kwargs)</code>: ejecuta la función y devuelve <code>(resultado, segundos)</code>.</li>
+</ol><p>Ejecuta el fichero y comprueba que en el segundo turno el modelo sabe en qué proyecto trabaja Iván.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 3. Comparar modelos (30 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. Comparar modelos (30 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Fichero: <code>s02_ej3_comparar_modelos.py</code></p><ol>
+<li><code>ejecutar_en_modelo(pregunta, modelo)</code>: llama con temperatura 0 y devuelve modelo, respuesta, segundos, tokens de salida y tokens por segundo (1 decimal). Las métricas están en <code>llm.ultima_llamada</code>.</li>
+<li><code>comparar_modelos(pregunta, modelos)</code>: ejecuta en todos; si uno falla, la respuesta empieza por <code>ERROR:</code> y los números valen 0, pero <strong>la comparación continúa</strong>.</li>
+<li><code>tabla_markdown(resultados, ancho)</code>: tabla con <code>Modelo</code>, <code>Segundos</code> (1 decimal), <code>Tokens</code>, <code>Tokens/s</code> y <code>Respuesta</code> recortada a <code>ancho</code> caracteres, sin saltos de línea y con <code>…</code> si se recorta.</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. Comparar modelos (30 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Descarga los modelos que vas a comparar (unos 6 GB en total; hazlo al empezar el laboratorio):</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>ollama<span class="w"> </span>pull<span class="w"> </span>gemma3:4b
+ollama<span class="w"> </span>pull<span class="w"> </span>qwen3:4b</code></pre></div><p>Ejecuta el fichero. La primera llamada a cada modelo tarda más porque lo carga en memoria: repite la ejecución y compara.</p></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Matriz de riesgos del reto y comparativa de herramientas</h2><ul class=puntos><li>Parte 1. Matriz de riesgos y controles (laboratorio de M1, 60 min)</li><li>Parte 2. Cuadro comparativo de herramientas y modelos (reto de M2, 80 min)</li><li>Entrega</li><li>Criterios de evaluación (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 2. Matriz de riesgos del reto y comparativa de herramientas</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>Entregables del equipo: <code>docs/matriz_riesgos.md</code> y <code>docs/comparativa_herramientas.md</code>.</p></div></section>
+<section class="ejercicio" data-menu="Parte 1. Matriz de riesgos y controles (laboratorio de M1, 60 min)"><header class="cabecera"><p class="antetitulo">Práctica 2. Matriz de riesgos del reto y comparativa de herramientas</p><h2>Parte 1. Matriz de riesgos y controles (laboratorio de M1, 60 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Analizad el asistente de vuestro reto como si fuera a ponerse en producción en Atlántica.</p><ol>
+<li>Leed la política de uso de IA (<code>datos/atlantica/documentos/03_politica_uso_ia.md</code>) y la de seguridad (<code>02_politica_seguridad_informacion.md</code>).</li>
+<li>Clasificad preliminarmente el caso de uso según el Reglamento Europeo de IA (prohibido, alto, limitado o mínimo) y justificadlo en dos líneas.</li>
+<li>Identificad <strong>al menos 8 riesgos</strong> que cubran como mínimo cinco categorías distintas de la tabla del apartado 2.1.</li>
+<li>Para cada riesgo: probabilidad, impacto y <strong>al menos un control concreto</strong>. «Tener cuidado» no es un control; «el agente solo tiene permisos de lectura en el backlog» sí lo es.</li>
+<li>Generad la tabla con vuestro código del ejercicio 1 (<code>a_markdown</code>) y comprobad con <code>sin_control</code> que no queda ningún riesgo medio o alto sin control.</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 2. Matriz de riesgos del reto y comparativa de herramientas</p><h2>Parte 1. Matriz de riesgos y controles (laboratorio de M1, 60 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Riesgos que no deberían faltar según el reto:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Reto</th>
+<th>Pistas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 · DevAssist</td>
+<td>Código propietario enviado a servicios externos; pruebas generadas que pasan pero no prueban nada; sugerencias que introducen vulnerabilidades</td>
+</tr>
+<tr>
+<td>R2 · InfraPilot</td>
+<td>Terraform que incumple la política (bucket público, región prohibida); aplicar cambios sin aprobación; costes descontrolados</td>
+</tr>
+<tr>
+<td>R3 · PMO Copilot</td>
+<td>Informes con datos inventados; datos personales de las actas; marcar historias como hechas sin revisión</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 2. Matriz de riesgos del reto y comparativa de herramientas · Parte 2. Cuadro comparativo de herramientas y modelos (reto de M2, 80 min)</p><h2>2.1 Herramientas (40 min)</h2></header><div class="cuerpo"><p>Comparad cuatro formas de ejecutar el asistente de vuestro reto. Probad vosotros mismos Ollama y LM Studio; para Colibri y el servicio en la nube usad la información de los apuntes y la demostración del docente.</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Ollama</th>
+<th>LM Studio</th>
+<th>Colibri</th>
+<th>Servicio en la nube</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Privacidad de los datos de Atlántica</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Facilidad de instalación y uso</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Integración desde Python (API)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Velocidad medida (tokens/s) en vuestro portátil</td>
+<td></td>
+<td></td>
+<td>No aplica</td>
+<td>No aplica</td>
+</tr>
+<tr>
+<td>Licencia y coste</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Encaje con la política de Atlántica</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>¿Lo recomendaríais para vuestro reto? ¿Para qué?</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 2. Matriz de riesgos del reto y comparativa de herramientas · Parte 2. Cuadro comparativo de herramientas y modelos (reto de M2, 80 min)</p><h2>2.2 Modelos (40 min)</h2></header><div class="cuerpo"><p>Con vuestro código del ejercicio 3, comparad <code>granite4:micro</code>, <code>gemma3:4b</code> y <code>qwen3:4b</code> con <strong>cinco preguntas propias de vuestro reto</strong> (por ejemplo, para InfraPilot: «¿qué etiquetas obligatorias tiene un recurso en Atlántica?» y «escribe un bloque Terraform para un bucket privado»).</p><p>Para cada modelo anotad: tiempo medio, tokens por segundo, calidad de las respuestas (de 1 a 5, con un criterio que definís antes de mirar) y si admite herramientas. Cerrad con una recomendación justificada del modelo por defecto para vuestro asistente.</p></div></section>
+<section class="ejercicio" data-menu="Entrega"><header class="cabecera"><p class="antetitulo">Práctica 2. Matriz de riesgos del reto y comparativa de herramientas</p><h2>Entrega</h2></header><div class="cuerpo"><ol>
+<li><code>docs/matriz_riesgos.md</code>: clasificación de riesgo del caso de uso y matriz con al menos 8 riesgos.</li>
+<li><code>docs/comparativa_herramientas.md</code>: los dos cuadros y la recomendación.</li>
+<li>Commit: <code>Sesión 2: matriz de riesgos y comparativa de herramientas</code>.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 2. Matriz de riesgos del reto y comparativa de herramientas</p><h2>Criterios de evaluación (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cobertura de riesgos</td>
+<td>8 o más riesgos en 5 o más categorías, específicos del reto</td>
+</tr>
+<tr>
+<td>Controles</td>
+<td>Concretos, verificables y proporcionados al nivel de riesgo</td>
+</tr>
+<tr>
+<td>Comparativa</td>
+<td>Datos medidos por el equipo, no copiados</td>
+</tr>
+<tr>
+<td>Recomendación</td>
+<td>Justificada con los criterios y coherente con la política de Atlántica</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 2</p><h1>IA responsable, panorama de herramientas y fundamentos de la IA generativa</h1><div class="acciones"><a class="boton" href="sesion_03.html">Sesión 3. Qué es un LLM: tokens, contexto y modelos fundacionales <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 2. IA responsable, panorama de herramientas y fundamentos de la IA generativa</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 2. IA responsable, panorama de herramientas y fundamentos de la IA generativa</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a> · <a href="sesion_03.html">Sesión 3 →</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+
+</body>
+</html>

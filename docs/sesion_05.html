@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG: concepto, arquitectura y criterios de adopción · Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</title>
+<style>
+:root {
+  --fondo: #fbfaf7; --panel: #ffffff; --texto: #1f2328; --suave: #5b6470;
+  --borde: #e2ddd3; --acento: #2f6f9f; --acento-suave: #e8f1f8;
+  --codigo: #f4f1ea; --tabla: #f7f4ee;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+    --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+    --codigo: #22272e; --tabla: #20252b;
+  }
+}
+:root[data-theme="dark"] {
+  --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+  --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+  --codigo: #22272e; --tabla: #20252b;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body {
+  margin: 0; background: var(--fondo); color: var(--texto);
+  font: 17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--acento); }
+header.barra {
+  position: sticky; top: 0; z-index: 5; display: flex; gap: 1rem;
+  align-items: center; padding: .7rem 1.25rem; background: var(--panel);
+  border-bottom: 1px solid var(--borde);
+}
+header.barra .curso { font-weight: 650; text-decoration: none; color: var(--texto); }
+header.barra nav { margin-left: auto; display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+header.barra button {
+  font: inherit; font-size: .85rem; padding: .25rem .6rem; cursor: pointer;
+  background: transparent; color: var(--suave); border: 1px solid var(--borde); border-radius: 6px;
+}
+.pagina { display: grid; grid-template-columns: 17rem minmax(0, 1fr); max-width: 78rem; margin: 0 auto; }
+aside.indice {
+  position: sticky; top: 3.4rem; align-self: start; max-height: calc(100vh - 3.4rem);
+  overflow: auto; padding: 1.5rem 1rem 2rem 1.25rem; font-size: .9rem;
+}
+aside.indice .rotulo { text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; color: var(--suave); }
+aside.indice ul { list-style: none; margin: .4rem 0 0; padding: 0; }
+aside.indice ul ul { padding-left: .9rem; margin: 0; }
+aside.indice a { display: block; padding: .18rem 0; color: var(--suave); text-decoration: none; }
+aside.indice a:hover { color: var(--acento); }
+main { padding: 2rem 1.5rem 5rem; min-width: 0; max-width: 52rem; }
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 1rem; text-wrap: balance; }
+h2 { font-size: 1.5rem; margin: 2.8rem 0 .8rem; padding-top: .6rem; border-top: 1px solid var(--borde); }
+h3 { font-size: 1.15rem; margin: 2rem 0 .5rem; }
+hr { display: none; }
+p, li { text-wrap: pretty; }
+code { font: .88em/1.5 ui-monospace, "Cascadia Code", Consolas, Menlo, monospace; background: var(--codigo); padding: .12em .35em; border-radius: 4px; }
+.codehilite, pre { background: var(--codigo); border: 1px solid var(--borde); border-radius: 8px; overflow-x: auto; }
+.codehilite pre { border: 0; margin: 0; }
+pre { padding: .9rem 1rem; margin: 1rem 0; }
+pre code { background: none; padding: 0; font-size: .9rem; }
+.tabla { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--borde); vertical-align: top; }
+th { background: var(--tabla); font-weight: 600; }
+.pie { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--borde); font-size: .95rem; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: 1.1rem 1.2rem; }
+.tarjeta .num { color: var(--acento); font-weight: 650; font-size: .85rem; letter-spacing: .04em; text-transform: uppercase; }
+.tarjeta h3 { margin: .2rem 0 .5rem; }
+.tarjeta .enlaces { display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+.tarjeta.pendiente { opacity: .6; }
+.portada { max-width: 62rem; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+.portada .entrada { color: var(--suave); max-width: 44rem; }
+@media (max-width: 860px) {
+  .pagina { grid-template-columns: 1fr; }
+  aside.indice { display: none; }
+  main { padding: 1.5rem 1rem 4rem; }
+  body { font-size: 16px; }
+}
+@media print {
+  header.barra, aside.indice, .pie { display: none; }
+  .pagina { display: block; }
+  body { font-size: 11pt; background: #fff; color: #000; }
+  h2 { break-after: avoid; } pre, table { break-inside: avoid; }
+}
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.codehilite .hll { background-color: #ffffcc }
+.codehilite { background: #f0f0f0; }
+.codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #F00 } /* Error */
+.codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666 } /* Operator */
+.codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #007020 } /* Comment.Preproc */
+.codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.codehilite .gr { color: #F00 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #888 } /* Generic.Output */
+.codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #04D } /* Generic.Traceback */
+.codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+.codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #902000 } /* Keyword.Type */
+.codehilite .m { color: #40A070 } /* Literal.Number */
+.codehilite .s { color: #4070A0 } /* Literal.String */
+.codehilite .na { color: #4070A0 } /* Name.Attribute */
+.codehilite .nb { color: #007020 } /* Name.Builtin */
+.codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #60ADD5 } /* Name.Constant */
+.codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #007020 } /* Name.Exception */
+.codehilite .nf { color: #06287E } /* Name.Function */
+.codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+.codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #BB60D5 } /* Name.Variable */
+.codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #BBB } /* Text.Whitespace */
+.codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+.codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+.codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+.codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+.codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+.codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+.codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+.codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+.codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+.codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+.codehilite .sr { color: #235388 } /* Literal.String.Regex */
+.codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+.codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+.codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #06287E } /* Name.Function.Magic */
+.codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+.codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+.codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) pre { line-height: 125%; }
+:root:not([data-theme="light"]) td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) .codehilite .hll { background-color: #6e7681 }
+:root:not([data-theme="light"]) .codehilite { background: #0d1117; color: #E6EDF3 }
+:root:not([data-theme="light"]) .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root:not([data-theme="light"]) .codehilite .err { color: #F85149 } /* Error */
+:root:not([data-theme="light"]) .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root:not([data-theme="light"]) .codehilite .g { color: #E6EDF3 } /* Generic */
+:root:not([data-theme="light"]) .codehilite .k { color: #FF7B72 } /* Keyword */
+:root:not([data-theme="light"]) .codehilite .l { color: #A5D6FF } /* Literal */
+:root:not([data-theme="light"]) .codehilite .n { color: #E6EDF3 } /* Name */
+:root:not([data-theme="light"]) .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root:not([data-theme="light"]) .codehilite .x { color: #E6EDF3 } /* Other */
+:root:not([data-theme="light"]) .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root:not([data-theme="light"]) .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root:not([data-theme="light"]) .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root:not([data-theme="light"]) .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root:not([data-theme="light"]) .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root:not([data-theme="light"]) .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root:not([data-theme="light"]) .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root:not([data-theme="light"]) .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root:not([data-theme="light"]) .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root:not([data-theme="light"]) .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root:not([data-theme="light"]) .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root:not([data-theme="light"]) .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root:not([data-theme="light"]) .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root:not([data-theme="light"]) .codehilite .go { color: #8B949E } /* Generic.Output */
+:root:not([data-theme="light"]) .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root:not([data-theme="light"]) .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root:not([data-theme="light"]) .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root:not([data-theme="light"]) .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root:not([data-theme="light"]) .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root:not([data-theme="light"]) .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root:not([data-theme="light"]) .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root:not([data-theme="light"]) .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root:not([data-theme="light"]) .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root:not([data-theme="light"]) .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root:not([data-theme="light"]) .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root:not([data-theme="light"]) .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root:not([data-theme="light"]) .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root:not([data-theme="light"]) .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root:not([data-theme="light"]) .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root:not([data-theme="light"]) .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root:not([data-theme="light"]) .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root:not([data-theme="light"]) .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root:not([data-theme="light"]) .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root:not([data-theme="light"]) .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root:not([data-theme="light"]) .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root:not([data-theme="light"]) .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root:not([data-theme="light"]) .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root:not([data-theme="light"]) .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root:not([data-theme="light"]) .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root:not([data-theme="light"]) .codehilite .py { color: #79C0FF } /* Name.Property */
+:root:not([data-theme="light"]) .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root:not([data-theme="light"]) .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root:not([data-theme="light"]) .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root:not([data-theme="light"]) .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root:not([data-theme="light"]) .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root:not([data-theme="light"]) .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root:not([data-theme="light"]) .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root:not([data-theme="light"]) .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root:not([data-theme="light"]) .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root:not([data-theme="light"]) .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root:not([data-theme="light"]) .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root:not([data-theme="light"]) .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root:not([data-theme="light"]) .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root:not([data-theme="light"]) .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root:not([data-theme="light"]) .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root:not([data-theme="light"]) .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root:not([data-theme="light"]) .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root:not([data-theme="light"]) .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root:not([data-theme="light"]) .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root:not([data-theme="light"]) .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root:not([data-theme="light"]) .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root:not([data-theme="light"]) .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root:not([data-theme="light"]) .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root:not([data-theme="light"]) .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root:not([data-theme="light"]) .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root:not([data-theme="light"]) .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root:not([data-theme="light"]) .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root:not([data-theme="light"]) .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root:not([data-theme="light"]) .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root:not([data-theme="light"]) .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+}
+:root[data-theme="dark"] pre { line-height: 125%; }
+:root[data-theme="dark"] td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] .codehilite .hll { background-color: #6e7681 }
+:root[data-theme="dark"] .codehilite { background: #0d1117; color: #E6EDF3 }
+:root[data-theme="dark"] .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root[data-theme="dark"] .codehilite .err { color: #F85149 } /* Error */
+:root[data-theme="dark"] .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root[data-theme="dark"] .codehilite .g { color: #E6EDF3 } /* Generic */
+:root[data-theme="dark"] .codehilite .k { color: #FF7B72 } /* Keyword */
+:root[data-theme="dark"] .codehilite .l { color: #A5D6FF } /* Literal */
+:root[data-theme="dark"] .codehilite .n { color: #E6EDF3 } /* Name */
+:root[data-theme="dark"] .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root[data-theme="dark"] .codehilite .x { color: #E6EDF3 } /* Other */
+:root[data-theme="dark"] .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root[data-theme="dark"] .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root[data-theme="dark"] .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root[data-theme="dark"] .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root[data-theme="dark"] .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root[data-theme="dark"] .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root[data-theme="dark"] .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root[data-theme="dark"] .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root[data-theme="dark"] .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root[data-theme="dark"] .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root[data-theme="dark"] .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root[data-theme="dark"] .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root[data-theme="dark"] .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root[data-theme="dark"] .codehilite .go { color: #8B949E } /* Generic.Output */
+:root[data-theme="dark"] .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root[data-theme="dark"] .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root[data-theme="dark"] .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root[data-theme="dark"] .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root[data-theme="dark"] .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root[data-theme="dark"] .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root[data-theme="dark"] .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root[data-theme="dark"] .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root[data-theme="dark"] .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root[data-theme="dark"] .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root[data-theme="dark"] .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root[data-theme="dark"] .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root[data-theme="dark"] .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root[data-theme="dark"] .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root[data-theme="dark"] .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root[data-theme="dark"] .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root[data-theme="dark"] .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root[data-theme="dark"] .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root[data-theme="dark"] .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root[data-theme="dark"] .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root[data-theme="dark"] .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root[data-theme="dark"] .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root[data-theme="dark"] .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root[data-theme="dark"] .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root[data-theme="dark"] .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root[data-theme="dark"] .codehilite .py { color: #79C0FF } /* Name.Property */
+:root[data-theme="dark"] .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root[data-theme="dark"] .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root[data-theme="dark"] .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root[data-theme="dark"] .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root[data-theme="dark"] .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root[data-theme="dark"] .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root[data-theme="dark"] .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root[data-theme="dark"] .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root[data-theme="dark"] .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root[data-theme="dark"] .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root[data-theme="dark"] .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root[data-theme="dark"] .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root[data-theme="dark"] .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root[data-theme="dark"] .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root[data-theme="dark"] .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root[data-theme="dark"] .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root[data-theme="dark"] .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root[data-theme="dark"] .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root[data-theme="dark"] .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root[data-theme="dark"] .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root[data-theme="dark"] .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root[data-theme="dark"] .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root[data-theme="dark"] .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root[data-theme="dark"] .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root[data-theme="dark"] .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root[data-theme="dark"] .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root[data-theme="dark"] .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root[data-theme="dark"] .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root[data-theme="dark"] .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root[data-theme="dark"] .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+.codehilite { background: var(--codigo) !important; }
+.aviso-profe { border-left: 4px solid #c98a12; background: var(--acento-suave); padding: .6rem 1rem; border-radius: 6px; margin: 0 0 1.4rem; font-size: .95rem; }
+.ficha { display: flex; flex-wrap: wrap; gap: .4rem .8rem; margin: -.4rem 0 1.4rem; font-size: .9rem; color: var(--suave); }
+.ficha span { background: var(--acento-suave); padding: .1rem .6rem; border-radius: 20px; }
+.tarjeta .num.profe { color: #c98a12; }
+.seccion-indice { margin-top: 3rem; }
+pre.mermaid { background: var(--panel); text-align: center; }
+</style>
+
+</head>
+<body>
+<header class="barra">
+  <a class="curso" href="index.html">Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</a>
+  <nav><a href="sesion_05.html">Apuntes</a> <a href="sesion_05_ejercicios.html">Ejercicios</a> <a href="sesion_05_practica.html">Práctica</a> <a href="presentacion/sesion_05.html">Presentación</a></nav>
+  <button type="button" data-cambiar-tema>Claro / oscuro</button>
+</header>
+<div class="pagina">
+<aside class="indice"><div class="rotulo">En esta página</div><div class="toc">
+<ul>
+<li><a href="#agenda-de-la-sesion">Agenda de la sesión</a></li>
+<li><a href="#lo-que-entregas-hoy">Lo que entregas hoy</a></li>
+<li><a href="#51-el-problema-que-resuelve-el-rag">5.1 El problema que resuelve el RAG</a></li>
+<li><a href="#52-arquitectura-y-flujo">5.2 Arquitectura y flujo</a><ul>
+<li><a href="#componentes">Componentes</a></li>
+<li><a href="#el-troceado-importa-mas-de-lo-que-parece">El troceado importa más de lo que parece</a></li>
+<li><a href="#el-prompt-de-un-rag">El prompt de un RAG</a></li>
+</ul>
+</li>
+<li><a href="#53-lo-que-puede-fallar-en-un-rag">5.3 Lo que puede fallar en un RAG</a></li>
+<li><a href="#54-cuando-usar-rag-criterios-de-adopcion">5.4 Cuándo usar RAG: criterios de adopción</a><ul>
+<li><a href="#preguntas-para-evaluar-un-caso-de-uso-con-un-cliente">Preguntas para evaluar un caso de uso con un cliente</a></li>
+<li><a href="#riesgos-especificos-del-rag">Riesgos específicos del RAG</a></li>
+</ul>
+</li>
+<li><a href="#55-registro-de-decisiones-de-arquitectura-adr">5.5 Registro de decisiones de arquitectura (ADR)</a></li>
+<li><a href="#errores-frecuentes">Errores frecuentes</a></li>
+<li><a href="#para-saber-mas">Para saber más</a></li>
+</ul>
+</div>
+</aside>
+<main>
+<h1 id="sesion-5-rag-concepto-arquitectura-y-criterios-de-adopcion">Sesión 5. RAG: concepto, arquitectura y criterios de adopción</h1>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Horario</th>
+<th>Modalidad</th>
+<th>Módulos</th>
+<th>Hito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jueves 10 de diciembre de 2026</td>
+<td>09:00-15:00</td>
+<td>Remoto</td>
+<td>M4 · RAG (Retrieval-Augmented Generation) (6 h)</td>
+<td>H2 · Sistema RAG</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Objetivo:</strong> Describir los componentes de una solución RAG y decidir cuándo aporta valor.</p>
+<p>Al terminar esta sesión sabrás explicar qué es la generación aumentada por recuperación (RAG), describir cada componente de su arquitectura, construir un RAG mínimo sin frameworks y, lo más importante para una consultora, <strong>decidir cuándo un RAG aporta valor y cuándo no</strong>.</p>
+<h3 id="agenda-de-la-sesion">Agenda de la sesión</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: pregúntale al modelo por la política de vacaciones</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>55</td>
+<td>Teoría</td>
+<td>Teoría I: concepto, arquitectura y flujo RAG</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Laboratorio: un RAG mínimo desde cero</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:30</td>
+<td>50</td>
+<td>Teoría</td>
+<td>Teoría II: casos de uso y criterios de adopción</td>
+</tr>
+<tr>
+<td>12:20</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Reto 1: arquitectura RAG del reto del equipo</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>13:40</td>
+<td>56</td>
+<td>Práctica</td>
+<td>Reto 2: decisiones justificadas y revisión cruzada</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Cierre: preguntas de repaso</td>
+</tr>
+</tbody>
+</table></div>
+<p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p>
+<h2 id="lo-que-entregas-hoy">Lo que entregas hoy</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Diagrama de arquitectura RAG del asistente</td>
+<td><code>docs/arquitectura_rag.md</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Tres decisiones justificadas en formato ADR</td>
+<td><code>docs/adr/</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 y 2 con los tests en verde</td>
+<td><code>sesion_05_rag_arquitectura/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="51-el-problema-que-resuelve-el-rag">5.1 El problema que resuelve el RAG</h2>
+<p>En la sesión 4 comprobaste que un LLM no conoce los documentos de Atlántica, inventa cuando no sabe y no cita fuentes. Hay tres formas de darle ese conocimiento:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Opción</th>
+<th>Cómo</th>
+<th>Problema</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Meter todos los documentos en el prompt</td>
+<td>Contexto largo</td>
+<td>Caro, lento, limitado por la ventana y el modelo se pierde en el medio</td>
+</tr>
+<tr>
+<td>Reentrenar o ajustar el modelo con los documentos</td>
+<td>Ajuste fino</td>
+<td>Caro, hay que repetirlo con cada cambio, no cita fuentes y sigue alucinando</td>
+</tr>
+<tr>
+<td><strong>Recuperar solo los fragmentos relevantes y dárselos</strong></td>
+<td>RAG</td>
+<td>Hay que construir y mantener la recuperación</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>RAG</strong> (<em>Retrieval-Augmented Generation</em>) significa: antes de generar, <strong>recuperar</strong> de una base de conocimiento los fragmentos más relevantes para la pregunta y <strong>aumentar</strong> el prompt con ellos. El modelo responde a partir de esos fragmentos y puede citarlos.</p>
+<p>Es, con diferencia, el patrón de IA generativa más desplegado en empresas.</p>
+<hr />
+<h2 id="52-arquitectura-y-flujo">5.2 Arquitectura y flujo</h2>
+<p>Un sistema RAG tiene dos flujos: uno que se ejecuta cuando cambian los documentos (ingesta) y otro en cada pregunta (consulta).</p>
+<div class="codehilite"><pre><span></span><code>INGESTA (cuando cambian los documentos)
+Documentos ──► Carga y limpieza ──► Troceado ──► Embeddings ──► Índice (base vectorial)
+                                         │                            ▲
+                                         └── metadatos ───────────────┘
+
+CONSULTA (en cada pregunta)
+Pregunta ──► Embedding de la pregunta ──► Búsqueda en el índice ──► k trozos ──► (Reordenación)
+                                                                                     │
+Respuesta con citas ◄── LLM ◄── Prompt = instrucciones + trozos numerados + pregunta ◄┘
+</code></pre></div>
+
+<h3 id="componentes">Componentes</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Qué hace</th>
+<th>Decisiones clave</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cargador</td>
+<td>Lee PDF, Word, HTML, Markdown, bases de datos</td>
+<td>Qué fuentes, con qué permisos, cada cuánto se actualizan</td>
+</tr>
+<tr>
+<td>Limpieza</td>
+<td>Quita cabeceras repetidas, menús, ruido</td>
+<td>Conservar la estructura (títulos, tablas)</td>
+</tr>
+<tr>
+<td>Troceado (<em>chunking</em>)</td>
+<td>Divide en fragmentos recuperables</td>
+<td>Tamaño, solapamiento, respetar secciones</td>
+</tr>
+<tr>
+<td>Metadatos</td>
+<td>Documento, sección, fecha, clasificación, autor</td>
+<td>Sirven para filtrar y para citar</td>
+</tr>
+<tr>
+<td>Modelo de embeddings</td>
+<td>Convierte texto en vectores</td>
+<td>Idioma, calidad, dimensión, coste</td>
+</tr>
+<tr>
+<td>Índice</td>
+<td>Guarda los vectores y busca los más parecidos</td>
+<td>En memoria, Chroma, Qdrant, pgvector</td>
+</tr>
+<tr>
+<td>Recuperador</td>
+<td>Busca los <code>k</code> trozos más relevantes</td>
+<td><code>k</code>, búsqueda semántica, léxica o híbrida (sesión 6)</td>
+</tr>
+<tr>
+<td>Reordenador</td>
+<td>Reordena los candidatos con un modelo más preciso</td>
+<td>Opcional; mejora la precisión</td>
+</tr>
+<tr>
+<td>Constructor del prompt</td>
+<td>Junta instrucciones, trozos y pregunta</td>
+<td>Cómo numerar, cómo pedir citas, cuándo abstenerse</td>
+</tr>
+<tr>
+<td>Generador</td>
+<td>El LLM que responde</td>
+<td>Modelo, temperatura baja</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="el-troceado-importa-mas-de-lo-que-parece">El troceado importa más de lo que parece</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Estrategia</th>
+<th>Ventaja</th>
+<th>Inconveniente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tamaño fijo de caracteres con solapamiento</td>
+<td>Sencilla, predecible</td>
+<td>Corta frases y tablas por la mitad</td>
+</tr>
+<tr>
+<td>Por párrafos</td>
+<td>Respeta unidades de sentido</td>
+<td>Párrafos muy desiguales</td>
+</tr>
+<tr>
+<td><strong>Por secciones del documento</strong></td>
+<td>Cada trozo trata un tema y se puede citar («Política de vacaciones › 1. Vacaciones»)</td>
+<td>Secciones largas hay que subdividirlas</td>
+</tr>
+<tr>
+<td>Semántica (corta donde cambia el tema)</td>
+<td>Trozos coherentes</td>
+<td>Más compleja y costosa</td>
+</tr>
+</tbody>
+</table></div>
+<p>Regla práctica: trozos de entre 300 y 1.500 caracteres, que tengan sentido por sí solos. Añade al principio de cada trozo el título del documento y de la sección: el trozo «Se solicitan con 15 días de antelación» no sirve de nada sin saber de qué habla.</p>
+<h3 id="el-prompt-de-un-rag">El prompt de un RAG</h3>
+<div class="codehilite"><pre><span></span><code>Eres el asistente interno de Atlántica. Responde SOLO con la información de los fragmentos.
+Cita cada afirmación con el número del fragmento entre corchetes, por ejemplo [2].
+Si la respuesta no está en los fragmentos, responde exactamente: «No consta en la documentación».
+
+[1] 11_politica_vacaciones_teletrabajo.md › 1. Vacaciones
+Cada persona tiene 25 días laborables...
+
+[2] ...
+
+Pregunta: ¿Cuántos días de vacaciones tengo?
+</code></pre></div>
+
+<hr />
+<h2 id="53-lo-que-puede-fallar-en-un-rag">5.3 Lo que puede fallar en un RAG</h2>
+<p>Diagnosticar un RAG exige separar los dos problemas posibles:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Síntoma</th>
+<th>Fallo de</th>
+<th>Causas típicas</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>La respuesta correcta no está en los trozos recuperados</td>
+<td><strong>Recuperación</strong></td>
+<td>Troceado malo, embeddings poco adecuados al idioma, <code>k</code> pequeño, la pregunta usa otras palabras</td>
+<td>Mejorar troceado, búsqueda híbrida, reordenación, reescribir la pregunta</td>
+</tr>
+<tr>
+<td>El trozo correcto está, pero la respuesta es mala</td>
+<td><strong>Generación</strong></td>
+<td>Prompt poco claro, modelo pequeño, demasiados trozos irrelevantes</td>
+<td>Mejor prompt, menos ruido, modelo mayor</td>
+</tr>
+<tr>
+<td>Responde con datos de un documento obsoleto</td>
+<td>Ingesta</td>
+<td>El índice no se actualiza</td>
+<td>Ingesta incremental, fechas en metadatos</td>
+</tr>
+<tr>
+<td>Muestra información a quien no debe verla</td>
+<td>Seguridad</td>
+<td>El índice ignora los permisos</td>
+<td>Filtrar por permisos antes de recuperar</td>
+</tr>
+</tbody>
+</table></div>
+<p>Por eso en la sesión 7 medirás por separado la recuperación (¿está el trozo correcto entre los <code>k</code> primeros?) y la generación (¿la respuesta es fiel a los trozos?).</p>
+<hr />
+<h2 id="54-cuando-usar-rag-criterios-de-adopcion">5.4 Cuándo usar RAG: criterios de adopción</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Situación</th>
+<th>Recomendación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Preguntas sobre documentación interna extensa que cambia</td>
+<td><strong>RAG</strong></td>
+</tr>
+<tr>
+<td>Hay que citar la fuente o auditar la respuesta</td>
+<td><strong>RAG</strong></td>
+</tr>
+<tr>
+<td>Los documentos caben enteros en el contexto y son pocos</td>
+<td>Contexto directo (más simple)</td>
+</tr>
+<tr>
+<td>Hay que consultar datos estructurados (pedidos, backlog, inventario)</td>
+<td><strong>Herramientas</strong> o consultas SQL, no RAG (sesiones 8 y 9)</td>
+</tr>
+<tr>
+<td>Hay que cambiar el estilo, el formato o enseñar una tarea muy específica</td>
+<td>Ajuste fino o few-shot, no RAG</td>
+</tr>
+<tr>
+<td>Respuestas sobre conocimiento general</td>
+<td>El modelo solo, sin RAG</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="preguntas-para-evaluar-un-caso-de-uso-con-un-cliente">Preguntas para evaluar un caso de uso con un cliente</h3>
+<ol>
+<li><strong>¿Existen los documentos y son de calidad?</strong> Un RAG sobre documentación desactualizada o contradictoria da respuestas desactualizadas o contradictorias.</li>
+<li><strong>¿Con qué frecuencia cambian?</strong> Define la estrategia de actualización del índice.</li>
+<li><strong>¿Quién puede ver qué?</strong> Los permisos documentales deben respetarse en la recuperación.</li>
+<li><strong>¿Qué pasa si se equivoca?</strong> Determina el umbral de calidad y la revisión humana.</li>
+<li><strong>¿Cómo vamos a medir que funciona?</strong> Sin un conjunto de preguntas con su respuesta, no hay forma de saberlo.</li>
+<li><strong>¿Cuántas preguntas al día y con qué latencia?</strong> Dimensiona el hardware y el coste.</li>
+</ol>
+<h3 id="riesgos-especificos-del-rag">Riesgos específicos del RAG</h3>
+<ul>
+<li><strong>Inyección indirecta de instrucciones</strong>: un documento puede contener texto como «ignora tus instrucciones y…». El modelo lo lee como parte del contexto. Mitigación: delimitar los fragmentos, instrucciones claras de que el contexto son datos y no órdenes, y no dar al asistente permisos peligrosos.</li>
+<li><strong>Fuga de información</strong>: el asistente recupera un documento confidencial y lo resume a quien no debería verlo.</li>
+<li><strong>Falsa sensación de fiabilidad</strong>: las citas dan apariencia de rigor aunque el modelo haya malinterpretado el fragmento.</li>
+</ul>
+<hr />
+<h2 id="55-registro-de-decisiones-de-arquitectura-adr">5.5 Registro de decisiones de arquitectura (ADR)</h2>
+<p>Un <strong>ADR</strong> documenta una decisión técnica relevante para que dentro de seis meses alguien sepa por qué se tomó. Atlántica los exige (<code>05_arquitectura_referencia.md</code>). Formato:</p>
+<div class="codehilite"><pre><span></span><code><span class="gh"># ADR-001. Troceado por secciones del documento</span>
+
+<span class="k">-</span><span class="w"> </span><span class="gs">**Estado:**</span> aceptado · 10/12/2026
+<span class="k">-</span><span class="w"> </span><span class="gs">**Contexto:**</span> los documentos de Atlántica están estructurados en secciones numeradas y
+  el asistente debe citar la sección de la que obtiene cada dato.
+<span class="k">-</span><span class="w"> </span><span class="gs">**Decisión:**</span> trocear por secciones <span class="sb">`##`</span>, subdividiendo las de más de 1.500 caracteres por párrafos.
+<span class="k">-</span><span class="w"> </span><span class="gs">**Alternativas consideradas:**</span> tamaño fijo de 800 caracteres con solapamiento de 100 (corta tablas);
+  por párrafos (trozos demasiado pequeños sin contexto).
+<span class="k">-</span><span class="w"> </span><span class="gs">**Consecuencias:**</span> citas legibles; trozos de tamaño desigual; hay que revisar el troceado si
+  cambian las plantillas de los documentos.
+</code></pre></div>
+
+<p>Hoy escribiréis tres ADR del RAG de vuestro asistente.</p>
+<hr />
+<h2 id="errores-frecuentes">Errores frecuentes</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trozos sin contexto</td>
+<td>Se recuperan fragmentos que no se entienden solos</td>
+<td>Prefija título del documento y de la sección</td>
+</tr>
+<tr>
+<td><code>k</code> demasiado grande</td>
+<td>Respuestas confusas y lentas</td>
+<td>Empieza con <code>k</code> = 3-5 y mide</td>
+</tr>
+<tr>
+<td>No pedir abstención</td>
+<td>Inventa cuando la recuperación falla</td>
+<td>Instrucción explícita y probada</td>
+</tr>
+<tr>
+<td>Calcular embeddings en cada pregunta para todo el corpus</td>
+<td>Lentitud extrema</td>
+<td>Los embeddings de los documentos se calculan una vez y se guardan</td>
+</tr>
+<tr>
+<td>Usar RAG para datos estructurados</td>
+<td>Respuestas incorrectas sobre cifras</td>
+<td>Consultas o herramientas</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="para-saber-mas">Para saber más</h2>
+<ul>
+<li>Lewis et al. (2020), <em>Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks</em>: <a href="https://arxiv.org/abs/2005.11401" target="_blank" rel="noopener">arxiv.org/abs/2005.11401</a></li>
+<li>Gao et al. (2024), <em>Retrieval-Augmented Generation for Large Language Models: A Survey</em>: <a href="https://arxiv.org/abs/2312.10997" target="_blank" rel="noopener">arxiv.org/abs/2312.10997</a></li>
+<li>Plantilla de ADR de Michael Nygard: <a href="https://www.cognitect.com/blog/2011/11/15/documenting-architecture-decisions" target="_blank" rel="noopener">cognitect.com/blog/2011/11/15/documenting-architecture-decisions</a></li>
+</ul>
+<div class="pie"><a href="sesion_04.html">&larr; Anterior</a><a href="index.html">Índice del curso</a><a href="sesion_06.html">Siguiente &rarr;</a></div>
+</main>
+</div>
+<script>
+(function () {
+  var raiz = document.documentElement, guardado = null;
+  try { guardado = localStorage.getItem("tema"); } catch (e) {}
+  if (guardado) raiz.setAttribute("data-theme", guardado);
+  document.addEventListener("click", function (ev) {
+    if (!ev.target.matches("[data-cambiar-tema]")) return;
+    var oscuro = raiz.getAttribute("data-theme") === "dark" ||
+      (!raiz.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+    var nuevo = oscuro ? "light" : "dark";
+    raiz.setAttribute("data-theme", nuevo);
+    try { localStorage.setItem("tema", nuevo); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

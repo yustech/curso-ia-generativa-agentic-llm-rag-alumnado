@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 11. Automatización con agentes · Asistentes inteligentes y chatbots</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 11 · Viernes 18 de diciembre de 2026 · 09:00-15:00 · Remoto</p><h1>Automatización con agentes · Asistentes inteligentes y chatbots</h1><div class="objetivo"><p>Al terminar esta sesión sabrás analizar un proceso de negocio para decidir qué partes automatizar con IA y dónde debe intervenir una persona, y sabrás diseñar y construir un asistente conversacional útil, transparente y con interfaz. Empieza el Hito 4: el asistente de tu equipo tendrá hoy su primera versión utilizable.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="6">6</b><span>unidades</span></div><div class="cifra"><b data-cuenta="4">4</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 11 · M5 · Agentic AI y herramientas avanzadas (2 h) + M6 · Aplicaciones prácticas de IA Generativa (4 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n6"><a class="tarjeta" href="#/u11-1"><span class="n">11.1</span><span class="t">Automatizar procesos con agentes</span></a><a class="tarjeta" href="#/u11-2"><span class="n">11.2</span><span class="t">Mapas AS-IS y TO-BE</span></a><a class="tarjeta" href="#/u11-3"><span class="n">11.3</span><span class="t">Asistentes inteligentes y chatbots</span></a><a class="tarjeta" href="#/u11-4"><span class="n">11.4</span><span class="t">Diseño conversacional</span></a><a class="tarjeta" href="#/u11-5"><span class="n">11.5</span><span class="t">Interfaz con Streamlit</span></a><a class="tarjeta" href="#/u11-6"><span class="n">11.6</span><span class="t">El backlog del asistente</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 11 · Viernes 18 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Módulo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>M5</td>
+<td>Activación: ¿qué tarea quitarías de tu semana?</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>45</td>
+<td>Teoría</td>
+<td>M5</td>
+<td>Teoría: automatización de procesos con agentes</td>
+</tr>
+<tr>
+<td>10:00</td>
+<td>60</td>
+<td>Práctica</td>
+<td>M5</td>
+<td>Laboratorio: mapa AS-IS/TO-BE del proceso del reto</td>
+</tr>
+<tr>
+<td>11:00</td>
+<td>10</td>
+<td>Pausa</td>
+<td>M6</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:10</td>
+<td>60</td>
+<td>Teoría</td>
+<td>M6</td>
+<td>Teoría: asistentes inteligentes y chatbots</td>
+</tr>
+<tr>
+<td>12:10</td>
+<td>66</td>
+<td>Práctica</td>
+<td>M6</td>
+<td>Laboratorio: interfaz de chat con Streamlit</td>
+</tr>
+<tr>
+<td>13:16</td>
+<td>80</td>
+<td>Práctica</td>
+<td>M6</td>
+<td>Reto: primer incremento del asistente y backlog priorizado</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>M6</td>
+<td>Cierre: demo rápida de cada equipo</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 11</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mapa AS-IS / TO-BE del proceso del reto</td>
+<td><code>docs/proceso_as_is_to_be.md</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Backlog priorizado del asistente</td>
+<td><code>docs/backlog_asistente.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Prototipo inicial con interfaz</td>
+<td><code>app.py</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 4 con los tests en verde</td>
+<td><code>sesion_11_automatizacion_asistentes/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u11-1" data-menu="11.1 Automatizar procesos con agentes" data-transition="fade"><div class="divisor"><span class="numero">11.1</span><h2>Automatizar procesos con agentes</h2><ul class=puntos><li>Qué tareas son buenas candidatas</li><li>Niveles de automatización</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">11.1 Automatizar procesos con agentes</p><h2>Automatizar procesos con agentes</h2></header><div class="cuerpo"><p>La pregunta que te hará un cliente no es «¿qué puede hacer la IA?», sino «¿qué parte de mi trabajo puedo dejar de hacer?». Para responderla con rigor hay que analizar el proceso, no la tecnología.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">11.1 Automatizar procesos con agentes</p><h2>Qué tareas son buenas candidatas</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Señal</th>
+<th>Buena candidata</th>
+<th>Mala candidata</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Volumen</td>
+<td>Se repite muchas veces</td>
+<td>Ocurre dos veces al año</td>
+</tr>
+<tr>
+<td>Entrada</td>
+<td>Texto, documentos, correos: lenguaje natural</td>
+<td>Datos ya estructurados (mejor un programa clásico)</td>
+</tr>
+<tr>
+<td>Variabilidad</td>
+<td>Cada caso es algo distinto, pero dentro de un patrón</td>
+<td>Totalmente impredecible</td>
+</tr>
+<tr>
+<td>Coste del error</td>
+<td>Bajo o detectable antes de que tenga efectos</td>
+<td>Alto e irreversible</td>
+</tr>
+<tr>
+<td>Verificación</td>
+<td>Una persona puede revisar rápido el resultado</td>
+<td>Revisar cuesta lo mismo que hacerlo</td>
+</tr>
+</tbody>
+</table></div><p>El último punto es decisivo y suele olvidarse: <strong>si revisar el resultado de la IA cuesta lo mismo que hacer el trabajo, no hay ahorro.</strong></p></div></section>
+<section><header class="cabecera"><p class="antetitulo">11.1 Automatizar procesos con agentes</p><h2>Niveles de automatización</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th>Quién hace qué</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Asistencia</td>
+<td>La IA sugiere, la persona hace</td>
+<td>Borrador del informe que la jefa de proyecto reescribe</td>
+</tr>
+<tr>
+<td>2. Automatización supervisada</td>
+<td>La IA hace, la persona aprueba antes de que tenga efecto</td>
+<td>Solicitud de cambio preparada por InfraPilot y aprobada en el CAB</td>
+</tr>
+<tr>
+<td>3. Automatización con excepciones</td>
+<td>La IA hace y solo escala los casos dudosos</td>
+<td>Clasificación de incidencias: las P1 y las dudosas van a una persona</td>
+</tr>
+<tr>
+<td>4. Autonomía</td>
+<td>La IA hace sin supervisión</td>
+<td>Raramente justificable con LLM en procesos con efectos</td>
+</tr>
+</tbody>
+</table></div><p>Casi todo lo que harás en proyectos reales estará en los niveles 1 a 3.</p></div></section>
+<section class="especial seccion" id="u11-2" data-menu="11.2 Mapas AS-IS y TO-BE" data-transition="fade"><div class="divisor"><span class="numero">11.2</span><h2>Mapas AS-IS y TO-BE</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">11.2 Mapas AS-IS y TO-BE</p><h2>Mapas AS-IS y TO-BE <span class="parte">1/2</span></h2></header><div class="cuerpo"><ol>
+<li><strong>AS-IS</strong>: el proceso actual, paso a paso, con actor, tipo (manual o automático) y tiempo. Se obtiene entrevistando a quien lo hace, no imaginándolo.</li>
+<li><strong>TO-BE</strong>: el proceso propuesto, con los pasos que hace la IA, los automáticos y los <strong>puntos de control humano</strong>.</li>
+<li><strong>Comparación</strong>: tiempo antes y después, porcentaje automatizado y dónde están los controles.</li>
+</ol><p>Reglas de diseño del TO-BE:</p><ul>
+<li>Todo paso de IA con efectos tiene después un control humano.</li>
+<li>El control humano lo hace una persona con información suficiente para decidir.</li>
+<li>Se mide el tiempo de revisión, no solo el de generación.</li>
+</ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">11.2 Mapas AS-IS y TO-BE</p><h2>Mapas AS-IS y TO-BE <span class="parte">2/2</span></h2></header><div class="cuerpo"><pre class="mermaid">flowchart LR
+    P1([&quot;Extraer acciones y riesgos · PMO Copilot · 2 min&quot;]) --&gt; P2[[&quot;Calcular avance · Backlog · 1 min&quot;]]
+    P2 --&gt; P3([&quot;Redactar borrador con fuentes · PMO Copilot · 2 min&quot;])
+    P3 --&gt; P4[&quot;Revisar y aprobar · Jefa de proyecto · 20 min ✋&quot;]
+    P4 --&gt; P5[[&quot;Enviar a dirección · Correo · 1 min&quot;]]</pre><p>En el ejemplo, el informe semanal pasa de 145 a 26 minutos (un 82 % menos), con la persona como responsable final.</p></div></section>
+<section class="especial seccion" id="u11-3" data-menu="11.3 Asistentes inteligentes y chatbots" data-transition="fade"><div class="divisor"><span class="numero">11.3</span><h2>Asistentes inteligentes y chatbots</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">11.3 Asistentes inteligentes y chatbots</p><h2>Asistentes inteligentes y chatbots</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th></th>
+<th>Chatbot</th>
+<th>Asistente inteligente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alcance</td>
+<td>Responder preguntas de un dominio</td>
+<td>Ayudar a completar tareas</td>
+</tr>
+<tr>
+<td>Conocimiento</td>
+<td>FAQ o RAG</td>
+<td>RAG más herramientas</td>
+</tr>
+<tr>
+<td>Memoria</td>
+<td>La conversación</td>
+<td>La conversación y el estado de la tarea</td>
+</tr>
+<tr>
+<td>Acciones</td>
+<td>Ninguna</td>
+<td>Consultar y, con confirmación, modificar sistemas</td>
+</tr>
+<tr>
+<td>Ejemplo</td>
+<td>«¿Cuántos días de vacaciones tengo?»</td>
+<td>«Prepárame la petición de entorno para pre»</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u11-4" data-menu="11.4 Diseño conversacional" data-transition="fade"><div class="divisor"><span class="numero">11.4</span><h2>Diseño conversacional</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">11.4 Diseño conversacional</p><h2>Diseño conversacional</h2></header><div class="cuerpo"><p>Un asistente útil no es solo un buen modelo: es una buena conversación.</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Buena práctica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bienvenida</td>
+<td>Quién es, que es una IA, qué puede hacer y qué no</td>
+</tr>
+<tr>
+<td>Transparencia</td>
+<td>Obligatoria si habla con personas externas (Reglamento Europeo de IA, riesgo limitado)</td>
+</tr>
+<tr>
+<td>Tono</td>
+<td>El de la empresa: claro, breve, sin falsa empatía</td>
+</tr>
+<tr>
+<td>Aclaraciones</td>
+<td>Pregunta lo que falta en lugar de suponer, de una en una</td>
+</tr>
+<tr>
+<td>Fuentes</td>
+<td>Indica de dónde sale cada dato importante</td>
+</tr>
+<tr>
+<td>Errores</td>
+<td>Admite lo que no sabe y propone alternativa</td>
+</tr>
+<tr>
+<td>Traspaso a una persona</td>
+<td>Detecta cuándo hace falta (petición explícita, queja, tema sensible) y lo hace sin fricción</td>
+</tr>
+<tr>
+<td>Límites de memoria</td>
+<td>Ventana o resumen; reiniciar conversación</td>
+</tr>
+<tr>
+<td>Datos personales</td>
+<td>No pide más de lo necesario; no los guarda sin motivo</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u11-5" data-menu="11.5 Interfaz con Streamlit" data-transition="fade"><div class="divisor"><span class="numero">11.5</span><h2>Interfaz con Streamlit</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">11.5 Interfaz con Streamlit</p><h2>Interfaz con Streamlit <span class="parte">1/3</span></h2></header><div class="cuerpo"><p><strong>Streamlit</strong> convierte un script de Python en una aplicación web. Tiene componentes de chat y un estado por sesión del navegador:</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">11.5 Interfaz con Streamlit</p><h2>Interfaz con Streamlit <span class="parte">2/3</span></h2></header><div class="cuerpo"><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+
+<span class="k">if</span> <span class="s2">"mensajes"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">:</span>
+    <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">"mensajes"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">st</span><span class="o">.</span><span class="n">session_state</span><span class="p">[</span><span class="s2">"mensajes"</span><span class="p">]:</span>
+    <span class="k">with</span> <span class="n">st</span><span class="o">.</span><span class="n">chat_message</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">"rol"</span><span class="p">]):</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="s2">"texto"</span><span class="p">])</span>
+
+<span class="k">if</span> <span class="n">pregunta</span> <span class="o">:=</span> <span class="n">st</span><span class="o">.</span><span class="n">chat_input</span><span class="p">(</span><span class="s2">"Escribe tu pregunta"</span><span class="p">):</span>
+    <span class="o">...</span></code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">11.5 Interfaz con Streamlit</p><h2>Interfaz con Streamlit <span class="parte">3/3</span></h2></header><div class="cuerpo"><p>Cosas que tienes que saber:</p><ul>
+<li><strong>El script se vuelve a ejecutar entero en cada interacción.</strong> Lo que debe sobrevivir entre interacciones va en <code>st.session_state</code>.</li>
+<li>Separa la lógica (el <code>Asistente</code>) de la interfaz: así la lógica se prueba con pytest y la interfaz solo dibuja.</li>
+<li>Streamlit también se puede probar sin navegador con <code>streamlit.testing.v1.AppTest</code>.</li>
+<li>Se lanza con <code>streamlit run app.py</code> y se abre en <code>http://localhost:8501</code>.</li>
+</ul><p>Alternativas: Gradio (muy rápido para demos), Open WebUI (interfaz completa de chat para servidores de modelos) o una interfaz propia con FastAPI y un frontal web.</p></div></section>
+<section class="especial seccion" id="u11-6" data-menu="11.6 El backlog del asistente" data-transition="fade"><div class="divisor"><span class="numero">11.6</span><h2>El backlog del asistente</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">11.6 El backlog del asistente</p><h2>El backlog del asistente</h2></header><div class="cuerpo"><p>Ningún asistente sale completo en la primera versión. Gestiona sus funcionalidades como cualquier producto:</p><ul>
+<li><strong>Historias de usuario</strong> con criterios de aceptación (ya sabes escribirlas: lo hace PMO Copilot).</li>
+<li><strong>Priorización MoSCoW</strong>: <em>Must</em> (imprescindible para el MVP), <em>Should</em>, <em>Could</em> y <em>Won't</em> (no en esta versión).</li>
+<li><strong>Valor frente a esfuerzo</strong> para ordenar dentro de cada grupo.</li>
+<li>Las historias de <strong>evaluación y seguridad</strong> también son <em>Must</em>: un asistente que no se puede evaluar no se puede entregar.</li>
+</ul></div></section>
+<section data-menu="Errores frecuentes"><header class="cabecera"><p class="antetitulo">Sesión 11</p><h2>Errores frecuentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Automatizar sin medir el AS-IS</td>
+<td>No se puede demostrar el ahorro</td>
+<td>Medir tiempos antes de diseñar</td>
+</tr>
+<tr>
+<td>Ignorar el tiempo de revisión</td>
+<td>El ahorro real es mucho menor</td>
+<td>Medir la revisión en el TO-BE</td>
+</tr>
+<tr>
+<td>Chatbot sin bienvenida ni aviso de IA</td>
+<td>Expectativas erróneas e incumplimiento</td>
+<td>Bienvenida transparente</td>
+</tr>
+<tr>
+<td>Guardar el estado en variables globales en Streamlit</td>
+<td>Se pierde en cada interacción o se mezcla entre usuarios</td>
+<td><code>st.session_state</code></td>
+</tr>
+<tr>
+<td>Mezclar lógica e interfaz</td>
+<td>No se puede probar</td>
+<td>Clase <code>Asistente</code> separada</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section data-menu="Para saber más"><header class="cabecera"><p class="antetitulo">Sesión 11</p><h2>Para saber más</h2></header><div class="cuerpo"><ul>
+<li>Documentación de Streamlit para aplicaciones de chat: <a href="https://docs.streamlit.io/develop/tutorials/chat-and-llm-apps" target="_blank" rel="noopener">docs.streamlit.io/develop/tutorials/chat-and-llm-apps</a></li>
+<li>Google, <em>Conversation design guidelines</em>: <a href="https://developers.google.com/assistant/conversation-design/welcome" target="_blank" rel="noopener">developers.google.com/assistant/conversation-design</a></li>
+<li>Reglamento Europeo de IA, artículo 50 (obligaciones de transparencia).</li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Ejercicio 1. Proceso AS-IS / TO-BE (laboratorio de M5, 35 min)</li><li>Ejercicio 2. El núcleo de un asistente (laboratorio de M6, 35 min)</li><li>Ejercicio 3. Interfaz con Streamlit (laboratorio de M6, 31 min)</li><li>Ejercicio 4. Priorizar el backlog del asistente (reto, 15 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa cada fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_11_automatizacion_asistentes<span class="w"> </span>-v</code></pre></div></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Proceso AS-IS / TO-BE (laboratorio de M5, 35 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Proceso AS-IS / TO-BE (laboratorio de M5, 35 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s11_ej1_proceso.py</code></p><ol>
+<li><code>tiempo_total(proceso)</code> y <code>porcentaje_automatizado(proceso)</code>.</li>
+<li><code>avisos(proceso)</code>: las dos reglas de diseño del TO-BE.</li>
+<li><code>comparar(as_is, to_be)</code>.</li>
+<li><code>a_mermaid(proceso)</code>: con la forma de cada tipo de paso.</li>
+</ol><p>El fichero incluye el ejemplo del informe semanal. Ejecútalo y pega el diagrama en un <code>.md</code> para verlo en VS Code o en GitHub.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 2. El núcleo de un asistente (laboratorio de M6, 35 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. El núcleo de un asistente (laboratorio de M6, 35 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s11_ej2_asistente.py</code></p><ol>
+<li><code>necesita_humano(mensaje)</code>.</li>
+<li><code>Asistente.bienvenida()</code>: transparente.</li>
+<li><code>Asistente._contexto(pregunta)</code>.</li>
+<li><code>Asistente.responder(mensaje)</code>: escalado, memoria de ventana, contexto y fuentes citadas. En el historial se guarda el mensaje <strong>original</strong> del usuario, no el que lleva los fragmentos (si no, la memoria se llenaría de documentos).</li>
+</ol><p>Prueba el asistente en la consola: <code>python sesion_11_automatizacion_asistentes/ejemplos/01_chat_consola.py</code>.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 3. Interfaz con Streamlit (laboratorio de M6, 31 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. Interfaz con Streamlit (laboratorio de M6, 31 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s11_ej3_app.py</code></p><ol>
+<li><code>obtener_asistente()</code>: un asistente por sesión del navegador, en <code>st.session_state</code>.</li>
+<li><code>dibujar_mensaje(mensaje)</code>.</li>
+</ol><p>Lanza la aplicación:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>streamlit<span class="w"> </span>run<span class="w"> </span>sesion_11_automatizacion_asistentes/ejercicios/s11_ej3_app.py</code></pre></div><p>Haz tres preguntas, una de ellas sin respuesta en la documentación, y pide «hablar con una persona». Pulsa «Nueva conversación».</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 4. Priorizar el backlog del asistente (reto, 15 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 4. Priorizar el backlog del asistente (reto, 15 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s11_ej4_backlog.py</code></p><ol>
+<li><code>puntuacion(h)</code> y <code>priorizar(historias)</code>.</li>
+<li><code>planificar_sprints(historias, capacidad, max_sprints)</code>.</li>
+<li><code>a_markdown(historias)</code>.</li>
+</ol><p>Úsalo en la práctica con el backlog de tu asistente.</p></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Proceso AS-IS / TO-BE, backlog priorizado y primer incremento del asistente</h2><ul class=puntos><li>Parte 1. Mapa AS-IS / TO-BE del proceso del reto (laboratorio de M5, 60 min)</li><li>Parte 2. Reto: primer incremento del asistente y backlog priorizado (80 min)</li><li>Cierre: demo rápida (3 minutos por equipo)</li><li>Entrega</li><li>Criterios de evaluación (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 11. Proceso AS-IS / TO-BE, backlog priorizado y primer incremento del asistente</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>Entregables del equipo: <code>docs/proceso_as_is_to_be.md</code>, <code>docs/backlog_asistente.md</code> y <code>app.py</code>.</p></div></section>
+<section class="ejercicio" data-menu="Parte 1. Mapa AS-IS / TO-BE del proceso del reto (laboratorio de M5, 60 min)"><header class="cabecera"><p class="antetitulo">Práctica 11. Proceso AS-IS / TO-BE, backlog priorizado y primer incremento del asistente</p><h2>Parte 1. Mapa AS-IS / TO-BE del proceso del reto (laboratorio de M5, 60 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><ol>
+<li><strong>AS-IS (25 min).</strong> Modelad con <code>Proceso</code> y <code>Paso</code> el proceso actual que vuestro asistente va a cambiar. Usad la información de los documentos de Atlántica y, si podéis, la experiencia de alguien del grupo que haya hecho una tarea parecida.</li>
+</ol><div class="tabla"><table>
+<thead>
+<tr>
+<th>Reto</th>
+<th>Proceso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 · DevAssist</td>
+<td>Revisión de una merge request y escritura de sus pruebas</td>
+</tr>
+<tr>
+<td>R2 · InfraPilot</td>
+<td>Desde la petición de un entorno hasta la solicitud aprobada en el CAB</td>
+</tr>
+<tr>
+<td>R3 · PMO Copilot</td>
+<td>Desde las actas de la semana hasta el informe de estado enviado</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 11. Proceso AS-IS / TO-BE, backlog priorizado y primer incremento del asistente</p><h2>Parte 1. Mapa AS-IS / TO-BE del proceso del reto (laboratorio de M5, 60 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><ol start="2">
+<li><strong>TO-BE (20 min).</strong> El proceso con vuestro asistente: pasos de IA, pasos automáticos y controles humanos. <code>avisos(to_be)</code> debe devolver una lista vacía.</li>
+<li><strong>Comparación (15 min).</strong> Tabla de <code>comparar</code>, diagramas Mermaid de los dos procesos y tres líneas sobre qué supuestos hay detrás de los tiempos del TO-BE (en especial, el tiempo de revisión).</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 11. Proceso AS-IS / TO-BE, backlog priorizado y primer incremento del asistente · Parte 2. Reto: primer incremento del asistente y backlog priorizado (80 min)</p><h2>1. Backlog (20 min)</h2></header><div class="cuerpo"><p>Escribid entre 10 y 15 historias para vuestro asistente, con valor, esfuerzo y MoSCoW, e incluid obligatoriamente historias de evaluación y de seguridad. Priorizadlas con el ejercicio 4 y planificad los sprints que quedan hasta el Demo Day (capacidad: lo que el equipo puede hacer en las sesiones 12 a 14). El resultado va a <code>docs/backlog_asistente.md</code>.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 11. Proceso AS-IS / TO-BE, backlog priorizado y primer incremento del asistente · Parte 2. Reto: primer incremento del asistente y backlog priorizado (80 min)</p><h2>2. Primer incremento (60 min)</h2></header><div class="cuerpo"><p>Construid <code>app.py</code> en el repositorio del equipo: una interfaz Streamlit para <strong>vuestro</strong> asistente, a partir del ejercicio 3, con:</p><ul>
+<li>bienvenida transparente adaptada al reto;</li>
+<li>vuestro RAG (sesiones 5-7) y al menos una herramienta del reto (sesión 9);</li>
+<li>fuentes visibles en cada respuesta;</li>
+<li>un botón o diálogo de <strong>confirmación humana</strong> para las acciones con efectos (InfraPilot: registrar la solicitud; PMO Copilot: actualizar el backlog). Pista: guardad la acción pendiente en <code>st.session_state</code> y mostrad «Aprobar» y «Rechazar» con <code>st.button</code>;</li>
+<li>un pequeño panel lateral con el número de mensajes en memoria y las herramientas usadas en el último turno.</li>
+</ul></div></section>
+<section class="ejercicio" data-menu="Cierre: demo rápida (3 minutos por equipo)"><header class="cabecera"><p class="antetitulo">Práctica 11. Proceso AS-IS / TO-BE, backlog priorizado y primer incremento del asistente</p><h2>Cierre: demo rápida (3 minutos por equipo)</h2></header><div class="cuerpo"><p>Cada equipo enseña su aplicación con una pregunta de su conjunto dorado y una acción con confirmación.</p></div></section>
+<section class="ejercicio" data-menu="Entrega"><header class="cabecera"><p class="antetitulo">Práctica 11. Proceso AS-IS / TO-BE, backlog priorizado y primer incremento del asistente</p><h2>Entrega</h2></header><div class="cuerpo"><ol>
+<li><code>docs/proceso_as_is_to_be.md</code> con los dos diagramas y la comparación.</li>
+<li><code>docs/backlog_asistente.md</code> priorizado y planificado.</li>
+<li><code>app.py</code> funcionando con <code>streamlit run app.py</code>.</li>
+<li>Commit: <code>Sesión 11: proceso, backlog y primer incremento del asistente</code>.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 11. Proceso AS-IS / TO-BE, backlog priorizado y primer incremento del asistente</p><h2>Criterios de evaluación (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Análisis del proceso</td>
+<td>AS-IS realista, TO-BE sin avisos y supuestos explicitados</td>
+</tr>
+<tr>
+<td>Backlog</td>
+<td>Historias con criterios, priorizadas y con evaluación y seguridad como <em>Must</em></td>
+</tr>
+<tr>
+<td>Prototipo</td>
+<td>Interfaz con RAG, herramienta, fuentes y transparencia</td>
+</tr>
+<tr>
+<td>Supervisión humana</td>
+<td>Confirmación con información suficiente para decidir</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 11</p><h1>Automatización con agentes · Asistentes inteligentes y chatbots</h1><div class="acciones"><a class="boton" href="sesion_12.html">Sesión 12. Generación de documentación, análisis documental y automatización de procesos <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 11. Automatización con agentes · Asistentes inteligentes y chatbots</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 11. Automatización con agentes · Asistentes inteligentes y chatbots</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a> · <a href="sesion_12.html">Sesión 12 →</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  // Los diagramas se dibujan fuera de la diapositiva (sin la escala de reveal.js) para que
+  // mermaid mida bien los textos, y después se insertan ya dibujados.
+  if (!window.mermaid) { return; }
+  var fuente = getComputedStyle(document.querySelector(".reveal")).fontFamily;
+  mermaid.initialize({ startOnLoad: false, theme: "default", fontFamily: fuente, themeVariables: { fontFamily: fuente, fontSize: "16px" } });
+  document.querySelectorAll("pre.mermaid").forEach(function (pre, i) {
+    mermaid.render("diagrama-" + i, pre.textContent).then(function (r) {
+      var div = document.createElement("div");
+      div.className = "diagrama";
+      div.innerHTML = r.svg;
+      pre.replaceWith(div);
+      var seccion = div.closest("section");
+      if (window.cursoAjustar && seccion) { window.cursoAjustar(seccion); }
+    });
+  });
+}());
+</script>
+<style>.reveal .diagrama { text-align: center; margin: 8px 0 14px; } .reveal .diagrama svg { width: 100%; max-width: 100% !important; height: 370px; }</style>
+</body>
+</html>

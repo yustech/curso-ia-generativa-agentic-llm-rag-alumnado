@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Introducción a la IA: historia, paradigmas y tipos de modelos · Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</title>
+<style>
+:root {
+  --fondo: #fbfaf7; --panel: #ffffff; --texto: #1f2328; --suave: #5b6470;
+  --borde: #e2ddd3; --acento: #2f6f9f; --acento-suave: #e8f1f8;
+  --codigo: #f4f1ea; --tabla: #f7f4ee;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+    --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+    --codigo: #22272e; --tabla: #20252b;
+  }
+}
+:root[data-theme="dark"] {
+  --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+  --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+  --codigo: #22272e; --tabla: #20252b;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body {
+  margin: 0; background: var(--fondo); color: var(--texto);
+  font: 17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--acento); }
+header.barra {
+  position: sticky; top: 0; z-index: 5; display: flex; gap: 1rem;
+  align-items: center; padding: .7rem 1.25rem; background: var(--panel);
+  border-bottom: 1px solid var(--borde);
+}
+header.barra .curso { font-weight: 650; text-decoration: none; color: var(--texto); }
+header.barra nav { margin-left: auto; display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+header.barra button {
+  font: inherit; font-size: .85rem; padding: .25rem .6rem; cursor: pointer;
+  background: transparent; color: var(--suave); border: 1px solid var(--borde); border-radius: 6px;
+}
+.pagina { display: grid; grid-template-columns: 17rem minmax(0, 1fr); max-width: 78rem; margin: 0 auto; }
+aside.indice {
+  position: sticky; top: 3.4rem; align-self: start; max-height: calc(100vh - 3.4rem);
+  overflow: auto; padding: 1.5rem 1rem 2rem 1.25rem; font-size: .9rem;
+}
+aside.indice .rotulo { text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; color: var(--suave); }
+aside.indice ul { list-style: none; margin: .4rem 0 0; padding: 0; }
+aside.indice ul ul { padding-left: .9rem; margin: 0; }
+aside.indice a { display: block; padding: .18rem 0; color: var(--suave); text-decoration: none; }
+aside.indice a:hover { color: var(--acento); }
+main { padding: 2rem 1.5rem 5rem; min-width: 0; max-width: 52rem; }
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 1rem; text-wrap: balance; }
+h2 { font-size: 1.5rem; margin: 2.8rem 0 .8rem; padding-top: .6rem; border-top: 1px solid var(--borde); }
+h3 { font-size: 1.15rem; margin: 2rem 0 .5rem; }
+hr { display: none; }
+p, li { text-wrap: pretty; }
+code { font: .88em/1.5 ui-monospace, "Cascadia Code", Consolas, Menlo, monospace; background: var(--codigo); padding: .12em .35em; border-radius: 4px; }
+.codehilite, pre { background: var(--codigo); border: 1px solid var(--borde); border-radius: 8px; overflow-x: auto; }
+.codehilite pre { border: 0; margin: 0; }
+pre { padding: .9rem 1rem; margin: 1rem 0; }
+pre code { background: none; padding: 0; font-size: .9rem; }
+.tabla { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--borde); vertical-align: top; }
+th { background: var(--tabla); font-weight: 600; }
+.pie { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--borde); font-size: .95rem; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: 1.1rem 1.2rem; }
+.tarjeta .num { color: var(--acento); font-weight: 650; font-size: .85rem; letter-spacing: .04em; text-transform: uppercase; }
+.tarjeta h3 { margin: .2rem 0 .5rem; }
+.tarjeta .enlaces { display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+.tarjeta.pendiente { opacity: .6; }
+.portada { max-width: 62rem; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+.portada .entrada { color: var(--suave); max-width: 44rem; }
+@media (max-width: 860px) {
+  .pagina { grid-template-columns: 1fr; }
+  aside.indice { display: none; }
+  main { padding: 1.5rem 1rem 4rem; }
+  body { font-size: 16px; }
+}
+@media print {
+  header.barra, aside.indice, .pie { display: none; }
+  .pagina { display: block; }
+  body { font-size: 11pt; background: #fff; color: #000; }
+  h2 { break-after: avoid; } pre, table { break-inside: avoid; }
+}
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.codehilite .hll { background-color: #ffffcc }
+.codehilite { background: #f0f0f0; }
+.codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #F00 } /* Error */
+.codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666 } /* Operator */
+.codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #007020 } /* Comment.Preproc */
+.codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.codehilite .gr { color: #F00 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #888 } /* Generic.Output */
+.codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #04D } /* Generic.Traceback */
+.codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+.codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #902000 } /* Keyword.Type */
+.codehilite .m { color: #40A070 } /* Literal.Number */
+.codehilite .s { color: #4070A0 } /* Literal.String */
+.codehilite .na { color: #4070A0 } /* Name.Attribute */
+.codehilite .nb { color: #007020 } /* Name.Builtin */
+.codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #60ADD5 } /* Name.Constant */
+.codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #007020 } /* Name.Exception */
+.codehilite .nf { color: #06287E } /* Name.Function */
+.codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+.codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #BB60D5 } /* Name.Variable */
+.codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #BBB } /* Text.Whitespace */
+.codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+.codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+.codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+.codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+.codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+.codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+.codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+.codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+.codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+.codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+.codehilite .sr { color: #235388 } /* Literal.String.Regex */
+.codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+.codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+.codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #06287E } /* Name.Function.Magic */
+.codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+.codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+.codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) pre { line-height: 125%; }
+:root:not([data-theme="light"]) td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) .codehilite .hll { background-color: #6e7681 }
+:root:not([data-theme="light"]) .codehilite { background: #0d1117; color: #E6EDF3 }
+:root:not([data-theme="light"]) .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root:not([data-theme="light"]) .codehilite .err { color: #F85149 } /* Error */
+:root:not([data-theme="light"]) .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root:not([data-theme="light"]) .codehilite .g { color: #E6EDF3 } /* Generic */
+:root:not([data-theme="light"]) .codehilite .k { color: #FF7B72 } /* Keyword */
+:root:not([data-theme="light"]) .codehilite .l { color: #A5D6FF } /* Literal */
+:root:not([data-theme="light"]) .codehilite .n { color: #E6EDF3 } /* Name */
+:root:not([data-theme="light"]) .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root:not([data-theme="light"]) .codehilite .x { color: #E6EDF3 } /* Other */
+:root:not([data-theme="light"]) .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root:not([data-theme="light"]) .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root:not([data-theme="light"]) .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root:not([data-theme="light"]) .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root:not([data-theme="light"]) .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root:not([data-theme="light"]) .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root:not([data-theme="light"]) .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root:not([data-theme="light"]) .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root:not([data-theme="light"]) .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root:not([data-theme="light"]) .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root:not([data-theme="light"]) .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root:not([data-theme="light"]) .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root:not([data-theme="light"]) .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root:not([data-theme="light"]) .codehilite .go { color: #8B949E } /* Generic.Output */
+:root:not([data-theme="light"]) .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root:not([data-theme="light"]) .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root:not([data-theme="light"]) .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root:not([data-theme="light"]) .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root:not([data-theme="light"]) .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root:not([data-theme="light"]) .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root:not([data-theme="light"]) .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root:not([data-theme="light"]) .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root:not([data-theme="light"]) .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root:not([data-theme="light"]) .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root:not([data-theme="light"]) .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root:not([data-theme="light"]) .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root:not([data-theme="light"]) .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root:not([data-theme="light"]) .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root:not([data-theme="light"]) .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root:not([data-theme="light"]) .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root:not([data-theme="light"]) .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root:not([data-theme="light"]) .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root:not([data-theme="light"]) .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root:not([data-theme="light"]) .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root:not([data-theme="light"]) .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root:not([data-theme="light"]) .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root:not([data-theme="light"]) .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root:not([data-theme="light"]) .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root:not([data-theme="light"]) .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root:not([data-theme="light"]) .codehilite .py { color: #79C0FF } /* Name.Property */
+:root:not([data-theme="light"]) .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root:not([data-theme="light"]) .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root:not([data-theme="light"]) .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root:not([data-theme="light"]) .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root:not([data-theme="light"]) .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root:not([data-theme="light"]) .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root:not([data-theme="light"]) .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root:not([data-theme="light"]) .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root:not([data-theme="light"]) .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root:not([data-theme="light"]) .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root:not([data-theme="light"]) .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root:not([data-theme="light"]) .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root:not([data-theme="light"]) .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root:not([data-theme="light"]) .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root:not([data-theme="light"]) .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root:not([data-theme="light"]) .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root:not([data-theme="light"]) .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root:not([data-theme="light"]) .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root:not([data-theme="light"]) .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root:not([data-theme="light"]) .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root:not([data-theme="light"]) .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root:not([data-theme="light"]) .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root:not([data-theme="light"]) .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root:not([data-theme="light"]) .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root:not([data-theme="light"]) .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root:not([data-theme="light"]) .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root:not([data-theme="light"]) .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root:not([data-theme="light"]) .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root:not([data-theme="light"]) .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root:not([data-theme="light"]) .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+}
+:root[data-theme="dark"] pre { line-height: 125%; }
+:root[data-theme="dark"] td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] .codehilite .hll { background-color: #6e7681 }
+:root[data-theme="dark"] .codehilite { background: #0d1117; color: #E6EDF3 }
+:root[data-theme="dark"] .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root[data-theme="dark"] .codehilite .err { color: #F85149 } /* Error */
+:root[data-theme="dark"] .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root[data-theme="dark"] .codehilite .g { color: #E6EDF3 } /* Generic */
+:root[data-theme="dark"] .codehilite .k { color: #FF7B72 } /* Keyword */
+:root[data-theme="dark"] .codehilite .l { color: #A5D6FF } /* Literal */
+:root[data-theme="dark"] .codehilite .n { color: #E6EDF3 } /* Name */
+:root[data-theme="dark"] .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root[data-theme="dark"] .codehilite .x { color: #E6EDF3 } /* Other */
+:root[data-theme="dark"] .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root[data-theme="dark"] .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root[data-theme="dark"] .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root[data-theme="dark"] .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root[data-theme="dark"] .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root[data-theme="dark"] .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root[data-theme="dark"] .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root[data-theme="dark"] .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root[data-theme="dark"] .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root[data-theme="dark"] .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root[data-theme="dark"] .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root[data-theme="dark"] .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root[data-theme="dark"] .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root[data-theme="dark"] .codehilite .go { color: #8B949E } /* Generic.Output */
+:root[data-theme="dark"] .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root[data-theme="dark"] .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root[data-theme="dark"] .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root[data-theme="dark"] .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root[data-theme="dark"] .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root[data-theme="dark"] .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root[data-theme="dark"] .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root[data-theme="dark"] .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root[data-theme="dark"] .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root[data-theme="dark"] .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root[data-theme="dark"] .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root[data-theme="dark"] .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root[data-theme="dark"] .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root[data-theme="dark"] .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root[data-theme="dark"] .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root[data-theme="dark"] .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root[data-theme="dark"] .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root[data-theme="dark"] .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root[data-theme="dark"] .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root[data-theme="dark"] .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root[data-theme="dark"] .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root[data-theme="dark"] .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root[data-theme="dark"] .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root[data-theme="dark"] .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root[data-theme="dark"] .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root[data-theme="dark"] .codehilite .py { color: #79C0FF } /* Name.Property */
+:root[data-theme="dark"] .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root[data-theme="dark"] .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root[data-theme="dark"] .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root[data-theme="dark"] .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root[data-theme="dark"] .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root[data-theme="dark"] .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root[data-theme="dark"] .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root[data-theme="dark"] .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root[data-theme="dark"] .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root[data-theme="dark"] .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root[data-theme="dark"] .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root[data-theme="dark"] .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root[data-theme="dark"] .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root[data-theme="dark"] .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root[data-theme="dark"] .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root[data-theme="dark"] .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root[data-theme="dark"] .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root[data-theme="dark"] .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root[data-theme="dark"] .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root[data-theme="dark"] .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root[data-theme="dark"] .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root[data-theme="dark"] .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root[data-theme="dark"] .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root[data-theme="dark"] .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root[data-theme="dark"] .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root[data-theme="dark"] .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root[data-theme="dark"] .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root[data-theme="dark"] .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root[data-theme="dark"] .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root[data-theme="dark"] .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+.codehilite { background: var(--codigo) !important; }
+.aviso-profe { border-left: 4px solid #c98a12; background: var(--acento-suave); padding: .6rem 1rem; border-radius: 6px; margin: 0 0 1.4rem; font-size: .95rem; }
+.ficha { display: flex; flex-wrap: wrap; gap: .4rem .8rem; margin: -.4rem 0 1.4rem; font-size: .9rem; color: var(--suave); }
+.ficha span { background: var(--acento-suave); padding: .1rem .6rem; border-radius: 20px; }
+.tarjeta .num.profe { color: #c98a12; }
+.seccion-indice { margin-top: 3rem; }
+pre.mermaid { background: var(--panel); text-align: center; }
+</style>
+
+</head>
+<body>
+<header class="barra">
+  <a class="curso" href="index.html">Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</a>
+  <nav><a href="sesion_01.html">Apuntes</a> <a href="sesion_01_ejercicios.html">Ejercicios</a> <a href="sesion_01_practica.html">Práctica</a> <a href="presentacion/sesion_01.html">Presentación</a></nav>
+  <button type="button" data-cambiar-tema>Claro / oscuro</button>
+</header>
+<div class="pagina">
+<aside class="indice"><div class="rotulo">En esta página</div><div class="toc">
+<ul>
+<li><a href="#agenda-de-la-sesion">Agenda de la sesión</a></li>
+<li><a href="#lo-que-entregas-hoy">Lo que entregas hoy</a></li>
+<li><a href="#11-que-es-y-que-no-es-la-inteligencia-artificial">1.1 Qué es (y qué no es) la inteligencia artificial</a><ul>
+<li><a href="#tres-formas-de-construir-un-sistema-inteligente">Tres formas de construir un sistema inteligente</a></li>
+</ul>
+</li>
+<li><a href="#12-historia-y-evolucion-de-la-ia">1.2 Historia y evolución de la IA</a></li>
+<li><a href="#13-ia-machine-learning-deep-learning-e-ia-generativa">1.3 IA, machine learning, deep learning e IA generativa</a><ul>
+<li><a href="#machine-learning">Machine learning</a></li>
+<li><a href="#deep-learning">Deep learning</a></li>
+<li><a href="#ia-generativa">IA generativa</a></li>
+<li><a href="#discriminativo-frente-a-generativo">Discriminativo frente a generativo</a></li>
+</ul>
+</li>
+<li><a href="#14-tipos-de-modelos-y-como-elegir">1.4 Tipos de modelos y cómo elegir</a><ul>
+<li><a href="#preguntas-para-elegir">Preguntas para elegir</a></li>
+</ul>
+</li>
+<li><a href="#15-tu-entorno-de-trabajo">1.5 Tu entorno de trabajo</a><ul>
+<li><a href="#piezas-del-entorno">Piezas del entorno</a></li>
+<li><a href="#puesta-en-marcha-paso-a-paso">Puesta en marcha paso a paso</a></li>
+<li><a href="#por-que-estos-modelos">Por qué estos modelos</a></li>
+<li><a href="#el-cliente-comun-del-curso">El cliente común del curso</a></li>
+</ul>
+</li>
+<li><a href="#16-el-proyecto-del-curso">1.6 El proyecto del curso</a></li>
+<li><a href="#errores-frecuentes">Errores frecuentes</a></li>
+<li><a href="#para-saber-mas">Para saber más</a></li>
+</ul>
+</div>
+</aside>
+<main>
+<h1 id="sesion-1-introduccion-a-la-ia-historia-paradigmas-y-tipos-de-modelos">Sesión 1. Introducción a la IA: historia, paradigmas y tipos de modelos</h1>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Horario</th>
+<th>Modalidad</th>
+<th>Módulos</th>
+<th>Hito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Miércoles 2 de diciembre de 2026</td>
+<td>09:00-15:00</td>
+<td>Presencial</td>
+<td>M1 · Introducción a la Inteligencia Artificial (6 h)</td>
+<td>H1 · Fundamentos y prompting</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Objetivo:</strong> Distinguir los principales paradigmas de IA y situarlos en una línea evolutiva.</p>
+<p>Al terminar esta sesión sabrás situar la IA generativa dentro del mapa completo de la inteligencia artificial, distinguir sus paradigmas y elegir el tipo de modelo adecuado para un problema. Además tendrás tu entorno de trabajo funcionando y formarás parte de uno de los tres equipos del curso.</p>
+<p>Ya sabes programar. Esta sesión no repasa matemáticas ni estadística: se centra en el criterio que necesitas en una consultora para no proponer un LLM donde basta una regla, ni una regla donde hace falta un modelo.</p>
+<h3 id="agenda-de-la-sesion">Agenda de la sesión</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: un LLM corriendo en este portátil</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>55</td>
+<td>Teoría</td>
+<td>Teoría I: historia y evolución de la IA</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Laboratorio: preparación del entorno (Python, Ollama, LM Studio)</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:30</td>
+<td>50</td>
+<td>Teoría</td>
+<td>Teoría II: IA, ML, DL e IA generativa; tipos de modelos</td>
+</tr>
+<tr>
+<td>12:20</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Reto 1: formación de equipos y mapa conceptual colaborativo</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>13:40</td>
+<td>56</td>
+<td>Práctica</td>
+<td>Reto 2: clasificación de 6 casos de uso</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Cierre: puesta en común y presentación de los retos del curso</td>
+</tr>
+</tbody>
+</table></div>
+<p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p>
+<h2 id="lo-que-entregas-hoy">Lo que entregas hoy</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entorno verificado: salida de <code>python comprobar_entorno.py</code> sin errores</td>
+<td>Captura en el repositorio del equipo</td>
+<td>Cada persona</td>
+</tr>
+<tr>
+<td>Mapa conceptual de la IA</td>
+<td><code>docs/mapa_conceptual.md</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ficha de clasificación de 6 casos de uso</td>
+<td><code>docs/clasificacion_casos.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 y 2 con los tests en verde</td>
+<td><code>sesion_01_introduccion_ia/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="11-que-es-y-que-no-es-la-inteligencia-artificial">1.1 Qué es (y qué no es) la inteligencia artificial</h2>
+<p>La inteligencia artificial es el campo que construye sistemas capaces de realizar tareas que, hechas por una persona, consideraríamos que requieren inteligencia: reconocer, predecir, decidir, comunicarse o crear.</p>
+<p>Dos matices que conviene tener claros desde el principio:</p>
+<ul>
+<li><strong>IA no es sinónimo de aprendizaje.</strong> Un sistema experto con reglas escritas a mano o un algoritmo de búsqueda de rutas también son IA. Mucho software empresarial que funciona perfectamente es IA «clásica».</li>
+<li><strong>IA no es sinónimo de IA generativa.</strong> La IA generativa es la rama que más ha crecido desde 2022, pero en una empresa logística como Atlántica la mayor parte del valor sigue viniendo de modelos predictivos y de optimización.</li>
+</ul>
+<h3 id="tres-formas-de-construir-un-sistema-inteligente">Tres formas de construir un sistema inteligente</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Enfoque</th>
+<th>Cómo se obtiene el comportamiento</th>
+<th>Ejemplo en Atlántica</th>
+<th>Punto fuerte</th>
+<th>Punto débil</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Simbólico (reglas)</td>
+<td>Una persona escribe las reglas</td>
+<td>«Si la carga supera 1.000 kg, aplica recargo»</td>
+<td>Explicable, predecible</td>
+<td>No escala a problemas difusos</td>
+</tr>
+<tr>
+<td>Aprendizaje automático</td>
+<td>El sistema aprende patrones de datos etiquetados o no</td>
+<td>Predecir la demanda diaria de camiones</td>
+<td>Aprende relaciones complejas</td>
+<td>Necesita datos y no siempre explica</td>
+</tr>
+<tr>
+<td>IA generativa</td>
+<td>Un modelo preentrenado con enormes cantidades de datos genera contenido nuevo</td>
+<td>Redactar la respuesta a una reclamación</td>
+<td>Muy flexible, entiende lenguaje natural</td>
+<td>Puede inventar, es más cara y menos predecible</td>
+</tr>
+</tbody>
+</table></div>
+<p>La pregunta profesional no es «¿cómo aplico IA generativa aquí?», sino «¿qué enfoque resuelve este problema con la calidad, el coste y el riesgo que el cliente puede asumir?».</p>
+<hr />
+<h2 id="12-historia-y-evolucion-de-la-ia">1.2 Historia y evolución de la IA</h2>
+<p>La historia de la IA alterna periodos de entusiasmo con «inviernos» en los que la financiación y el interés cayeron. Conocerla ayuda a relativizar las promesas actuales.</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Año</th>
+<th>Hito</th>
+<th>Por qué importa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1950</td>
+<td>Alan Turing publica <em>Computing Machinery and Intelligence</em> y propone el juego de la imitación</td>
+<td>Primera pregunta formal sobre si una máquina puede pensar</td>
+</tr>
+<tr>
+<td>1956</td>
+<td>Conferencia de Dartmouth: nace el término <em>artificial intelligence</em></td>
+<td>Inicio del campo como disciplina</td>
+</tr>
+<tr>
+<td>1958</td>
+<td>Perceptrón de Rosenblatt</td>
+<td>Primera red neuronal que aprende</td>
+</tr>
+<tr>
+<td>1966</td>
+<td>ELIZA, el primer chatbot</td>
+<td>Ya entonces la gente atribuía comprensión a un programa que solo seguía patrones</td>
+</tr>
+<tr>
+<td>1974-1980</td>
+<td>Primer invierno de la IA</td>
+<td>Las promesas superaron a la capacidad de cálculo</td>
+</tr>
+<tr>
+<td>1980s</td>
+<td>Sistemas expertos en empresas</td>
+<td>IA simbólica con reglas; caros de mantener</td>
+</tr>
+<tr>
+<td>1987-1993</td>
+<td>Segundo invierno</td>
+<td>Los sistemas expertos no escalaron</td>
+</tr>
+<tr>
+<td>1997</td>
+<td>Deep Blue vence a Kaspárov</td>
+<td>Búsqueda y fuerza bruta, no aprendizaje</td>
+</tr>
+<tr>
+<td>2012</td>
+<td>AlexNet gana ImageNet con redes profundas y GPU</td>
+<td>Comienza la era del deep learning</td>
+</tr>
+<tr>
+<td>2016</td>
+<td>AlphaGo vence a Lee Sedol</td>
+<td>Aprendizaje por refuerzo y redes profundas</td>
+</tr>
+<tr>
+<td>2017</td>
+<td>Artículo <em>Attention Is All You Need</em>: la arquitectura Transformer</td>
+<td>Base de todos los LLM actuales</td>
+</tr>
+<tr>
+<td>2018-2020</td>
+<td>BERT, GPT-2 y GPT-3</td>
+<td>Modelos preentrenados de lenguaje; GPT-3 muestra aprendizaje con pocos ejemplos</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>ChatGPT</td>
+<td>La IA generativa llega al gran público; ajuste con instrucciones y preferencias humanas</td>
+</tr>
+<tr>
+<td>2023</td>
+<td>Modelos de pesos abiertos (Llama, Mistral) y herramientas como Ollama</td>
+<td>Se pueden ejecutar LLM en servidores propios y portátiles</td>
+</tr>
+<tr>
+<td>2024-2026</td>
+<td>Modelos que razonan, agentes, Model Context Protocol (MCP), modelos abiertos pequeños y eficientes</td>
+<td>Los LLM pasan de responder a actuar; la inferencia local se vuelve viable en la empresa</td>
+</tr>
+</tbody>
+</table></div>
+<p>Tres lecciones de esta historia para tu trabajo:</p>
+<ol>
+<li><strong>Los saltos llegan cuando coinciden algoritmo, datos y cálculo.</strong> El Transformer existía en 2017; lo que cambió después fue la escala.</li>
+<li><strong>La gente sobreestima lo que entiende un sistema conversacional.</strong> Le pasó a ELIZA en 1966 y nos pasa hoy con los LLM. De ahí la importancia de evaluar.</li>
+<li><strong>Las expectativas desmedidas acaban en desencanto.</strong> Un consultor serio promete lo que puede medir.</li>
+</ol>
+<hr />
+<h2 id="13-ia-machine-learning-deep-learning-e-ia-generativa">1.3 IA, machine learning, deep learning e IA generativa</h2>
+<p>Los cuatro términos se suelen usar como sinónimos y no lo son. Son conjuntos anidados:</p>
+<div class="codehilite"><pre><span></span><code>Inteligencia artificial
+└── Machine learning (aprende de datos)
+    └── Deep learning (redes neuronales profundas)
+        └── IA generativa (genera contenido nuevo: texto, imagen, audio, código)
+            └── Modelos de lenguaje grandes (LLM)
+</code></pre></div>
+
+<h3 id="machine-learning">Machine learning</h3>
+<p>El sistema aprende una función a partir de ejemplos en lugar de que la escribas tú. Hay tres grandes familias:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Qué aprende</th>
+<th>Datos que necesita</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Supervisado</td>
+<td>A predecir una etiqueta o un valor</td>
+<td>Ejemplos con la respuesta correcta</td>
+<td>Predecir si un envío llegará tarde</td>
+</tr>
+<tr>
+<td>No supervisado</td>
+<td>Estructura oculta en los datos</td>
+<td>Datos sin etiquetar</td>
+<td>Agrupar clientes por patrón de envíos</td>
+</tr>
+<tr>
+<td>Por refuerzo</td>
+<td>Una política de acciones que maximiza una recompensa</td>
+<td>Un entorno donde probar acciones</td>
+<td>Asignar muelles de carga en tiempo real</td>
+</tr>
+</tbody>
+</table></div>
+<p>Dentro del supervisado, si la respuesta es una categoría hablamos de <strong>clasificación</strong>; si es un número, de <strong>regresión</strong>.</p>
+<h3 id="deep-learning">Deep learning</h3>
+<p>Usa redes neuronales con muchas capas que aprenden representaciones de los datos por sí mismas: en una imagen, las primeras capas detectan bordes y las últimas, objetos. Es lo que permitió los grandes avances en visión, voz y lenguaje. Necesita muchos datos y hardware específico (GPU).</p>
+<h3 id="ia-generativa">IA generativa</h3>
+<p>Modelos que aprenden la distribución de los datos y pueden <strong>generar</strong> muestras nuevas plausibles. Un LLM ha aprendido, a partir de billones de palabras, qué texto suele seguir a otro, y con eso genera respuestas, código o resúmenes. La sesión 2 explica cómo.</p>
+<h3 id="discriminativo-frente-a-generativo">Discriminativo frente a generativo</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th></th>
+<th>Modelo discriminativo</th>
+<th>Modelo generativo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pregunta que responde</td>
+<td>¿A qué clase pertenece esto?</td>
+<td>¿Cómo sería un ejemplo nuevo de esto?</td>
+</tr>
+<tr>
+<td>Salida</td>
+<td>Una etiqueta o un número</td>
+<td>Texto, imagen, audio o código</td>
+</tr>
+<tr>
+<td>Ejemplo</td>
+<td>Clasificador de incidencias</td>
+<td>Asistente que redacta la respuesta a la incidencia</td>
+</tr>
+<tr>
+<td>Evaluación</td>
+<td>Exactitud, precisión, recall: fácil de medir</td>
+<td>Calidad abierta: hay que diseñar cómo medirla</td>
+</tr>
+</tbody>
+</table></div>
+<p>Esta última fila es la razón por la que el curso dedica tanto tiempo a evaluar.</p>
+<hr />
+<h2 id="14-tipos-de-modelos-y-como-elegir">1.4 Tipos de modelos y cómo elegir</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Tipo de modelo</th>
+<th>Entrada típica</th>
+<th>Salida</th>
+<th>Caso en logística</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Regresión</td>
+<td>Datos tabulares, series temporales</td>
+<td>Número</td>
+<td>Demanda diaria de camiones</td>
+</tr>
+<tr>
+<td>Clasificación</td>
+<td>Datos tabulares, texto, imagen</td>
+<td>Categoría</td>
+<td>Prioridad de una incidencia</td>
+</tr>
+<tr>
+<td>Agrupamiento (clustering)</td>
+<td>Datos tabulares</td>
+<td>Grupos</td>
+<td>Segmentación de clientes</td>
+</tr>
+<tr>
+<td>Detección de anomalías</td>
+<td>Transacciones, sensores</td>
+<td>Normal o anómalo</td>
+<td>Fraude en tarjetas de combustible</td>
+</tr>
+<tr>
+<td>Recomendación</td>
+<td>Historial de interacciones</td>
+<td>Ranking</td>
+<td>Sugerir servicios a un cliente</td>
+</tr>
+<tr>
+<td>Visión por computador</td>
+<td>Imagen o vídeo</td>
+<td>Objetos, texto leído</td>
+<td>Lectura de matrículas en la barrera</td>
+</tr>
+<tr>
+<td>Procesamiento del lenguaje</td>
+<td>Texto</td>
+<td>Etiquetas, entidades</td>
+<td>Extraer datos de un albarán</td>
+</tr>
+<tr>
+<td>Optimización y búsqueda</td>
+<td>Restricciones y objetivo</td>
+<td>Plan óptimo</td>
+<td>Rutas de reparto con ventanas horarias</td>
+</tr>
+<tr>
+<td>LLM (generativo)</td>
+<td>Texto e instrucciones</td>
+<td>Texto, código, JSON</td>
+<td>Asistente interno, generación de documentación</td>
+</tr>
+<tr>
+<td>Multimodal</td>
+<td>Texto, imagen, audio</td>
+<td>Texto o imagen</td>
+<td>Describir los daños en la foto de un palé</td>
+</tr>
+<tr>
+<td>Agente (LLM + herramientas)</td>
+<td>Un objetivo</td>
+<td>Acciones en sistemas</td>
+<td>Preparar una solicitud de cambio de infraestructura</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="preguntas-para-elegir">Preguntas para elegir</h3>
+<ol>
+<li><strong>¿La regla se puede escribir?</strong> Si sí, escríbela. Es más barata, explicable y fiable.</li>
+<li><strong>¿Hay datos históricos con la respuesta correcta?</strong> Entonces machine learning supervisado.</li>
+<li><strong>¿La entrada o la salida es lenguaje natural abierto?</strong> Ahí brilla un LLM.</li>
+<li><strong>¿Hay que actuar sobre sistemas?</strong> Agente, con permisos limitados y supervisión humana.</li>
+<li><strong>¿Qué pasa si se equivoca?</strong> Cuanto mayor sea el daño, más controles, más evaluación y más intervención humana.</li>
+</ol>
+<p>Un error habitual en proyectos reales es usar un LLM para calcular una ruta óptima o un precio. Un LLM no optimiza ni calcula de forma fiable; puede, en cambio, <strong>llamar</strong> a un optimizador o a una función de cálculo. Lo verás en las sesiones de agentes.</p>
+<hr />
+<h2 id="15-tu-entorno-de-trabajo">1.5 Tu entorno de trabajo</h2>
+<p>Todo el curso funciona con modelos ejecutados <strong>en tu portátil</strong> o en el <strong>servidor compartido</strong> del curso. Ningún dato sale a servicios externos.</p>
+<h3 id="piezas-del-entorno">Piezas del entorno</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Pieza</th>
+<th>Para qué</th>
+<th>Instalación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python 3.12</td>
+<td>Lenguaje de los laboratorios</td>
+<td><a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org</a></td>
+</tr>
+<tr>
+<td>Visual Studio Code</td>
+<td>Editor</td>
+<td><a href="https://code.visualstudio.com/" target="_blank" rel="noopener">code.visualstudio.com</a> con la extensión Python</td>
+</tr>
+<tr>
+<td>Git</td>
+<td>Control de versiones</td>
+<td><a href="https://git-scm.com/" target="_blank" rel="noopener">git-scm.com</a></td>
+</tr>
+<tr>
+<td>Ollama</td>
+<td>Motor de inferencia principal: descarga y sirve modelos</td>
+<td><a href="https://ollama.com/download" target="_blank" rel="noopener">ollama.com</a></td>
+</tr>
+<tr>
+<td>LM Studio</td>
+<td>Interfaz gráfica para explorar modelos y parámetros</td>
+<td><a href="https://lmstudio.ai/" target="_blank" rel="noopener">lmstudio.ai</a></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="puesta-en-marcha-paso-a-paso">Puesta en marcha paso a paso</h3>
+<ol>
+<li>Instala Ollama y comprueba que responde:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>ollama<span class="w"> </span>--version
+ollama<span class="w"> </span>pull<span class="w"> </span>granite4:micro
+ollama<span class="w"> </span>pull<span class="w"> </span>embeddinggemma
+ollama<span class="w"> </span>run<span class="w"> </span>granite4:micro<span class="w"> </span><span class="s2">"Hola, ¿quién eres?"</span>
+</code></pre></div>
+
+<ol start="2">
+<li>Clona el repositorio del curso, crea el entorno virtual e instala las dependencias:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/yustech/curso-ia-generativa-agentic-llm-rag-alumnado.git
+<span class="nb">cd</span><span class="w"> </span>curso-ia-generativa-agentic-llm-rag-alumnado
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+.venv<span class="se">\S</span>cripts<span class="se">\A</span>ctivate.ps1<span class="w">        </span><span class="c1"># Windows (PowerShell)</span>
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate<span class="w">         </span><span class="c1"># macOS o Linux</span>
+pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</code></pre></div>
+
+<ol start="3">
+<li>Crea tu fichero de configuración a partir del ejemplo:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>copy<span class="w"> </span>.env.example<span class="w"> </span>.env<span class="w">            </span><span class="c1"># Windows</span>
+cp<span class="w"> </span>.env.example<span class="w"> </span>.env<span class="w">              </span><span class="c1"># macOS o Linux</span>
+</code></pre></div>
+
+<ol start="4">
+<li>Comprueba el entorno:</li>
+</ol>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>comprobar_entorno.py
+</code></pre></div>
+
+<p>Todas las líneas deben terminar en <code>OK</code> (un <code>AVISO</code> no bloquea).</p>
+<h3 id="por-que-estos-modelos">Por qué estos modelos</h3>
+<p>Los portátiles del curso tienen 16 GB de RAM. Un modelo de 3-4 mil millones de parámetros cuantizado ocupa entre 2 y 3,5 GB y responde con fluidez. <code>granite4:micro</code> admite herramientas y salidas en JSON, y tiene licencia Apache 2.0, que permite uso comercial. Para experimentos con modelos mayores usarás el servidor compartido. En la sesión 3 aprenderás a calcular cuánta memoria necesita un modelo.</p>
+<h3 id="el-cliente-comun-del-curso">El cliente común del curso</h3>
+<p>Todos los laboratorios usan <code>comun/llm.py</code>, que habla con cualquier servidor compatible con la API de OpenAI. La URL está en <code>.env</code>. Cambiar de Ollama a LM Studio o al servidor compartido es cambiar una línea; el código no cambia.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">comun</span><span class="w"> </span><span class="kn">import</span> <span class="n">llm</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">llm</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="s2">"Explica en una frase qué es Atlántica Logística."</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">llm</span><span class="o">.</span><span class="n">ultima_llamada</span><span class="p">)</span>   <span class="c1"># modelo, segundos y tokens</span>
+</code></pre></div>
+
+<hr />
+<h2 id="16-el-proyecto-del-curso">1.6 El proyecto del curso</h2>
+<p>Durante las 14 sesiones vas a construir, en equipo, un <strong>asistente basado en LLM con RAG y herramientas</strong> para un caso real de Atlántica Logística. Cada sesión añade una pieza y termina con un entregable.</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Equipo</th>
+<th>Reto</th>
+<th>Qué hace el asistente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Equipo 1</td>
+<td>R1 · DevAssist</td>
+<td>Responde dudas sobre la guía de estilo y la arquitectura, genera pruebas y revisa código</td>
+</tr>
+<tr>
+<td>Equipo 2</td>
+<td>R2 · InfraPilot</td>
+<td>Traduce peticiones de entornos a Terraform conforme a la política y prepara el cambio para aprobación</td>
+</tr>
+<tr>
+<td>Equipo 3</td>
+<td>R3 · PMO Copilot</td>
+<td>Convierte actas en historias de usuario, mantiene el backlog y redacta el informe de estado</td>
+</tr>
+</tbody>
+</table></div>
+<p>Roles dentro del equipo (rotan cada hito): responsable de producto y calidad, ingeniería de IA, ingeniería de conocimiento (RAG) e ingeniería de integración (herramientas).</p>
+<p>La evaluación del curso es: laboratorios y entregables de sesión (40 %), proyecto final (40 %) y evaluación individual (20 %). El detalle está en el <code>README.md</code> de la raíz.</p>
+<hr />
+<h2 id="errores-frecuentes">Errores frecuentes</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ollama no está arrancado</td>
+<td><code>comprobar_entorno.py</code> no conecta con <code>localhost:11434</code></td>
+<td>Abre la aplicación Ollama o ejecuta <code>ollama serve</code></td>
+</tr>
+<tr>
+<td>No se activó el entorno virtual</td>
+<td><code>ModuleNotFoundError: No module named 'openai'</code></td>
+<td>Activa <code>.venv</code> y vuelve a ejecutar</td>
+</tr>
+<tr>
+<td>PowerShell no deja activar el entorno</td>
+<td>Error de directiva de ejecución</td>
+<td><code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code></td>
+</tr>
+<tr>
+<td>Falta el modelo</td>
+<td><code>model "granite4:micro" not found</code></td>
+<td><code>ollama pull granite4:micro</code></td>
+</tr>
+<tr>
+<td>El portátil va muy lento</td>
+<td>Respuestas de más de 30 s</td>
+<td>Cierra aplicaciones; no tengas modelos cargados a la vez en Ollama y LM Studio</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="para-saber-mas">Para saber más</h2>
+<ul>
+<li>Russell y Norvig, <em>Artificial Intelligence: A Modern Approach</em>, 4.ª ed. Capítulo 1: historia y fundamentos.</li>
+<li>Documentación de Ollama: <a href="https://docs.ollama.com/" target="_blank" rel="noopener">docs.ollama.com</a></li>
+<li>Vaswani et al. (2017), <em>Attention Is All You Need</em>: <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">arxiv.org/abs/1706.03762</a></li>
+</ul>
+<div class="pie"><a href="index.html">&larr; Anterior</a><a href="index.html">Índice del curso</a><a href="sesion_02.html">Siguiente &rarr;</a></div>
+</main>
+</div>
+<script>
+(function () {
+  var raiz = document.documentElement, guardado = null;
+  try { guardado = localStorage.getItem("tema"); } catch (e) {}
+  if (guardado) raiz.setAttribute("data-theme", guardado);
+  document.addEventListener("click", function (ev) {
+    if (!ev.target.matches("[data-cambiar-tema]")) return;
+    var oscuro = raiz.getAttribute("data-theme") === "dark" ||
+      (!raiz.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+    var nuevo = oscuro ? "light" : "dark";
+    raiz.setAttribute("data-theme", nuevo);
+    try { localStorage.setItem("tema", nuevo); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IA responsable, panorama de herramientas y fundamentos de la IA generativa · Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</title>
+<style>
+:root {
+  --fondo: #fbfaf7; --panel: #ffffff; --texto: #1f2328; --suave: #5b6470;
+  --borde: #e2ddd3; --acento: #2f6f9f; --acento-suave: #e8f1f8;
+  --codigo: #f4f1ea; --tabla: #f7f4ee;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+    --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+    --codigo: #22272e; --tabla: #20252b;
+  }
+}
+:root[data-theme="dark"] {
+  --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+  --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+  --codigo: #22272e; --tabla: #20252b;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body {
+  margin: 0; background: var(--fondo); color: var(--texto);
+  font: 17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--acento); }
+header.barra {
+  position: sticky; top: 0; z-index: 5; display: flex; gap: 1rem;
+  align-items: center; padding: .7rem 1.25rem; background: var(--panel);
+  border-bottom: 1px solid var(--borde);
+}
+header.barra .curso { font-weight: 650; text-decoration: none; color: var(--texto); }
+header.barra nav { margin-left: auto; display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+header.barra button {
+  font: inherit; font-size: .85rem; padding: .25rem .6rem; cursor: pointer;
+  background: transparent; color: var(--suave); border: 1px solid var(--borde); border-radius: 6px;
+}
+.pagina { display: grid; grid-template-columns: 17rem minmax(0, 1fr); max-width: 78rem; margin: 0 auto; }
+aside.indice {
+  position: sticky; top: 3.4rem; align-self: start; max-height: calc(100vh - 3.4rem);
+  overflow: auto; padding: 1.5rem 1rem 2rem 1.25rem; font-size: .9rem;
+}
+aside.indice .rotulo { text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; color: var(--suave); }
+aside.indice ul { list-style: none; margin: .4rem 0 0; padding: 0; }
+aside.indice ul ul { padding-left: .9rem; margin: 0; }
+aside.indice a { display: block; padding: .18rem 0; color: var(--suave); text-decoration: none; }
+aside.indice a:hover { color: var(--acento); }
+main { padding: 2rem 1.5rem 5rem; min-width: 0; max-width: 52rem; }
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 1rem; text-wrap: balance; }
+h2 { font-size: 1.5rem; margin: 2.8rem 0 .8rem; padding-top: .6rem; border-top: 1px solid var(--borde); }
+h3 { font-size: 1.15rem; margin: 2rem 0 .5rem; }
+hr { display: none; }
+p, li { text-wrap: pretty; }
+code { font: .88em/1.5 ui-monospace, "Cascadia Code", Consolas, Menlo, monospace; background: var(--codigo); padding: .12em .35em; border-radius: 4px; }
+.codehilite, pre { background: var(--codigo); border: 1px solid var(--borde); border-radius: 8px; overflow-x: auto; }
+.codehilite pre { border: 0; margin: 0; }
+pre { padding: .9rem 1rem; margin: 1rem 0; }
+pre code { background: none; padding: 0; font-size: .9rem; }
+.tabla { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--borde); vertical-align: top; }
+th { background: var(--tabla); font-weight: 600; }
+.pie { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--borde); font-size: .95rem; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: 1.1rem 1.2rem; }
+.tarjeta .num { color: var(--acento); font-weight: 650; font-size: .85rem; letter-spacing: .04em; text-transform: uppercase; }
+.tarjeta h3 { margin: .2rem 0 .5rem; }
+.tarjeta .enlaces { display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+.tarjeta.pendiente { opacity: .6; }
+.portada { max-width: 62rem; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+.portada .entrada { color: var(--suave); max-width: 44rem; }
+@media (max-width: 860px) {
+  .pagina { grid-template-columns: 1fr; }
+  aside.indice { display: none; }
+  main { padding: 1.5rem 1rem 4rem; }
+  body { font-size: 16px; }
+}
+@media print {
+  header.barra, aside.indice, .pie { display: none; }
+  .pagina { display: block; }
+  body { font-size: 11pt; background: #fff; color: #000; }
+  h2 { break-after: avoid; } pre, table { break-inside: avoid; }
+}
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.codehilite .hll { background-color: #ffffcc }
+.codehilite { background: #f0f0f0; }
+.codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #F00 } /* Error */
+.codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666 } /* Operator */
+.codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #007020 } /* Comment.Preproc */
+.codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.codehilite .gr { color: #F00 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #888 } /* Generic.Output */
+.codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #04D } /* Generic.Traceback */
+.codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+.codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #902000 } /* Keyword.Type */
+.codehilite .m { color: #40A070 } /* Literal.Number */
+.codehilite .s { color: #4070A0 } /* Literal.String */
+.codehilite .na { color: #4070A0 } /* Name.Attribute */
+.codehilite .nb { color: #007020 } /* Name.Builtin */
+.codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #60ADD5 } /* Name.Constant */
+.codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #007020 } /* Name.Exception */
+.codehilite .nf { color: #06287E } /* Name.Function */
+.codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+.codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #BB60D5 } /* Name.Variable */
+.codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #BBB } /* Text.Whitespace */
+.codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+.codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+.codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+.codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+.codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+.codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+.codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+.codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+.codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+.codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+.codehilite .sr { color: #235388 } /* Literal.String.Regex */
+.codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+.codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+.codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #06287E } /* Name.Function.Magic */
+.codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+.codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+.codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) pre { line-height: 125%; }
+:root:not([data-theme="light"]) td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) .codehilite .hll { background-color: #6e7681 }
+:root:not([data-theme="light"]) .codehilite { background: #0d1117; color: #E6EDF3 }
+:root:not([data-theme="light"]) .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root:not([data-theme="light"]) .codehilite .err { color: #F85149 } /* Error */
+:root:not([data-theme="light"]) .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root:not([data-theme="light"]) .codehilite .g { color: #E6EDF3 } /* Generic */
+:root:not([data-theme="light"]) .codehilite .k { color: #FF7B72 } /* Keyword */
+:root:not([data-theme="light"]) .codehilite .l { color: #A5D6FF } /* Literal */
+:root:not([data-theme="light"]) .codehilite .n { color: #E6EDF3 } /* Name */
+:root:not([data-theme="light"]) .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root:not([data-theme="light"]) .codehilite .x { color: #E6EDF3 } /* Other */
+:root:not([data-theme="light"]) .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root:not([data-theme="light"]) .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root:not([data-theme="light"]) .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root:not([data-theme="light"]) .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root:not([data-theme="light"]) .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root:not([data-theme="light"]) .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root:not([data-theme="light"]) .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root:not([data-theme="light"]) .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root:not([data-theme="light"]) .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root:not([data-theme="light"]) .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root:not([data-theme="light"]) .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root:not([data-theme="light"]) .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root:not([data-theme="light"]) .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root:not([data-theme="light"]) .codehilite .go { color: #8B949E } /* Generic.Output */
+:root:not([data-theme="light"]) .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root:not([data-theme="light"]) .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root:not([data-theme="light"]) .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root:not([data-theme="light"]) .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root:not([data-theme="light"]) .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root:not([data-theme="light"]) .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root:not([data-theme="light"]) .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root:not([data-theme="light"]) .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root:not([data-theme="light"]) .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root:not([data-theme="light"]) .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root:not([data-theme="light"]) .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root:not([data-theme="light"]) .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root:not([data-theme="light"]) .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root:not([data-theme="light"]) .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root:not([data-theme="light"]) .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root:not([data-theme="light"]) .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root:not([data-theme="light"]) .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root:not([data-theme="light"]) .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root:not([data-theme="light"]) .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root:not([data-theme="light"]) .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root:not([data-theme="light"]) .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root:not([data-theme="light"]) .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root:not([data-theme="light"]) .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root:not([data-theme="light"]) .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root:not([data-theme="light"]) .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root:not([data-theme="light"]) .codehilite .py { color: #79C0FF } /* Name.Property */
+:root:not([data-theme="light"]) .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root:not([data-theme="light"]) .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root:not([data-theme="light"]) .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root:not([data-theme="light"]) .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root:not([data-theme="light"]) .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root:not([data-theme="light"]) .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root:not([data-theme="light"]) .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root:not([data-theme="light"]) .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root:not([data-theme="light"]) .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root:not([data-theme="light"]) .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root:not([data-theme="light"]) .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root:not([data-theme="light"]) .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root:not([data-theme="light"]) .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root:not([data-theme="light"]) .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root:not([data-theme="light"]) .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root:not([data-theme="light"]) .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root:not([data-theme="light"]) .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root:not([data-theme="light"]) .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root:not([data-theme="light"]) .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root:not([data-theme="light"]) .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root:not([data-theme="light"]) .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root:not([data-theme="light"]) .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root:not([data-theme="light"]) .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root:not([data-theme="light"]) .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root:not([data-theme="light"]) .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root:not([data-theme="light"]) .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root:not([data-theme="light"]) .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root:not([data-theme="light"]) .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root:not([data-theme="light"]) .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root:not([data-theme="light"]) .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+}
+:root[data-theme="dark"] pre { line-height: 125%; }
+:root[data-theme="dark"] td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] .codehilite .hll { background-color: #6e7681 }
+:root[data-theme="dark"] .codehilite { background: #0d1117; color: #E6EDF3 }
+:root[data-theme="dark"] .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root[data-theme="dark"] .codehilite .err { color: #F85149 } /* Error */
+:root[data-theme="dark"] .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root[data-theme="dark"] .codehilite .g { color: #E6EDF3 } /* Generic */
+:root[data-theme="dark"] .codehilite .k { color: #FF7B72 } /* Keyword */
+:root[data-theme="dark"] .codehilite .l { color: #A5D6FF } /* Literal */
+:root[data-theme="dark"] .codehilite .n { color: #E6EDF3 } /* Name */
+:root[data-theme="dark"] .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root[data-theme="dark"] .codehilite .x { color: #E6EDF3 } /* Other */
+:root[data-theme="dark"] .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root[data-theme="dark"] .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root[data-theme="dark"] .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root[data-theme="dark"] .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root[data-theme="dark"] .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root[data-theme="dark"] .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root[data-theme="dark"] .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root[data-theme="dark"] .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root[data-theme="dark"] .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root[data-theme="dark"] .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root[data-theme="dark"] .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root[data-theme="dark"] .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root[data-theme="dark"] .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root[data-theme="dark"] .codehilite .go { color: #8B949E } /* Generic.Output */
+:root[data-theme="dark"] .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root[data-theme="dark"] .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root[data-theme="dark"] .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root[data-theme="dark"] .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root[data-theme="dark"] .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root[data-theme="dark"] .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root[data-theme="dark"] .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root[data-theme="dark"] .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root[data-theme="dark"] .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root[data-theme="dark"] .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root[data-theme="dark"] .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root[data-theme="dark"] .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root[data-theme="dark"] .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root[data-theme="dark"] .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root[data-theme="dark"] .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root[data-theme="dark"] .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root[data-theme="dark"] .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root[data-theme="dark"] .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root[data-theme="dark"] .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root[data-theme="dark"] .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root[data-theme="dark"] .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root[data-theme="dark"] .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root[data-theme="dark"] .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root[data-theme="dark"] .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root[data-theme="dark"] .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root[data-theme="dark"] .codehilite .py { color: #79C0FF } /* Name.Property */
+:root[data-theme="dark"] .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root[data-theme="dark"] .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root[data-theme="dark"] .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root[data-theme="dark"] .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root[data-theme="dark"] .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root[data-theme="dark"] .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root[data-theme="dark"] .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root[data-theme="dark"] .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root[data-theme="dark"] .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root[data-theme="dark"] .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root[data-theme="dark"] .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root[data-theme="dark"] .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root[data-theme="dark"] .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root[data-theme="dark"] .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root[data-theme="dark"] .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root[data-theme="dark"] .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root[data-theme="dark"] .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root[data-theme="dark"] .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root[data-theme="dark"] .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root[data-theme="dark"] .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root[data-theme="dark"] .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root[data-theme="dark"] .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root[data-theme="dark"] .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root[data-theme="dark"] .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root[data-theme="dark"] .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root[data-theme="dark"] .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root[data-theme="dark"] .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root[data-theme="dark"] .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root[data-theme="dark"] .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root[data-theme="dark"] .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+.codehilite { background: var(--codigo) !important; }
+.aviso-profe { border-left: 4px solid #c98a12; background: var(--acento-suave); padding: .6rem 1rem; border-radius: 6px; margin: 0 0 1.4rem; font-size: .95rem; }
+.ficha { display: flex; flex-wrap: wrap; gap: .4rem .8rem; margin: -.4rem 0 1.4rem; font-size: .9rem; color: var(--suave); }
+.ficha span { background: var(--acento-suave); padding: .1rem .6rem; border-radius: 20px; }
+.tarjeta .num.profe { color: #c98a12; }
+.seccion-indice { margin-top: 3rem; }
+pre.mermaid { background: var(--panel); text-align: center; }
+</style>
+
+</head>
+<body>
+<header class="barra">
+  <a class="curso" href="index.html">Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</a>
+  <nav><a href="sesion_02.html">Apuntes</a> <a href="sesion_02_ejercicios.html">Ejercicios</a> <a href="sesion_02_practica.html">Práctica</a> <a href="presentacion/sesion_02.html">Presentación</a></nav>
+  <button type="button" data-cambiar-tema>Claro / oscuro</button>
+</header>
+<div class="pagina">
+<aside class="indice"><div class="rotulo">En esta página</div><div class="toc">
+<ul>
+<li><a href="#agenda-de-la-sesion">Agenda de la sesión</a></li>
+<li><a href="#lo-que-entregas-hoy">Lo que entregas hoy</a></li>
+<li><a href="#21-etica-y-riesgos-de-la-ia">2.1 Ética y riesgos de la IA</a><ul>
+<li><a href="#principios-de-uso-responsable">Principios de uso responsable</a></li>
+</ul>
+</li>
+<li><a href="#22-marco-normativo">2.2 Marco normativo</a><ul>
+<li><a href="#rgpd">RGPD</a></li>
+<li><a href="#reglamento-europeo-de-ia">Reglamento Europeo de IA</a></li>
+<li><a href="#la-politica-de-atlantica">La política de Atlántica</a></li>
+</ul>
+</li>
+<li><a href="#23-panorama-de-herramientas">2.3 Panorama de herramientas</a><ul>
+<li><a href="#dos-formas-de-acceder-a-un-modelo">Dos formas de acceder a un modelo</a></li>
+<li><a href="#motores-de-inferencia-del-curso">Motores de inferencia del curso</a></li>
+<li><a href="#el-resto-del-ecosistema">El resto del ecosistema</a></li>
+<li><a href="#licencias-una-pregunta-que-siempre-debes-hacer">Licencias: una pregunta que siempre debes hacer</a></li>
+</ul>
+</li>
+<li><a href="#24-fundamentos-de-la-ia-generativa">2.4 Fundamentos de la IA generativa</a><ul>
+<li><a href="#que-significa-generar">Qué significa «generar»</a></li>
+<li><a href="#como-genera-texto-un-llm">Cómo genera texto un LLM</a></li>
+<li><a href="#de-un-modelo-base-a-un-asistente">De un modelo base a un asistente</a></li>
+</ul>
+</li>
+<li><a href="#25-primeras-llamadas-a-un-llm-desde-python">2.5 Primeras llamadas a un LLM desde Python</a><ul>
+<li><a href="#mensajes-y-roles">Mensajes y roles</a></li>
+<li><a href="#parametros-basicos">Parámetros básicos</a></li>
+<li><a href="#el-mismo-codigo-con-otro-motor">El mismo código con otro motor</a></li>
+</ul>
+</li>
+<li><a href="#errores-frecuentes">Errores frecuentes</a></li>
+<li><a href="#para-saber-mas">Para saber más</a></li>
+</ul>
+</div>
+</aside>
+<main>
+<h1 id="sesion-2-ia-responsable-panorama-de-herramientas-y-fundamentos-de-la-ia-generativa">Sesión 2. IA responsable, panorama de herramientas y fundamentos de la IA generativa</h1>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Horario</th>
+<th>Modalidad</th>
+<th>Módulos</th>
+<th>Hito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Jueves 3 de diciembre de 2026</td>
+<td>08:00-14:00</td>
+<td>Por confirmar</td>
+<td>M1 · Introducción a la Inteligencia Artificial (2 h) + M2 · Introducción a GenAI y LLM (4 h)</td>
+<td>H1 · Fundamentos y prompting</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Objetivo:</strong> Aplicar criterios de IA responsable y explicar qué hace generativo a un modelo.</p>
+<p>Al terminar esta sesión sabrás identificar los riesgos de un caso de uso de IA y proponer controles concretos, conocerás el panorama de herramientas para trabajar con modelos y entenderás qué hace «generativo» a un modelo. Además harás tus primeras llamadas a un LLM desde Python.</p>
+<h3 id="agenda-de-la-sesion">Agenda de la sesión</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Módulo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>08:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>M1</td>
+<td>Activación: cuando la IA se equivoca en público</td>
+</tr>
+<tr>
+<td>08:15</td>
+<td>45</td>
+<td>Teoría</td>
+<td>M1</td>
+<td>Teoría: ética, privacidad, sesgos y marco regulatorio; panorama de herramientas</td>
+</tr>
+<tr>
+<td>09:00</td>
+<td>60</td>
+<td>Práctica</td>
+<td>M1</td>
+<td>Laboratorio: matriz de riesgos y controles del reto</td>
+</tr>
+<tr>
+<td>10:00</td>
+<td>10</td>
+<td>Pausa</td>
+<td>M2</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>60</td>
+<td>Teoría</td>
+<td>M2</td>
+<td>Teoría: fundamentos de la IA generativa</td>
+</tr>
+<tr>
+<td>11:10</td>
+<td>66</td>
+<td>Práctica</td>
+<td>M2</td>
+<td>Laboratorio: primeras llamadas a un LLM local desde Python</td>
+</tr>
+<tr>
+<td>12:16</td>
+<td>80</td>
+<td>Práctica</td>
+<td>M2</td>
+<td>Reto: comparación guiada de herramientas y modelos</td>
+</tr>
+<tr>
+<td>13:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>M2</td>
+<td>Cierre: conclusiones y preguntas de repaso</td>
+</tr>
+</tbody>
+</table></div>
+<p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p>
+<h2 id="lo-que-entregas-hoy">Lo que entregas hoy</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Matriz de riesgos y controles del reto</td>
+<td><code>docs/matriz_riesgos.md</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Cuadro comparativo de herramientas y modelos</td>
+<td><code>docs/comparativa_herramientas.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 3 con los tests en verde</td>
+<td><code>sesion_02_ia_responsable_genai/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="21-etica-y-riesgos-de-la-ia">2.1 Ética y riesgos de la IA</h2>
+<p>Un sistema de IA puede funcionar técnicamente y aun así causar daño. Estos son los riesgos que vas a revisar en cualquier proyecto:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Riesgo</th>
+<th>Qué es</th>
+<th>Ejemplo</th>
+<th>Control típico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Sesgo y discriminación</td>
+<td>El sistema trata peor a un grupo porque los datos reflejan desigualdades</td>
+<td>Un filtro de currículos que descarta más mujeres</td>
+<td>Medir resultados por grupo; no usar IA en decisiones sobre personas sin evaluación</td>
+</tr>
+<tr>
+<td>Privacidad</td>
+<td>Datos personales expuestos, usados sin base legal o enviados a terceros</td>
+<td>Pegar datos de conductores en un chatbot externo</td>
+<td>Modelos locales, minimización, anonimización</td>
+</tr>
+<tr>
+<td>Alucinación</td>
+<td>El modelo afirma con seguridad algo falso</td>
+<td>Inventar una política de reembolsos</td>
+<td>RAG con citas, abstención, revisión humana</td>
+</tr>
+<tr>
+<td>Seguridad</td>
+<td>El sistema es manipulable o filtra información</td>
+<td>Inyección de instrucciones en un correo</td>
+<td>Separar instrucciones y datos, mínimos privilegios</td>
+</tr>
+<tr>
+<td>Autonomía excesiva</td>
+<td>Un agente actúa más allá de lo que debería</td>
+<td>Borrar registros de auditoría para liberar disco</td>
+<td>Permisos de solo lectura, confirmación humana</td>
+</tr>
+<tr>
+<td>Propiedad intelectual</td>
+<td>Generar contenido que copia obras protegidas o filtrar código propio</td>
+<td>Publicar código generado con licencia incompatible</td>
+<td>Revisión de licencias, no enviar código a servicios no aprobados</td>
+</tr>
+<tr>
+<td>Transparencia</td>
+<td>La persona no sabe que habla con una IA ni por qué decide algo</td>
+<td>Chatbot que se hace pasar por un agente humano</td>
+<td>Avisar de que es IA, explicar la base de la respuesta</td>
+</tr>
+<tr>
+<td>Impacto ambiental y coste</td>
+<td>Consumo de energía y de dinero desproporcionado</td>
+<td>Usar un modelo enorme para clasificar tres categorías</td>
+<td>Elegir el modelo más pequeño que cumple</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="principios-de-uso-responsable">Principios de uso responsable</h3>
+<p>Casi todos los marcos (OCDE, UNESCO, Comisión Europea) coinciden en seis principios: <strong>supervisión humana, robustez y seguridad, privacidad, transparencia, equidad y rendición de cuentas</strong>. En la práctica de una consultora se traducen en preguntas que debes saber responder antes de desplegar:</p>
+<ol>
+<li>¿Quién revisa la salida antes de que tenga efectos?</li>
+<li>¿Cómo sé que funciona? ¿Con qué conjunto de pruebas lo he medido?</li>
+<li>¿Qué datos entran en el modelo y dónde se procesan?</li>
+<li>¿Sabe la persona usuaria que habla con una IA?</li>
+<li>¿Puede el sistema tratar peor a algún grupo?</li>
+<li>¿Quién responde si se equivoca?</li>
+</ol>
+<hr />
+<h2 id="22-marco-normativo">2.2 Marco normativo</h2>
+<h3 id="rgpd">RGPD</h3>
+<p>El Reglamento General de Protección de Datos se aplica siempre que un sistema de IA trate datos personales. Las ideas que más afectan a tus proyectos:</p>
+<ul>
+<li><strong>Base legal y finalidad</strong>: no puedes reutilizar datos para entrenar o alimentar un modelo con una finalidad distinta sin base legal.</li>
+<li><strong>Minimización</strong>: envía al modelo solo los datos que necesita.</li>
+<li><strong>Decisiones automatizadas</strong> (artículo 22): las personas tienen derecho a no ser objeto de decisiones basadas únicamente en tratamiento automatizado que les afecten significativamente.</li>
+<li><strong>Transferencias internacionales</strong>: enviar datos a un servicio fuera del Espacio Económico Europeo requiere garantías. Es una de las razones para usar modelos locales.</li>
+</ul>
+<h3 id="reglamento-europeo-de-ia">Reglamento Europeo de IA</h3>
+<p>El Reglamento (UE) 2024/1689 clasifica los sistemas de IA por nivel de riesgo y entra en aplicación de forma escalonada entre 2025 y 2027:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th>Ejemplos</th>
+<th>Consecuencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Riesgo inaceptable</td>
+<td>Puntuación social, manipulación que explota vulnerabilidades, reconocimiento de emociones en el trabajo</td>
+<td>Prohibido</td>
+</tr>
+<tr>
+<td>Alto riesgo</td>
+<td>Selección de personal, evaluación de trabajadores, acceso a servicios esenciales, infraestructuras críticas</td>
+<td>Gestión de riesgos, calidad de datos, documentación técnica, registro, supervisión humana y evaluación de conformidad</td>
+</tr>
+<tr>
+<td>Riesgo limitado</td>
+<td>Chatbots, contenido generado (deepfakes)</td>
+<td>Obligaciones de transparencia: informar de que es IA y marcar el contenido sintético</td>
+</tr>
+<tr>
+<td>Riesgo mínimo</td>
+<td>Filtros de spam, asistentes internos de redacción</td>
+<td>Códigos de conducta voluntarios</td>
+</tr>
+</tbody>
+</table></div>
+<p>Además, los proveedores de <strong>modelos de IA de uso general</strong> (los LLM fundacionales) tienen obligaciones propias de documentación, transparencia sobre los datos de entrenamiento y respeto de los derechos de autor.</p>
+<p>Como consultor no tienes que ser jurista, pero sí saber <strong>clasificar preliminarmente</strong> un caso de uso y saber cuándo hay que implicar a cumplimiento normativo.</p>
+<h3 id="la-politica-de-atlantica">La política de Atlántica</h3>
+<p>Lee <code>datos/atlantica/documentos/03_politica_uso_ia.md</code>. Es un ejemplo realista de cómo una empresa aterriza estas normas: herramientas aprobadas, revisión humana obligatoria, prohibición de decisiones automatizadas sobre personas, inventario de casos de uso y clasificación de riesgo. Tu asistente de equipo tendrá que cumplirla.</p>
+<hr />
+<h2 id="23-panorama-de-herramientas">2.3 Panorama de herramientas</h2>
+<h3 id="dos-formas-de-acceder-a-un-modelo">Dos formas de acceder a un modelo</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th></th>
+<th>Servicio en la nube (API de un proveedor)</th>
+<th>Modelo de pesos abiertos en infraestructura propia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ejemplos</td>
+<td>Servicios comerciales de OpenAI, Anthropic, Google o Mistral</td>
+<td>Llama, Qwen, Gemma, Mistral, Granite, gpt-oss ejecutados con Ollama, LM Studio o vLLM</td>
+</tr>
+<tr>
+<td>Calidad máxima disponible</td>
+<td>La más alta</td>
+<td>Algo menor, pero suficiente para muchas tareas concretas</td>
+</tr>
+<tr>
+<td>Privacidad</td>
+<td>Los datos salen de la empresa (con contrato y garantías)</td>
+<td>Los datos no salen</td>
+</tr>
+<tr>
+<td>Coste</td>
+<td>Por token, variable</td>
+<td>Hardware fijo; coste marginal casi nulo</td>
+</tr>
+<tr>
+<td>Operación</td>
+<td>Ninguna</td>
+<td>La tuya: servidores, actualizaciones, monitorización</td>
+</tr>
+<tr>
+<td>Cuándo elegirlo</td>
+<td>Prototipos rápidos, tareas que exigen el mejor modelo, datos públicos</td>
+<td>Datos confidenciales, volumen alto, requisitos de soberanía</td>
+</tr>
+</tbody>
+</table></div>
+<p>En este curso trabajas con la segunda opción, que es la que más valor aporta a los clientes que no pueden sacar sus datos.</p>
+<h3 id="motores-de-inferencia-del-curso">Motores de inferencia del curso</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Motor</th>
+<th>Papel</th>
+<th>Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ollama</strong></td>
+<td>Motor principal</td>
+<td>Instalación sencilla, catálogo de modelos, API compatible con OpenAI, herramientas y JSON Schema</td>
+</tr>
+<tr>
+<td><strong>LM Studio</strong></td>
+<td>Exploración</td>
+<td>Interfaz gráfica para descargar, comparar y ajustar parámetros de modelos; también ofrece servidor local</td>
+</tr>
+<tr>
+<td><strong>Colibri</strong></td>
+<td>Laboratorio de frontera</td>
+<td>Ejecuta modelos de mezcla de expertos (MoE) de cientos de miles de millones de parámetros leyendo los expertos desde disco; muy lento con los modelos grandes, ideal para entender la inferencia</td>
+</tr>
+<tr>
+<td><strong>vLLM</strong></td>
+<td>Producción</td>
+<td>Servidor para muchos usuarios a la vez; solo en el servidor compartido (sesión 13)</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="el-resto-del-ecosistema">El resto del ecosistema</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Categoría</th>
+<th>Herramientas</th>
+<th>Sesión</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Asistentes de código</td>
+<td>GitHub Copilot, Continue, asistentes integrados en IDE</td>
+<td>13</td>
+</tr>
+<tr>
+<td>Frameworks de aplicaciones</td>
+<td>LangChain, LangGraph, LlamaIndex</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Protocolo de herramientas</td>
+<td>Model Context Protocol (MCP)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Bases vectoriales</td>
+<td>Chroma, Qdrant, pgvector</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Evaluación y observabilidad</td>
+<td>Ragas, DeepEval, promptfoo, Langfuse</td>
+<td>7 y 13</td>
+</tr>
+<tr>
+<td>Interfaces</td>
+<td>Streamlit, Gradio, Open WebUI</td>
+<td>11</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="licencias-una-pregunta-que-siempre-debes-hacer">Licencias: una pregunta que siempre debes hacer</h3>
+<p>«Pesos abiertos» no significa «uso libre». Antes de proponer un modelo a un cliente, lee su licencia:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Licencia</th>
+<th>Ejemplos</th>
+<th>Uso comercial</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Apache 2.0 o MIT</td>
+<td>Granite, Qwen (mayoría), Mistral (algunos), gpt-oss</td>
+<td>Sí, sin restricciones relevantes</td>
+</tr>
+<tr>
+<td>Licencias propias permisivas con condiciones</td>
+<td>Llama, Gemma</td>
+<td>Sí, con condiciones (atribución, políticas de uso, límites de usuarios)</td>
+</tr>
+<tr>
+<td>Licencias no comerciales</td>
+<td>Algunos modelos de investigación</td>
+<td>No</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="24-fundamentos-de-la-ia-generativa">2.4 Fundamentos de la IA generativa</h2>
+<h3 id="que-significa-generar">Qué significa «generar»</h3>
+<p>Un modelo generativo aprende la distribución de probabilidad de los datos con los que se entrena y puede producir muestras nuevas que parecen de esa distribución. No copia ni busca: <strong>muestrea</strong>.</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Familia</th>
+<th>Cómo genera</th>
+<th>Uso principal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Modelos autorregresivos (Transformer decodificador)</td>
+<td>Predicen el siguiente token, una y otra vez</td>
+<td>Texto y código (LLM)</td>
+</tr>
+<tr>
+<td>Modelos de difusión</td>
+<td>Parten de ruido y lo eliminan paso a paso</td>
+<td>Imagen, audio y vídeo</td>
+</tr>
+<tr>
+<td>GAN y autoencoders variacionales</td>
+<td>Un generador y un evaluador compiten / un espacio latente que se muestrea</td>
+<td>Imagen sintética, datos sintéticos (hoy menos usados)</td>
+</tr>
+<tr>
+<td>Multimodales</td>
+<td>Combinan codificadores de imagen o audio con un LLM</td>
+<td>Describir imágenes, entender documentos escaneados</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="como-genera-texto-un-llm">Cómo genera texto un LLM</h3>
+<ol>
+<li>El texto de entrada se trocea en <strong>tokens</strong>.</li>
+<li>El modelo calcula, para cada token posible del vocabulario, la probabilidad de que sea el siguiente.</li>
+<li>Se <strong>elige</strong> uno (según la temperatura y otros parámetros de muestreo).</li>
+<li>El token elegido se añade a la entrada y se repite el proceso hasta un token de fin o hasta el límite.</li>
+</ol>
+<p>Consecuencias directas que tienes que tener presentes:</p>
+<ul>
+<li><strong>Es probabilístico</strong>: la misma pregunta puede dar respuestas distintas.</li>
+<li><strong>No consulta una base de datos</strong>: responde con lo que «suena» más probable según lo aprendido. Por eso alucina.</li>
+<li><strong>Su coste crece con los tokens</strong>: de entrada y, sobre todo, de salida.</li>
+</ul>
+<h3 id="de-un-modelo-base-a-un-asistente">De un modelo base a un asistente</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Fase</th>
+<th>Qué aprende</th>
+<th>Datos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Preentrenamiento</td>
+<td>A predecir el siguiente token: gramática, hechos, estilos, código</td>
+<td>Billones de tokens de texto público</td>
+</tr>
+<tr>
+<td>Ajuste con instrucciones</td>
+<td>A seguir órdenes y conversar</td>
+<td>Decenas o cientos de miles de pares instrucción-respuesta</td>
+</tr>
+<tr>
+<td>Alineamiento con preferencias</td>
+<td>A preferir respuestas útiles, honestas e inofensivas</td>
+<td>Comparaciones de respuestas valoradas por personas o por otros modelos</td>
+</tr>
+<tr>
+<td>Entrenamiento para razonar (opcional)</td>
+<td>A «pensar» paso a paso antes de responder</td>
+<td>Problemas con solución verificable</td>
+</tr>
+</tbody>
+</table></div>
+<p>Lo verás con detalle en la sesión 3.</p>
+<hr />
+<h2 id="25-primeras-llamadas-a-un-llm-desde-python">2.5 Primeras llamadas a un LLM desde Python</h2>
+<h3 id="mensajes-y-roles">Mensajes y roles</h3>
+<p>La API de chat recibe una lista de mensajes. Cada mensaje tiene un <strong>rol</strong>:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Rol</th>
+<th>Para qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>system</code></td>
+<td>Instrucciones de comportamiento: quién es el asistente, qué puede y qué no puede hacer, formato</td>
+</tr>
+<tr>
+<td><code>user</code></td>
+<td>Lo que pide la persona</td>
+</tr>
+<tr>
+<td><code>assistant</code></td>
+<td>Lo que respondió el modelo antes (para mantener la conversación)</td>
+</tr>
+<tr>
+<td><code>tool</code></td>
+<td>El resultado de una herramienta (sesiones 7 a 9)</td>
+</tr>
+</tbody>
+</table></div>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">comun</span><span class="w"> </span><span class="kn">import</span> <span class="n">llm</span>
+
+<span class="n">mensajes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"Eres el asistente interno de Atlántica. Respondes en español y en menos de 80 palabras."</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"¿Qué es un operador logístico?"</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">llm</span><span class="o">.</span><span class="n">chat</span><span class="p">(</span><span class="n">mensajes</span><span class="p">))</span>
+</code></pre></div>
+
+<p><strong>El modelo no tiene memoria.</strong> Cada llamada es independiente: para mantener una conversación tienes que reenviar todo el historial. Lo implementarás en el ejercicio 2.</p>
+<h3 id="parametros-basicos">Parámetros básicos</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Qué controla</th>
+<th>Valor típico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>temperature</code></td>
+<td>Aleatoriedad del muestreo</td>
+<td>0-0.3 para tareas precisas; 0.7-1 para creatividad</td>
+</tr>
+<tr>
+<td><code>max_tokens</code></td>
+<td>Longitud máxima de la respuesta</td>
+<td>Limítalo siempre en producción</td>
+</tr>
+<tr>
+<td><code>model</code></td>
+<td>Qué modelo responde</td>
+<td>Según la tarea y el hardware</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="el-mismo-codigo-con-otro-motor">El mismo código con otro motor</h3>
+<p>Abre LM Studio, ve a <em>Developer</em> y pulsa <em>Start Server</em>. Cambia en <code>.env</code>:</p>
+<div class="codehilite"><pre><span></span><code>LLM_BASE_URL=http://localhost:1234/v1
+</code></pre></div>
+
+<p>Ejecuta el mismo programa: ahora responde LM Studio. Esta independencia del motor es una decisión de arquitectura que conviene tomar en todos los proyectos.</p>
+<hr />
+<h2 id="errores-frecuentes">Errores frecuentes</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pensar que el modelo recuerda la conversación</td>
+<td>Responde como si no hubieras dicho nada antes</td>
+<td>Reenvía el historial completo</td>
+</tr>
+<tr>
+<td>Poner las instrucciones en el mensaje de usuario</td>
+<td>El modelo las sigue a medias</td>
+<td>Las reglas de comportamiento van en <code>system</code></td>
+</tr>
+<tr>
+<td>Comparar modelos con una sola pregunta</td>
+<td>Conclusiones que no se sostienen</td>
+<td>Usa varias preguntas y repite cada una</td>
+</tr>
+<tr>
+<td>Olvidar que LM Studio y Ollama usan puertos distintos</td>
+<td>Error de conexión</td>
+<td>Ollama: 11434 · LM Studio: 1234</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="para-saber-mas">Para saber más</h2>
+<ul>
+<li>Reglamento (UE) 2024/1689 de Inteligencia Artificial: <a href="https://eur-lex.europa.eu/eli/reg/2024/1689/oj" target="_blank" rel="noopener">eur-lex.europa.eu</a></li>
+<li>Agencia Española de Protección de Datos, guías sobre IA: <a href="https://www.aepd.es/" target="_blank" rel="noopener">aepd.es</a></li>
+<li>Referencia de la API de chat compatible con OpenAI en Ollama: <a href="https://docs.ollama.com/openai" target="_blank" rel="noopener">docs.ollama.com/openai</a></li>
+</ul>
+<div class="pie"><a href="sesion_01.html">&larr; Anterior</a><a href="index.html">Índice del curso</a><a href="sesion_03.html">Siguiente &rarr;</a></div>
+</main>
+</div>
+<script>
+(function () {
+  var raiz = document.documentElement, guardado = null;
+  try { guardado = localStorage.getItem("tema"); } catch (e) {}
+  if (guardado) raiz.setAttribute("data-theme", guardado);
+  document.addEventListener("click", function (ev) {
+    if (!ev.target.matches("[data-cambiar-tema]")) return;
+    var oscuro = raiz.getAttribute("data-theme") === "dark" ||
+      (!raiz.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+    var nuevo = oscuro ? "light" : "dark";
+    raiz.setAttribute("data-theme", nuevo);
+    try { localStorage.setItem("tema", nuevo); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

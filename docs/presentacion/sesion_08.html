@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 8. Agentes: planificación, memoria, estado y guardarraíles</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 8 · Martes 15 de diciembre de 2026 · 09:00-15:00 · Remoto</p><h1>Agentes: planificación, memoria, estado y guardarraíles</h1><div class="objetivo"><p>Al terminar esta sesión sabrás diseñar un agente con un plan, una memoria mínima y límites operativos claros, y sabrás depurarlo leyendo sus trazas. Verás los dos patrones de razonamiento más usados (ReAct y planificar-ejecutar) y los guardarraíles que separan una demo de un sistema que se puede poner delante de un cliente.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="6">6</b><span>unidades</span></div><div class="cifra"><b data-cuenta="4">4</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 8 · M5 · Agentic AI y herramientas avanzadas (6 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n6"><a class="tarjeta" href="#/u8-1"><span class="n">8.1</span><span class="t">ReAct: razonar, actuar, observar</span></a><a class="tarjeta" href="#/u8-2"><span class="n">8.2</span><span class="t">Planificar y ejecutar</span></a><a class="tarjeta" href="#/u8-3"><span class="n">8.3</span><span class="t">Memoria</span></a><a class="tarjeta" href="#/u8-4"><span class="n">8.4</span><span class="t">Estado y control del flujo</span></a><a class="tarjeta" href="#/u8-5"><span class="n">8.5</span><span class="t">Guardarraíles</span></a><a class="tarjeta" href="#/u8-6"><span class="n">8.6</span><span class="t">Trazas: cómo se depura un agente</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 8 · Martes 15 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: el agente que se pasó de listo</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>55</td>
+<td>Teoría</td>
+<td>Teoría I: patrones ReAct y planificar-ejecutar</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Laboratorio: agente ReAct con tool calling y trazas</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:30</td>
+<td>50</td>
+<td>Teoría</td>
+<td>Teoría II: memoria, estado y guardarraíles</td>
+</tr>
+<tr>
+<td>12:20</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Reto 1: prototipo del agente del equipo</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>13:40</td>
+<td>56</td>
+<td>Práctica</td>
+<td>Reto 2: guardarraíles y registro de errores</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Cierre: lectura de trazas en grupo</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 8</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Especificación del agente</td>
+<td><code>docs/especificacion_agente.md</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Prototipo del agente para una tarea acotada</td>
+<td><code>agente/</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Registro de trazas y errores</td>
+<td><code>docs/registro_errores.md</code> y <code>trazas/</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 4 con los tests en verde</td>
+<td><code>sesion_08_planificacion_memoria/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u8-1" data-menu="8.1 ReAct: razonar, actuar, observar" data-transition="fade"><div class="divisor"><span class="numero">8.1</span><h2>ReAct: razonar, actuar, observar</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.1 ReAct: razonar, actuar, observar</p><h2>ReAct: razonar, actuar, observar</h2></header><div class="cuerpo"><p><strong>ReAct</strong> (<em>Reasoning + Acting</em>) es el patrón del bucle que programaste en la sesión 7: en cada paso el modelo decide la siguiente acción a la vista de lo observado hasta ahora.</p><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>Objetivo ──► [Modelo decide] ──► acción (herramienta) ──► observación ──┐
+                   ▲                                                      │
+                   └──────────────────────────────────────────────────────┘
+             ... hasta que el modelo responde sin acción</code></pre></div><div class="tabla"><table>
+<thead>
+<tr>
+<th>Ventaja</th>
+<th>Inconveniente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Se adapta a lo que va encontrando</td>
+<td>Difícil de prever y de probar</td>
+</tr>
+<tr>
+<td>Sencillo de implementar con tool calling</td>
+<td>Cada paso es una llamada al modelo: coste y latencia</td>
+</tr>
+<tr>
+<td>Bueno para investigar o diagnosticar</td>
+<td>Puede dar vueltas, repetir acciones o desviarse</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u8-2" data-menu="8.2 Planificar y ejecutar" data-transition="fade"><div class="divisor"><span class="numero">8.2</span><h2>Planificar y ejecutar</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.2 Planificar y ejecutar</p><h2>Planificar y ejecutar</h2></header><div class="cuerpo"><p>En <strong>planificar-ejecutar</strong> (<em>plan-and-execute</em>) el modelo propone primero un plan completo, el programa lo valida (y una persona lo puede aprobar) y después se ejecuta paso a paso.</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Ventaja</th>
+<th>Inconveniente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>El plan se puede revisar antes de actuar</td>
+<td>El plan se hace sin ver los resultados intermedios</td>
+</tr>
+<tr>
+<td>Menos llamadas al modelo</td>
+<td>Si un paso depende de otro, el planificador tiene que saber expresar esa dependencia</td>
+</tr>
+<tr>
+<td>Fácil de auditar</td>
+<td>Hay que replanificar si algo falla</td>
+</tr>
+</tbody>
+</table></div><p>Un fallo típico, que verás hoy con el modelo real: el planificador escribe pasos como <code>calcular("2 * precio_m6i_large")</code>, con variables que no existen porque el precio todavía no se conoce cuando se hace el plan. Soluciones: pasos con referencias explícitas a resultados anteriores, <strong>replanificar</strong> tras cada paso que aporte datos, o combinar los patrones (plan de alto nivel y ReAct dentro de cada paso).</p></div></section>
+<section class="especial seccion" id="u8-3" data-menu="8.3 Memoria" data-transition="fade"><div class="divisor"><span class="numero">8.3</span><h2>Memoria</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.3 Memoria</p><h2>Memoria <span class="parte">1/3</span></h2></header><div class="cuerpo"><p>Un LLM no recuerda nada entre llamadas. La «memoria» de un agente es información que <strong>tu programa</strong> guarda y vuelve a poner en el contexto.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.3 Memoria</p><h2>Memoria <span class="parte">2/3</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Qué guarda</th>
+<th>Implementación</th>
+<th>Riesgo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Corto plazo: ventana</td>
+<td>Los últimos N mensajes</td>
+<td>Recortar el historial</td>
+<td>Olvida lo antiguo</td>
+</tr>
+<tr>
+<td>Corto plazo: resumen</td>
+<td>Un resumen de lo antiguo + lo reciente</td>
+<td>Resumir con el LLM al superar un umbral de tokens</td>
+<td>El resumen puede perder o deformar datos</td>
+</tr>
+<tr>
+<td>Estado de trabajo</td>
+<td>Datos estructurados de la tarea en curso</td>
+<td>Un objeto (<code>EstadoPeticion</code>) que se actualiza en cada paso</td>
+<td>Ninguno grave: es la opción más fiable</td>
+</tr>
+<tr>
+<td>Largo plazo: hechos</td>
+<td>Preferencias o datos estables de la persona usuaria</td>
+<td>Clave-valor o base vectorial</td>
+<td>Datos personales: privacidad y caducidad</td>
+</tr>
+<tr>
+<td>Largo plazo: episodios</td>
+<td>Qué funcionó en tareas anteriores</td>
+<td>Base vectorial de casos</td>
+<td>Contaminación con casos erróneos</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.3 Memoria</p><h2>Memoria <span class="parte">3/3</span></h2></header><div class="cuerpo"><p><strong>Regla práctica: lo que importa para decidir debe estar en un estado estructurado, no solo en el historial.</strong> Si InfraPilot necesita saber el centro de coste, que lo guarde en un campo, no que confíe en encontrarlo en el mensaje número 14.</p></div></section>
+<section class="especial seccion" id="u8-4" data-menu="8.4 Estado y control del flujo" data-transition="fade"><div class="divisor"><span class="numero">8.4</span><h2>Estado y control del flujo</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.4 Estado y control del flujo</p><h2>Estado y control del flujo <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Tratar al agente como una <strong>máquina de estados</strong> lo hace predecible:</p><pre class="mermaid">stateDiagram-v2
+    [*] --&gt; Recogiendo: petición
+    Recogiendo --&gt; Recogiendo: faltan datos / preguntar
+    Recogiendo --&gt; Validando: datos completos
+    Validando --&gt; Rechazada: incumple la política
+    Validando --&gt; PendienteAprobacion: conforme
+    PendienteAprobacion --&gt; Registrada: persona aprueba
+    PendienteAprobacion --&gt; Rechazada: persona rechaza
+    Registrada --&gt; [*]
+    Rechazada --&gt; [*]</pre></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.4 Estado y control del flujo</p><h2>Estado y control del flujo <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Con estados explícitos sabes qué herramientas tiene sentido permitir en cada momento (no se puede registrar un cambio en el estado «Recogiendo») y puedes guardar el estado para continuar más tarde. LangGraph (sesión 10) formaliza esta idea.</p></div></section>
+<section class="especial seccion" id="u8-5" data-menu="8.5 Guardarraíles" data-transition="fade"><div class="divisor"><span class="numero">8.5</span><h2>Guardarraíles</h2><ul class=puntos><li>La inyección de instrucciones es un problema abierto</li><li>Supervisión humana bien diseñada</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.5 Guardarraíles</p><h2>Guardarraíles <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Un <strong>guardarraíl</strong> es un control que limita lo que puede entrar, lo que puede hacer y lo que puede salir del agente. Se diseñan en capas, porque ninguno es infalible:</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.5 Guardarraíles</p><h2>Guardarraíles <span class="parte">2/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Control</th>
+<th>Ejemplo en Atlántica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entrada</td>
+<td>Detectar intentos de inyección</td>
+<td>«Ignora tus instrucciones…» en un correo o en un documento</td>
+</tr>
+<tr>
+<td>Entrada</td>
+<td>Ocultar datos personales antes de enviarlos al modelo</td>
+<td>DNI, teléfono, matrícula del conductor</td>
+</tr>
+<tr>
+<td>Herramientas</td>
+<td>Lista blanca: solo las herramientas necesarias</td>
+<td>PMO Copilot no tiene herramientas de infraestructura</td>
+</tr>
+<tr>
+<td>Herramientas</td>
+<td>Mínimo privilegio</td>
+<td>Leer el backlog sí; borrar historias no</td>
+</tr>
+<tr>
+<td>Herramientas</td>
+<td><strong>Confirmación humana</strong> para acciones con efectos</td>
+<td>Registrar una solicitud de cambio, actualizar el estado de una historia</td>
+</tr>
+<tr>
+<td>Límites</td>
+<td>Máximo de pasos, de tiempo, de llamadas, de coste</td>
+<td>8 pasos, 120 s</td>
+</tr>
+<tr>
+<td>Límites</td>
+<td>Detección de bucles</td>
+<td>La misma llamada con los mismos argumentos más de dos veces</td>
+</tr>
+<tr>
+<td>Salida</td>
+<td>Validación del formato y de reglas de negocio</td>
+<td>El Terraform no tiene buckets públicos</td>
+</tr>
+<tr>
+<td>Salida</td>
+<td>Verificación de hechos y de cifras</td>
+<td>Cada importe de la respuesta aparece en algún resultado de herramienta</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.5 Guardarraíles</p><h2>La inyección de instrucciones es un problema abierto</h2></header><div class="cuerpo"><p>Un modelo no distingue de forma fiable entre instrucciones de quien lo programó y texto que «parece» una instrucción dentro de los datos (un correo, un documento recuperado, la respuesta de una API). Los detectores por patrones ayudan, pero se saltan con facilidad. La defensa que funciona es de arquitectura: <strong>aunque el agente sea engañado, que no pueda hacer daño</strong>. Por eso el mínimo privilegio y la confirmación humana son los controles más importantes.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.5 Guardarraíles</p><h2>Supervisión humana bien diseñada</h2></header><div class="cuerpo"><p>«Humano en el bucle» solo es un control si la persona recibe la información necesaria para decidir: qué acción, con qué argumentos, por qué y qué consecuencias tiene. Un botón de «Aceptar» que se pulsa sin leer no es supervisión.</p></div></section>
+<section class="especial seccion" id="u8-6" data-menu="8.6 Trazas: cómo se depura un agente" data-transition="fade"><div class="divisor"><span class="numero">8.6</span><h2>Trazas: cómo se depura un agente</h2><ul class=puntos><li>Taxonomía de errores de agentes</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.6 Trazas: cómo se depura un agente</p><h2>Trazas: cómo se depura un agente</h2></header><div class="cuerpo"><p>Un agente que falla en producción solo se puede diagnosticar si cada ejecución deja una <strong>traza</strong>: objetivo, cada decisión del modelo, cada herramienta con sus argumentos y su resultado, tiempos y motivo de parada. El curso usa <code>comun/trazas.py</code>, que escribe una línea JSON por paso en <code>trazas/</code>.</p><p>Cómo leer una traza:</p><ol>
+<li>¿Qué buscó y qué le devolvió la búsqueda? Muchos errores empiezan en una recuperación pobre.</li>
+<li>¿Cada dato de la respuesta final aparece en algún resultado de herramienta? Si no, lo ha inventado.</li>
+<li>¿Usó las herramientas que debía? (por ejemplo, <code>calcular</code> para las cuentas).</li>
+<li>¿Por qué terminó? Respuesta, máximo de pasos o bucle.</li>
+</ol></div></section>
+<section><header class="cabecera"><p class="antetitulo">8.6 Trazas: cómo se depura un agente</p><h2>Taxonomía de errores de agentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Recuperación insuficiente</td>
+<td>Busca «t3.medium cost» y recibe la política de costes en lugar del catálogo</td>
+</tr>
+<tr>
+<td>Datos inventados</td>
+<td>Usa precios que no aparecen en ningún resultado</td>
+</tr>
+<tr>
+<td>Herramienta equivocada o no usada</td>
+<td>Hace la cuenta «de cabeza»</td>
+</tr>
+<tr>
+<td>Argumentos inválidos</td>
+<td>Pasa variables inexistentes a <code>calcular</code></td>
+</tr>
+<tr>
+<td>Objetivo malinterpretado</td>
+<td>Responde para el entorno <code>dev</code> cuando se preguntó por <code>pre</code></td>
+</tr>
+<tr>
+<td>Bucle</td>
+<td>Repite la misma búsqueda</td>
+</tr>
+<tr>
+<td>Exceso de autonomía</td>
+<td>Intenta una acción que no le corresponde</td>
+</tr>
+</tbody>
+</table></div><p>En la práctica de hoy registraréis los errores de vuestro agente con esta taxonomía.</p></div></section>
+<section data-menu="Errores frecuentes"><header class="cabecera"><p class="antetitulo">Sesión 8</p><h2>Errores frecuentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Confiar en el historial para los datos clave</td>
+<td>El agente «olvida» el centro de coste</td>
+<td>Estado estructurado</td>
+</tr>
+<tr>
+<td>Guardarraíles solo en el prompt</td>
+<td>El modelo se los salta</td>
+<td>Controles en el código: lista blanca, confirmación, límites</td>
+</tr>
+<tr>
+<td>No guardar trazas</td>
+<td>Imposible saber por qué falló</td>
+<td><code>Traza</code> en cada ejecución</td>
+</tr>
+<tr>
+<td>Pedir confirmación para todo</td>
+<td>La persona aprueba sin leer</td>
+<td>Solo para acciones con efectos, con información suficiente</td>
+</tr>
+<tr>
+<td>Ocultar datos después de llamar al modelo</td>
+<td>Los datos ya salieron</td>
+<td>Ocultar antes de construir el prompt</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section data-menu="Para saber más"><header class="cabecera"><p class="antetitulo">Sesión 8</p><h2>Para saber más</h2></header><div class="cuerpo"><ul>
+<li>Yao et al. (2022), <em>ReAct: Synergizing Reasoning and Acting in Language Models</em>: <a href="https://arxiv.org/abs/2210.03629" target="_blank" rel="noopener">arxiv.org/abs/2210.03629</a></li>
+<li>OWASP, <em>Top 10 for Large Language Model Applications</em>: <a href="https://genai.owasp.org/" target="_blank" rel="noopener">genai.owasp.org</a></li>
+<li>Simon Willison, artículos sobre <em>prompt injection</em>: <a href="https://simonwillison.net/tags/prompt-injection/" target="_blank" rel="noopener">simonwillison.net/tags/prompt-injection</a></li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Ejercicio 1. Agente ReAct con trazas (laboratorio, 40 min)</li><li>Ejercicio 2. Planificar y ejecutar (laboratorio, 30 min)</li><li>Ejercicio 3. Memoria y estado (Reto 1, 30 min)</li><li>Ejercicio 4. Guardarraíles (Reto 2, 30 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa cada fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_08_planificacion_memoria<span class="w"> </span>-v</code></pre></div><p>Desde hoy las piezas de agente de la sesión 7 (<code>calcular</code>, <code>esquema</code>, <code>ejecutar_herramienta</code>, <code>buscar_documentacion</code>) están en <code>comun/herramientas.py</code>.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Agente ReAct con trazas (laboratorio, 40 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Agente ReAct con trazas (laboratorio, 40 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Fichero: <code>s08_ej1_react.py</code></p><ol>
+<li><code>clave_llamada(nombre, argumentos)</code>: clave canónica para detectar repeticiones aunque cambie el orden de las claves del JSON.</li>
+<li><code>AgenteReAct.ejecutar(objetivo)</code>: el bucle de la sesión 7 con tres mejoras: <strong>trazas</strong> (<code>inicio</code>, <code>modelo</code>, <code>herramienta</code>, <code>fin</code>), <strong>detección de bucles</strong> y métricas (llamadas al modelo y segundos). Lee el docstring con calma: el orden de los registros importa y los tests lo comprueban.</li>
+</ol><p>Ejecuta el fichero con el modelo real y después lee la traza:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>python<span class="w"> </span>sesion_08_planificacion_memoria/ejemplos/01_leer_traza.py<span class="w"> </span>trazas/s08_react.jsonl</code></pre></div></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Agente ReAct con trazas (laboratorio, 40 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p><strong>Comprueba el resultado a mano</strong> con el catálogo (<code>07_catalogo_modulos_terraform.md</code>) y la política (<code>06_politica_infraestructura_cloud.md</code>). ¿Es correcto? Si no lo es, ¿en qué paso de la traza empieza el error?</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 2. Planificar y ejecutar (laboratorio, 30 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. Planificar y ejecutar (laboratorio, 30 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s08_ej2_plan_ejecutar.py</code></p><ol>
+<li><code>planificar(objetivo, descripcion_herramientas, max_pasos)</code>: una llamada a <code>llm.estructurado</code> con el modelo <code>Plan</code>.</li>
+<li><code>validar_plan(plan, herramientas, max_pasos)</code>: los cuatro problemas del docstring.</li>
+<li><code>ejecutar_plan(plan, registro, detener_en_error)</code>.</li>
+<li><code>sintetizar(objetivo, resultados)</code>.</li>
+</ol><p>Ejecuta el fichero e imprime el plan. ¿Son ejecutables todos los pasos? ¿Qué pasa con los pasos que dependen de resultados anteriores? ¿La respuesta final dice algo que no salga de los resultados?</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 3. Memoria y estado (Reto 1, 30 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. Memoria y estado (Reto 1, 30 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s08_ej3_memoria.py</code></p><ol>
+<li><code>tokens_aproximados(mensajes)</code>.</li>
+<li><code>MemoriaVentana.agregar</code> y <code>contexto</code>: el contexto nunca empieza por un mensaje del asistente.</li>
+<li><code>MemoriaResumen.compactar</code> y <code>contexto</code>.</li>
+<li><code>EstadoPeticion.faltan</code>, <code>actualizar</code> y <code>como_texto</code>: el estado de trabajo de InfraPilot.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Ejercicio 4. Guardarraíles (Reto 2, 30 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 4. Guardarraíles (Reto 2, 30 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s08_ej4_guardarrailes.py</code></p><ol>
+<li><code>detectar_inyeccion(texto)</code>: los patrones están escritos sin tildes y en minúsculas; normaliza <strong>solo el texto</strong>.</li>
+<li><code>ocultar_datos_personales(texto)</code>: sustituye y cuenta.</li>
+<li><code>PoliticaHerramientas.autorizar(nombre, argumentos_json, confirmar)</code>: lista blanca y confirmación humana. <code>confirmar</code> es una función que recibes: en el ejemplo pregunta por consola; en la sesión 11 será un botón de la interfaz.</li>
+<li><code>Limites.comprobar(pasos, segundos, llamadas_herramienta)</code>.</li>
+</ol><p>Ejecuta <code>ejemplos/02_inyeccion_indirecta.py</code>. ¿El sistema ingenuo obedece la instrucción escondida? ¿Y el defensivo? ¿Te fiarías de la defensa por prompt?</p></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Especificación y prototipo del agente del equipo</h2><ul class=puntos><li>Reto 1. Prototipo del agente para una tarea acotada (70 min)</li><li>Reto 2. Guardarraíles y registro de errores (56 min)</li><li>Entrega</li><li>Criterios de evaluación (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 8. Especificación y prototipo del agente del equipo</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>Entregables del equipo: <code>docs/especificacion_agente.md</code>, el código en <code>agente/</code>, <code>docs/registro_errores.md</code> y las trazas en <code>trazas/</code>.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 8. Especificación y prototipo del agente del equipo · Reto 1. Prototipo del agente para una tarea acotada (70 min)</p><h2>1. Especificación (25 min)</h2></header><div class="cuerpo"><p>Rellenad <code>docs/especificacion_agente.md</code> a partir de <code>plantillas/especificacion_agente.md</code>. Elegid <strong>una sola tarea acotada</strong> de vuestro reto:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Reto</th>
+<th>Tarea acotada para hoy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 · DevAssist</td>
+<td>«Revisa esta función contra la guía de estilo y propón sus pruebas»</td>
+</tr>
+<tr>
+<td>R2 · InfraPilot</td>
+<td>«Recoge los datos de una petición de entorno, valídalos contra la política y estima el coste»</td>
+</tr>
+<tr>
+<td>R3 · PMO Copilot</td>
+<td>«Extrae las acciones y los riesgos de un acta y calcula la exposición de cada riesgo»</td>
+</tr>
+</tbody>
+</table></div><p>La especificación debe incluir: objetivo, entradas y salidas, herramientas (con su nivel de permiso), estado de trabajo, patrón (ReAct o planificar-ejecutar) y por qué, límites, puntos de confirmación humana y criterios de éxito.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 8. Especificación y prototipo del agente del equipo · Reto 1. Prototipo del agente para una tarea acotada (70 min)</p><h2>2. Prototipo (45 min)</h2></header><div class="cuerpo"><p>Implementad el agente en <code>agente/</code> reutilizando <code>AgenteReAct</code> (ejercicio 1) o el patrón planificar-ejecutar (ejercicio 2), con:</p><ul>
+<li>la herramienta <code>buscar_documentacion</code> sobre vuestro índice de la sesión 7;</li>
+<li>al menos una herramienta propia del reto (las tenéis preparadas en <code>equipos/&lt;vuestro_reto&gt;/herramientas.py</code>);</li>
+<li>trazas activadas.</li>
+</ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 8. Especificación y prototipo del agente del equipo · Reto 2. Guardarraíles y registro de errores (56 min)</p><h2>1. Guardarraíles (25 min)</h2></header><div class="cuerpo"><p>Añadid al agente, como mínimo:</p><ul>
+<li>detección de inyección y ocultación de datos personales en la entrada (ejercicio 4);</li>
+<li>política de herramientas con lista blanca y confirmación humana para cualquier acción con efectos;</li>
+<li>límites de pasos y de tiempo;</li>
+<li><strong>una verificación de salida específica del reto</strong>. Ejemplos: para InfraPilot, que cada importe de la respuesta aparezca en algún resultado de herramienta; para DevAssist, que el código propuesto sea Python válido (<code>ast.parse</code>); para PMO Copilot, que cada responsable de una acción aparezca en el acta.</li>
+</ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 8. Especificación y prototipo del agente del equipo · Reto 2. Guardarraíles y registro de errores (56 min)</p><h2>2. Registro de errores (31 min)</h2></header><div class="cuerpo"><p>Ejecutad el agente con <strong>10 casos</strong> de vuestro conjunto dorado (incluidos uno ambiguo y uno de seguridad) y registrad en <code>docs/registro_errores.md</code> cada fallo:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Caso</th>
+<th>Qué pasó</th>
+<th>Tipo de error (taxonomía 8.6)</th>
+<th>Paso de la traza donde empieza</th>
+<th>Corrección propuesta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="ejercicio" data-menu="Entrega"><header class="cabecera"><p class="antetitulo">Práctica 8. Especificación y prototipo del agente del equipo</p><h2>Entrega</h2></header><div class="cuerpo"><ol>
+<li><code>docs/especificacion_agente.md</code>.</li>
+<li><code>agente/</code> con el prototipo y sus guardarraíles.</li>
+<li><code>trazas/</code> con las 10 ejecuciones (o una muestra si ocupan mucho).</li>
+<li><code>docs/registro_errores.md</code>.</li>
+<li>Commit: <code>Sesión 8: especificación, prototipo y registro de errores del agente</code>.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 8. Especificación y prototipo del agente del equipo</p><h2>Criterios de evaluación (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Especificación</td>
+<td>Completa, acotada y con los permisos y puntos humanos justificados</td>
+</tr>
+<tr>
+<td>Prototipo</td>
+<td>Funciona en la tarea acotada con trazas</td>
+</tr>
+<tr>
+<td>Guardarraíles</td>
+<td>En capas, en el código, con una verificación de salida específica</td>
+</tr>
+<tr>
+<td>Registro de errores</td>
+<td>10 casos, errores clasificados y localizados en la traza</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 8</p><h1>Agentes: planificación, memoria, estado y guardarraíles</h1><div class="acciones"><a class="boton" href="sesion_09.html">Sesión 9. Herramientas y APIs: tool calling seguro y verificable <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 8. Agentes: planificación, memoria, estado y guardarraíles</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 8. Agentes: planificación, memoria, estado y guardarraíles</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a> · <a href="sesion_09.html">Sesión 9 →</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"></script>
+<script>
+(function () {
+  // Los diagramas se dibujan fuera de la diapositiva (sin la escala de reveal.js) para que
+  // mermaid mida bien los textos, y después se insertan ya dibujados.
+  if (!window.mermaid) { return; }
+  var fuente = getComputedStyle(document.querySelector(".reveal")).fontFamily;
+  mermaid.initialize({ startOnLoad: false, theme: "default", fontFamily: fuente, themeVariables: { fontFamily: fuente, fontSize: "16px" } });
+  document.querySelectorAll("pre.mermaid").forEach(function (pre, i) {
+    mermaid.render("diagrama-" + i, pre.textContent).then(function (r) {
+      var div = document.createElement("div");
+      div.className = "diagrama";
+      div.innerHTML = r.svg;
+      pre.replaceWith(div);
+      var seccion = div.closest("section");
+      if (window.cursoAjustar && seccion) { window.cursoAjustar(seccion); }
+    });
+  });
+}());
+</script>
+<style>.reveal .diagrama { text-align: center; margin: 8px 0 14px; } .reveal .diagrama svg { width: 100%; max-width: 100% !important; height: 370px; }</style>
+</body>
+</html>

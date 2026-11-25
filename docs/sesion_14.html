@@ -1,0 +1,663 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proyecto final: demo, defensa y evaluación · Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</title>
+<style>
+:root {
+  --fondo: #fbfaf7; --panel: #ffffff; --texto: #1f2328; --suave: #5b6470;
+  --borde: #e2ddd3; --acento: #2f6f9f; --acento-suave: #e8f1f8;
+  --codigo: #f4f1ea; --tabla: #f7f4ee;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+    --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+    --codigo: #22272e; --tabla: #20252b;
+  }
+}
+:root[data-theme="dark"] {
+  --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+  --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+  --codigo: #22272e; --tabla: #20252b;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body {
+  margin: 0; background: var(--fondo); color: var(--texto);
+  font: 17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--acento); }
+header.barra {
+  position: sticky; top: 0; z-index: 5; display: flex; gap: 1rem;
+  align-items: center; padding: .7rem 1.25rem; background: var(--panel);
+  border-bottom: 1px solid var(--borde);
+}
+header.barra .curso { font-weight: 650; text-decoration: none; color: var(--texto); }
+header.barra nav { margin-left: auto; display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+header.barra button {
+  font: inherit; font-size: .85rem; padding: .25rem .6rem; cursor: pointer;
+  background: transparent; color: var(--suave); border: 1px solid var(--borde); border-radius: 6px;
+}
+.pagina { display: grid; grid-template-columns: 17rem minmax(0, 1fr); max-width: 78rem; margin: 0 auto; }
+aside.indice {
+  position: sticky; top: 3.4rem; align-self: start; max-height: calc(100vh - 3.4rem);
+  overflow: auto; padding: 1.5rem 1rem 2rem 1.25rem; font-size: .9rem;
+}
+aside.indice .rotulo { text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; color: var(--suave); }
+aside.indice ul { list-style: none; margin: .4rem 0 0; padding: 0; }
+aside.indice ul ul { padding-left: .9rem; margin: 0; }
+aside.indice a { display: block; padding: .18rem 0; color: var(--suave); text-decoration: none; }
+aside.indice a:hover { color: var(--acento); }
+main { padding: 2rem 1.5rem 5rem; min-width: 0; max-width: 52rem; }
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 1rem; text-wrap: balance; }
+h2 { font-size: 1.5rem; margin: 2.8rem 0 .8rem; padding-top: .6rem; border-top: 1px solid var(--borde); }
+h3 { font-size: 1.15rem; margin: 2rem 0 .5rem; }
+hr { display: none; }
+p, li { text-wrap: pretty; }
+code { font: .88em/1.5 ui-monospace, "Cascadia Code", Consolas, Menlo, monospace; background: var(--codigo); padding: .12em .35em; border-radius: 4px; }
+.codehilite, pre { background: var(--codigo); border: 1px solid var(--borde); border-radius: 8px; overflow-x: auto; }
+.codehilite pre { border: 0; margin: 0; }
+pre { padding: .9rem 1rem; margin: 1rem 0; }
+pre code { background: none; padding: 0; font-size: .9rem; }
+.tabla { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--borde); vertical-align: top; }
+th { background: var(--tabla); font-weight: 600; }
+.pie { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--borde); font-size: .95rem; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: 1.1rem 1.2rem; }
+.tarjeta .num { color: var(--acento); font-weight: 650; font-size: .85rem; letter-spacing: .04em; text-transform: uppercase; }
+.tarjeta h3 { margin: .2rem 0 .5rem; }
+.tarjeta .enlaces { display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+.tarjeta.pendiente { opacity: .6; }
+.portada { max-width: 62rem; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+.portada .entrada { color: var(--suave); max-width: 44rem; }
+@media (max-width: 860px) {
+  .pagina { grid-template-columns: 1fr; }
+  aside.indice { display: none; }
+  main { padding: 1.5rem 1rem 4rem; }
+  body { font-size: 16px; }
+}
+@media print {
+  header.barra, aside.indice, .pie { display: none; }
+  .pagina { display: block; }
+  body { font-size: 11pt; background: #fff; color: #000; }
+  h2 { break-after: avoid; } pre, table { break-inside: avoid; }
+}
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.codehilite .hll { background-color: #ffffcc }
+.codehilite { background: #f0f0f0; }
+.codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #F00 } /* Error */
+.codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666 } /* Operator */
+.codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #007020 } /* Comment.Preproc */
+.codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.codehilite .gr { color: #F00 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #888 } /* Generic.Output */
+.codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #04D } /* Generic.Traceback */
+.codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+.codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #902000 } /* Keyword.Type */
+.codehilite .m { color: #40A070 } /* Literal.Number */
+.codehilite .s { color: #4070A0 } /* Literal.String */
+.codehilite .na { color: #4070A0 } /* Name.Attribute */
+.codehilite .nb { color: #007020 } /* Name.Builtin */
+.codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #60ADD5 } /* Name.Constant */
+.codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #007020 } /* Name.Exception */
+.codehilite .nf { color: #06287E } /* Name.Function */
+.codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+.codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #BB60D5 } /* Name.Variable */
+.codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #BBB } /* Text.Whitespace */
+.codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+.codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+.codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+.codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+.codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+.codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+.codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+.codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+.codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+.codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+.codehilite .sr { color: #235388 } /* Literal.String.Regex */
+.codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+.codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+.codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #06287E } /* Name.Function.Magic */
+.codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+.codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+.codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) pre { line-height: 125%; }
+:root:not([data-theme="light"]) td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) .codehilite .hll { background-color: #6e7681 }
+:root:not([data-theme="light"]) .codehilite { background: #0d1117; color: #E6EDF3 }
+:root:not([data-theme="light"]) .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root:not([data-theme="light"]) .codehilite .err { color: #F85149 } /* Error */
+:root:not([data-theme="light"]) .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root:not([data-theme="light"]) .codehilite .g { color: #E6EDF3 } /* Generic */
+:root:not([data-theme="light"]) .codehilite .k { color: #FF7B72 } /* Keyword */
+:root:not([data-theme="light"]) .codehilite .l { color: #A5D6FF } /* Literal */
+:root:not([data-theme="light"]) .codehilite .n { color: #E6EDF3 } /* Name */
+:root:not([data-theme="light"]) .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root:not([data-theme="light"]) .codehilite .x { color: #E6EDF3 } /* Other */
+:root:not([data-theme="light"]) .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root:not([data-theme="light"]) .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root:not([data-theme="light"]) .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root:not([data-theme="light"]) .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root:not([data-theme="light"]) .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root:not([data-theme="light"]) .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root:not([data-theme="light"]) .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root:not([data-theme="light"]) .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root:not([data-theme="light"]) .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root:not([data-theme="light"]) .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root:not([data-theme="light"]) .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root:not([data-theme="light"]) .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root:not([data-theme="light"]) .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root:not([data-theme="light"]) .codehilite .go { color: #8B949E } /* Generic.Output */
+:root:not([data-theme="light"]) .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root:not([data-theme="light"]) .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root:not([data-theme="light"]) .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root:not([data-theme="light"]) .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root:not([data-theme="light"]) .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root:not([data-theme="light"]) .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root:not([data-theme="light"]) .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root:not([data-theme="light"]) .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root:not([data-theme="light"]) .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root:not([data-theme="light"]) .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root:not([data-theme="light"]) .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root:not([data-theme="light"]) .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root:not([data-theme="light"]) .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root:not([data-theme="light"]) .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root:not([data-theme="light"]) .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root:not([data-theme="light"]) .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root:not([data-theme="light"]) .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root:not([data-theme="light"]) .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root:not([data-theme="light"]) .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root:not([data-theme="light"]) .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root:not([data-theme="light"]) .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root:not([data-theme="light"]) .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root:not([data-theme="light"]) .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root:not([data-theme="light"]) .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root:not([data-theme="light"]) .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root:not([data-theme="light"]) .codehilite .py { color: #79C0FF } /* Name.Property */
+:root:not([data-theme="light"]) .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root:not([data-theme="light"]) .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root:not([data-theme="light"]) .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root:not([data-theme="light"]) .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root:not([data-theme="light"]) .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root:not([data-theme="light"]) .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root:not([data-theme="light"]) .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root:not([data-theme="light"]) .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root:not([data-theme="light"]) .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root:not([data-theme="light"]) .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root:not([data-theme="light"]) .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root:not([data-theme="light"]) .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root:not([data-theme="light"]) .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root:not([data-theme="light"]) .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root:not([data-theme="light"]) .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root:not([data-theme="light"]) .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root:not([data-theme="light"]) .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root:not([data-theme="light"]) .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root:not([data-theme="light"]) .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root:not([data-theme="light"]) .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root:not([data-theme="light"]) .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root:not([data-theme="light"]) .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root:not([data-theme="light"]) .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root:not([data-theme="light"]) .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root:not([data-theme="light"]) .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root:not([data-theme="light"]) .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root:not([data-theme="light"]) .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root:not([data-theme="light"]) .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root:not([data-theme="light"]) .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root:not([data-theme="light"]) .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+}
+:root[data-theme="dark"] pre { line-height: 125%; }
+:root[data-theme="dark"] td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] .codehilite .hll { background-color: #6e7681 }
+:root[data-theme="dark"] .codehilite { background: #0d1117; color: #E6EDF3 }
+:root[data-theme="dark"] .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root[data-theme="dark"] .codehilite .err { color: #F85149 } /* Error */
+:root[data-theme="dark"] .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root[data-theme="dark"] .codehilite .g { color: #E6EDF3 } /* Generic */
+:root[data-theme="dark"] .codehilite .k { color: #FF7B72 } /* Keyword */
+:root[data-theme="dark"] .codehilite .l { color: #A5D6FF } /* Literal */
+:root[data-theme="dark"] .codehilite .n { color: #E6EDF3 } /* Name */
+:root[data-theme="dark"] .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root[data-theme="dark"] .codehilite .x { color: #E6EDF3 } /* Other */
+:root[data-theme="dark"] .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root[data-theme="dark"] .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root[data-theme="dark"] .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root[data-theme="dark"] .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root[data-theme="dark"] .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root[data-theme="dark"] .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root[data-theme="dark"] .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root[data-theme="dark"] .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root[data-theme="dark"] .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root[data-theme="dark"] .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root[data-theme="dark"] .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root[data-theme="dark"] .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root[data-theme="dark"] .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root[data-theme="dark"] .codehilite .go { color: #8B949E } /* Generic.Output */
+:root[data-theme="dark"] .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root[data-theme="dark"] .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root[data-theme="dark"] .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root[data-theme="dark"] .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root[data-theme="dark"] .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root[data-theme="dark"] .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root[data-theme="dark"] .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root[data-theme="dark"] .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root[data-theme="dark"] .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root[data-theme="dark"] .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root[data-theme="dark"] .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root[data-theme="dark"] .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root[data-theme="dark"] .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root[data-theme="dark"] .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root[data-theme="dark"] .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root[data-theme="dark"] .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root[data-theme="dark"] .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root[data-theme="dark"] .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root[data-theme="dark"] .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root[data-theme="dark"] .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root[data-theme="dark"] .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root[data-theme="dark"] .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root[data-theme="dark"] .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root[data-theme="dark"] .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root[data-theme="dark"] .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root[data-theme="dark"] .codehilite .py { color: #79C0FF } /* Name.Property */
+:root[data-theme="dark"] .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root[data-theme="dark"] .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root[data-theme="dark"] .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root[data-theme="dark"] .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root[data-theme="dark"] .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root[data-theme="dark"] .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root[data-theme="dark"] .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root[data-theme="dark"] .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root[data-theme="dark"] .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root[data-theme="dark"] .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root[data-theme="dark"] .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root[data-theme="dark"] .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root[data-theme="dark"] .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root[data-theme="dark"] .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root[data-theme="dark"] .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root[data-theme="dark"] .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root[data-theme="dark"] .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root[data-theme="dark"] .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root[data-theme="dark"] .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root[data-theme="dark"] .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root[data-theme="dark"] .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root[data-theme="dark"] .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root[data-theme="dark"] .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root[data-theme="dark"] .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root[data-theme="dark"] .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root[data-theme="dark"] .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root[data-theme="dark"] .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root[data-theme="dark"] .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root[data-theme="dark"] .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root[data-theme="dark"] .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+.codehilite { background: var(--codigo) !important; }
+.aviso-profe { border-left: 4px solid #c98a12; background: var(--acento-suave); padding: .6rem 1rem; border-radius: 6px; margin: 0 0 1.4rem; font-size: .95rem; }
+.ficha { display: flex; flex-wrap: wrap; gap: .4rem .8rem; margin: -.4rem 0 1.4rem; font-size: .9rem; color: var(--suave); }
+.ficha span { background: var(--acento-suave); padding: .1rem .6rem; border-radius: 20px; }
+.tarjeta .num.profe { color: #c98a12; }
+.seccion-indice { margin-top: 3rem; }
+pre.mermaid { background: var(--panel); text-align: center; }
+</style>
+
+</head>
+<body>
+<header class="barra">
+  <a class="curso" href="index.html">Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</a>
+  <nav><a href="sesion_14.html">Apuntes</a> <a href="sesion_14_ejercicios.html">Ejercicios</a> <a href="sesion_14_practica.html">Práctica</a> <a href="presentacion/sesion_14.html">Presentación</a></nav>
+  <button type="button" data-cambiar-tema>Claro / oscuro</button>
+</header>
+<div class="pagina">
+<aside class="indice"><div class="rotulo">En esta página</div><div class="toc">
+<ul>
+<li><a href="#agenda-de-la-sesion">Agenda de la sesión</a></li>
+<li><a href="#lo-que-entregas-hoy">Lo que entregas hoy</a></li>
+<li><a href="#141-orden-del-dia">14.1 Orden del día</a></li>
+<li><a href="#142-checklist-final-del-mvp-antes-de-las-1045">14.2 Checklist final del MVP (antes de las 10:45)</a></li>
+<li><a href="#143-estructura-de-la-demo-15-minutos">14.3 Estructura de la demo (15 minutos)</a></li>
+<li><a href="#144-preguntas-tipicas-del-comite">14.4 Preguntas típicas del comité</a></li>
+<li><a href="#145-prueba-individual">14.5 Prueba individual</a></li>
+<li><a href="#146-defensa-individual">14.6 Defensa individual</a></li>
+<li><a href="#147-evaluacion-del-curso">14.7 Evaluación del curso</a></li>
+<li><a href="#148-y-despues-del-curso">14.8 Y después del curso</a></li>
+</ul>
+</div>
+</aside>
+<main>
+<h1 id="sesion-14-proyecto-final-demo-defensa-y-evaluacion">Sesión 14. Proyecto final: demo, defensa y evaluación</h1>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Horario</th>
+<th>Modalidad</th>
+<th>Módulos</th>
+<th>Hito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Miércoles 23 de diciembre de 2026</td>
+<td>09:00-15:00</td>
+<td>Presencial</td>
+<td>M7 · Proyecto final y evaluación (6 h)</td>
+<td>H4 · Aplicación y proyecto</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Objetivo:</strong> Demostrar una solución funcional, argumentar decisiones y valorar calidad, riesgos y mejoras.</p>
+<p>Último día del curso, presencial. Por la mañana terminas y pruebas el asistente de tu equipo y lo presentas ante un comité como si fuera un cliente. Por la tarde haces la prueba individual y una defensa breve de las decisiones técnicas. Cerramos con una retrospectiva del curso.</p>
+<h3 id="agenda-de-la-sesion">Agenda de la sesión</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: orden del día y criterios</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>100</td>
+<td>Práctica</td>
+<td>Finalización, pruebas y ensayo</td>
+</tr>
+<tr>
+<td>10:55</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:05</td>
+<td>90</td>
+<td>Práctica</td>
+<td>Demo Day: 3 equipos × (15 min de demo + 15 min de preguntas)</td>
+</tr>
+<tr>
+<td>12:35</td>
+<td>16</td>
+<td>Práctica</td>
+<td>Evaluación entre pares</td>
+</tr>
+<tr>
+<td>12:51</td>
+<td>60</td>
+<td>Teoría</td>
+<td>Prueba individual teórico-práctica</td>
+</tr>
+<tr>
+<td>13:51</td>
+<td>45</td>
+<td>Teoría</td>
+<td>Defensa individual de decisiones</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Retrospectiva y cierre del curso</td>
+</tr>
+</tbody>
+</table></div>
+<p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p>
+<h2 id="lo-que-entregas-hoy">Lo que entregas hoy</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MVP del asistente</td>
+<td>Repositorio del equipo, etiqueta <code>v1.0</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Documentación reproducible</td>
+<td><code>README.md</code>, <code>docs/</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Presentación</td>
+<td><code>docs/presentacion.md</code> (o el formato del equipo)</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Informe de evaluación</td>
+<td><code>docs/informe_evaluacion.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Prueba individual</td>
+<td>En papel o en el formulario que indique el docente</td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div>
+<p>El enunciado completo y la rúbrica del proyecto están en <a href="proyecto_final.html"><code>proyecto_final/README.md</code></a>.</p>
+<hr />
+<h2 id="141-orden-del-dia">14.1 Orden del día</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Qué</th>
+<th>Detalle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>Activación</td>
+<td>Orden del día, criterios y turnos de la demo</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>Finalización y pruebas</td>
+<td>Último ciclo de evaluación, congelación del código, etiqueta <code>v1.0</code>, ensayo</td>
+</tr>
+<tr>
+<td>10:55</td>
+<td>Pausa</td>
+<td></td>
+</tr>
+<tr>
+<td>11:05</td>
+<td>Demo Day</td>
+<td>Tres equipos × (15 min de demo + 15 min de preguntas del comité)</td>
+</tr>
+<tr>
+<td>12:35</td>
+<td>Evaluación entre pares</td>
+<td>Cada persona valora a los otros dos equipos y a su propio equipo</td>
+</tr>
+<tr>
+<td>12:51</td>
+<td>Prueba individual</td>
+<td>60 minutos</td>
+</tr>
+<tr>
+<td>13:51</td>
+<td>Defensa individual</td>
+<td>3-4 minutos por persona: una pregunta sobre una decisión del proyecto</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>Retrospectiva y cierre</td>
+<td>Qué te llevas, qué harías distinto, próximos pasos</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="142-checklist-final-del-mvp-antes-de-las-1045">14.2 Checklist final del MVP (antes de las 10:45)</h2>
+<ul>
+<li>[ ] <code>python comprobar_entorno.py</code> sin errores en el portátil de la demo.</li>
+<li>[ ] El asistente arranca con una sola orden documentada en el README (<code>streamlit run app.py</code>).</li>
+<li>[ ] El índice del RAG se reconstruye con una orden documentada.</li>
+<li>[ ] <code>pytest tests -v</code> en verde.</li>
+<li>[ ] Evaluación final ejecutada sobre el conjunto dorado (30 o más casos) y resultados en <code>docs/informe_evaluacion.md</code>, comparados con la línea base.</li>
+<li>[ ] Red teaming ejecutado y resultados en el informe.</li>
+<li>[ ] Las acciones con efectos piden confirmación humana.</li>
+<li>[ ] No hay <code>.env</code>, claves ni datos personales en el repositorio.</li>
+<li>[ ] <code>python sesion_14_proyecto_final/ejercicios/s14_ej1_verificar_entrega.py &lt;repositorio&gt;</code> devuelve «Entrega completa: sí».</li>
+<li>[ ] Commit final y etiqueta: <code>git tag v1.0 &amp;&amp; git push --tags</code>.</li>
+<li>[ ] <strong>Plan B de la demo</strong>: capturas o un vídeo corto por si falla algo en directo, y el modelo descargado en local por si falla la red.</li>
+</ul>
+<h2 id="143-estructura-de-la-demo-15-minutos">14.3 Estructura de la demo (15 minutos)</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Minutos</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0-2</td>
+<td>El problema del cliente y a quién ayuda el asistente (con los números del AS-IS)</td>
+</tr>
+<tr>
+<td>2-4</td>
+<td>La solución en una diapositiva: arquitectura y decisiones clave</td>
+</tr>
+<tr>
+<td>4-10</td>
+<td><strong>Demo en directo</strong>: un caso normal, un caso que requiere herramienta y confirmación humana, un caso sin respuesta (abstención) y un intento de ataque</td>
+</tr>
+<tr>
+<td>10-13</td>
+<td>Cómo sabemos que funciona: métricas de evaluación, seguridad y rendimiento, y sus límites</td>
+</tr>
+<tr>
+<td>13-15</td>
+<td>Valor de negocio, riesgos pendientes y siguientes pasos</td>
+</tr>
+</tbody>
+</table></div>
+<p>Consejos: empieza por el problema, no por la tecnología; enseña también lo que <strong>no</strong> funciona y cómo lo controláis; reparte la palabra entre las cuatro personas.</p>
+<h2 id="144-preguntas-tipicas-del-comite">14.4 Preguntas típicas del comité</h2>
+<ul>
+<li>¿Qué pasa si el modelo se equivoca en este caso? ¿Quién lo detecta?</li>
+<li>¿Por qué un agente y no un workflow (o al revés)?</li>
+<li>¿Cómo sabéis que la versión de hoy es mejor que la de hace una semana?</li>
+<li>¿Qué datos salen del portátil o del servidor? ¿Qué clasificación tienen?</li>
+<li>¿Cuánto costaría en producción para 200 usuarios? ¿Qué motor usaríais?</li>
+<li>¿Qué haríais con dos semanas más?</li>
+<li>¿Qué decisión técnica cambiaríais si empezarais hoy?</li>
+</ul>
+<h2 id="145-prueba-individual">14.5 Prueba individual</h2>
+<p>60 minutos, sin conexión al modelo. Consta de preguntas de respuesta corta y de casos prácticos sobre todo el temario (fundamentos, prompting, RAG, agentes, aplicaciones, seguridad y evaluación). Cuenta un 20 % de la nota del curso junto con la defensa individual.</p>
+<p>Para prepararla: repasa las preguntas de repaso del cierre de cada sesión y las tablas de «Errores frecuentes» de los apuntes.</p>
+<h2 id="146-defensa-individual">14.6 Defensa individual</h2>
+<p>El comité hace a cada persona una pregunta sobre una decisión del proyecto en la que haya participado («¿por qué elegisteis esa estrategia de troceado?», «¿qué hace vuestro agente si la herramienta falla?»). Se valora que la respuesta sea concreta, con datos, y que reconozca las alternativas.</p>
+<h2 id="147-evaluacion-del-curso">14.7 Evaluación del curso</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Peso</th>
+<th>Evidencias</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Laboratorios y entregables de sesión</td>
+<td>40 %</td>
+<td>Los entregables de las 14 sesiones</td>
+</tr>
+<tr>
+<td>Proyecto final integrador</td>
+<td>40 %</td>
+<td>MVP, arquitectura, pruebas, trazabilidad y presentación</td>
+</tr>
+<tr>
+<td>Evaluación individual</td>
+<td>20 %</td>
+<td>Prueba teórico-práctica y defensa de decisiones</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="148-y-despues-del-curso">14.8 Y después del curso</h2>
+<p>Lo que has construido es el esqueleto de muchos proyectos reales: un asistente con RAG, herramientas con contrato, guardarraíles, evaluación continua y una interfaz. Para seguir:</p>
+<ul>
+<li>Cambia el modelo por uno mayor del servidor y vuelve a ejecutar la evaluación: ¿cuánto mejora y cuánto cuesta?</li>
+<li>Sustituye la base vectorial embebida por pgvector o Qdrant.</li>
+<li>Despliega el asistente con Docker y vLLM.</li>
+<li>Añade observabilidad con OpenTelemetry o una herramienta como Langfuse.</li>
+<li>Lee las fichas de los modelos nuevos que vayan saliendo con los criterios de la sesión 3, y evalúa antes de cambiar.</li>
+</ul>
+<div class="pie"><a href="sesion_13.html">&larr; Anterior</a><a href="index.html">Índice del curso</a><a href="index.html">Siguiente &rarr;</a></div>
+</main>
+</div>
+<script>
+(function () {
+  var raiz = document.documentElement, guardado = null;
+  try { guardado = localStorage.getItem("tema"); } catch (e) {}
+  if (guardado) raiz.setAttribute("data-theme", guardado);
+  document.addEventListener("click", function (ev) {
+    if (!ev.target.matches("[data-cambiar-tema]")) return;
+    var oscuro = raiz.getAttribute("data-theme") === "dark" ||
+      (!raiz.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+    var nuevo = oscuro ? "light" : "dark";
+    raiz.setAttribute("data-theme", nuevo);
+    try { localStorage.setItem("tema", nuevo); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

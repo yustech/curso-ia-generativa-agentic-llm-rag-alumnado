@@ -1,0 +1,38 @@
+# Dependencias del curso. Instálalas dentro del entorno virtual:
+#   pip install -r requirements.txt
+# Todo funciona contra un servidor compatible con la API de OpenAI
+# (Ollama en local por defecto; también LM Studio, vLLM o Colibri).
+# Versiones mínimas probadas en noviembre de 2026 con Python 3.12.
+
+# Cliente LLM y configuración
+openai>=1.50
+python-dotenv>=1.0
+httpx>=0.27
+
+# Datos, validación y pruebas
+numpy>=1.26
+pydantic>=2.7
+pytest>=8.0
+
+# Tokenización (sesión 3)
+tiktoken>=0.7
+
+# RAG (sesiones 5 a 7)
+chromadb>=1.0
+rank-bm25>=0.2.2
+
+# Agentes y frameworks (sesiones 8 a 10)
+mcp>=2.0
+langchain-core>=1.0
+langchain-openai>=1.0
+langgraph>=1.0
+llama-index-core>=0.14
+llama-index-llms-openai-like>=0.9
+llama-index-embeddings-openai>=0.8
+
+# Asistente con interfaz (sesión 11 en adelante)
+streamlit>=1.38
+
+# Generación de los apuntes en HTML y las presentaciones (herramientas/construir.py)
+markdown>=3.6
+pygments>=2.18

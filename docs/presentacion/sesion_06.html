@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 6. Embeddings, búsqueda semántica y bases de datos vectoriales</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 6 · Viernes 11 de diciembre de 2026 · 09:00-15:00 · Remoto</p><h1>Embeddings, búsqueda semántica y bases de datos vectoriales</h1><div class="objetivo"><p>Al terminar esta sesión entenderás cómo se representa el significado de un texto como un vector, sabrás comparar estrategias de búsqueda (léxica, semántica e híbrida) con métricas y tendrás tu primera base de datos vectorial persistente.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="6">6</b><span>unidades</span></div><div class="cifra"><b data-cuenta="4">4</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 6 · M4 · RAG (Retrieval-Augmented Generation) (6 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n6"><a class="tarjeta" href="#/u6-1"><span class="n">6.1</span><span class="t">Qué es un embedding</span></a><a class="tarjeta" href="#/u6-2"><span class="n">6.2</span><span class="t">Similitud entre vectores</span></a><a class="tarjeta" href="#/u6-3"><span class="n">6.3</span><span class="t">Búsqueda léxica: BM25</span></a><a class="tarjeta" href="#/u6-4"><span class="n">6.4</span><span class="t">Búsqueda híbrida y fusión de rankings</span></a><a class="tarjeta" href="#/u6-5"><span class="n">6.5</span><span class="t">Bases de datos vectoriales</span></a><a class="tarjeta" href="#/u6-6"><span class="n">6.6</span><span class="t">Métricas de recuperación</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 6 · Viernes 11 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: el significado como geometría</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>55</td>
+<td>Teoría</td>
+<td>Teoría I: embeddings y similitud</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Laboratorio: embeddings y ranking</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:30</td>
+<td>50</td>
+<td>Teoría</td>
+<td>Teoría II: búsqueda léxica, semántica e híbrida; bases vectoriales</td>
+</tr>
+<tr>
+<td>12:20</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Reto 1: comparación de estrategias de búsqueda</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>13:40</td>
+<td>56</td>
+<td>Práctica</td>
+<td>Reto 2: base vectorial persistente con Chroma</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Cierre: tabla comparativa y preguntas de repaso</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 6</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Notebook o script funcional de búsqueda sobre los documentos del reto</td>
+<td><code>rag/busqueda.py</code> (o <code>.ipynb</code>) del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Tabla comparativa de estrategias con hit@k y MRR</td>
+<td><code>docs/comparativa_busqueda.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 4 con los tests en verde</td>
+<td><code>sesion_06_embeddings_busqueda/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u6-1" data-menu="6.1 Qué es un embedding" data-transition="fade"><div class="divisor"><span class="numero">6.1</span><h2>Qué es un embedding</h2><ul class=puntos><li>Modelos de embeddings</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.1 Qué es un embedding</p><h2>Qué es un embedding <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Un <strong>embedding</strong> es un vector de números (de unos cientos a unos miles) que representa el significado de un texto. Lo produce un modelo entrenado para que textos con significado parecido tengan vectores cercanos.</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">from</span><span class="w"> </span><span class="nn">comun</span><span class="w"> </span><span class="kn">import</span> <span class="n">llm</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">embeddings</span><span class="p">([</span><span class="s2">"¿Cuántos días de vacaciones tengo?"</span><span class="p">,</span> <span class="s2">"Política de vacaciones: 25 días laborables"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>   <span class="c1"># 768 dimensiones con embeddinggemma</span></code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.1 Qué es un embedding</p><h2>Qué es un embedding <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Propiedades que tienes que conocer:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Propiedad</th>
+<th>Consecuencia práctica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Captura significado, no palabras</td>
+<td>«Comité de Cambios» y «CAB» pueden quedar cerca aunque no compartan letras</td>
+</tr>
+<tr>
+<td>Depende del modelo</td>
+<td>Los vectores de dos modelos distintos no se pueden comparar ni mezclar en un índice</td>
+</tr>
+<tr>
+<td>Depende del idioma de entrenamiento</td>
+<td>Un modelo entrenado solo en inglés funciona mal en español: elige uno multilingüe</td>
+</tr>
+<tr>
+<td>Tiene longitud máxima</td>
+<td>Textos más largos se truncan: otra razón para trocear</td>
+</tr>
+<tr>
+<td>Es un cálculo barato frente a generar</td>
+<td>Se calcula una vez por trozo y se guarda</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.1 Qué es un embedding</p><h2>Modelos de embeddings</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Modelo</th>
+<th>Dimensión</th>
+<th>Idiomas</th>
+<th>Notas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>embeddinggemma</code></td>
+<td>768</td>
+<td>Multilingüe</td>
+<td>Pequeño (300M), el del curso</td>
+</tr>
+<tr>
+<td><code>bge-m3</code></td>
+<td>1.024</td>
+<td>Multilingüe</td>
+<td>Muy bueno en español; más pesado</td>
+</tr>
+<tr>
+<td><code>nomic-embed-text</code></td>
+<td>768</td>
+<td>Sobre todo inglés</td>
+<td>Popular, rápido</td>
+</tr>
+<tr>
+<td><code>multilingual-e5</code></td>
+<td>384-1.024</td>
+<td>Multilingüe</td>
+<td>Requiere prefijos «query:» y «passage:»</td>
+</tr>
+</tbody>
+</table></div><p>Algunos modelos funcionan mejor si distingues la pregunta del documento con un prefijo o una instrucción. Consulta su ficha.</p></div></section>
+<section class="especial seccion" id="u6-2" data-menu="6.2 Similitud entre vectores" data-transition="fade"><div class="divisor"><span class="numero">6.2</span><h2>Similitud entre vectores</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.2 Similitud entre vectores</p><h2>Similitud entre vectores</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Medida</th>
+<th>Fórmula</th>
+<th>Rango</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Coseno</td>
+<td><code>a·b / (‖a‖‖b‖)</code></td>
+<td>-1 a 1</td>
+<td>La más usada: compara la dirección, no la longitud</td>
+</tr>
+<tr>
+<td>Producto escalar</td>
+<td><code>a·b</code></td>
+<td>Sin límite</td>
+<td>Igual al coseno si los vectores están normalizados (y más rápido)</td>
+</tr>
+<tr>
+<td>Distancia euclídea</td>
+<td><code>‖a − b‖</code></td>
+<td>0 a ∞</td>
+<td>Menor es más parecido</td>
+</tr>
+</tbody>
+</table></div><p><strong>Normalizar</strong> un vector es dividirlo por su norma para que mida 1. Con vectores normalizados, coseno y producto escalar coinciden y buscar se reduce a una multiplicación de matrices: así lo hace el buscador de referencia del curso (<code>comun/buscador.py</code>).</p><p>Las puntuaciones absolutas no significan nada por sí solas: 0,54 puede ser un acierto con un modelo y ruido con otro. Lo que importa es el <strong>orden</strong>.</p></div></section>
+<section class="especial seccion" id="u6-3" data-menu="6.3 Búsqueda léxica: BM25" data-transition="fade"><div class="divisor"><span class="numero">6.3</span><h2>Búsqueda léxica: BM25</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.3 Búsqueda léxica: BM25</p><h2>Búsqueda léxica: BM25 <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Antes de los embeddings, los buscadores comparaban <strong>palabras</strong>. BM25 es el algoritmo léxico de referencia (lo usan Elasticsearch y OpenSearch). Puntúa un documento según:</p><ul>
+<li>cuántas veces aparecen en él los términos de la consulta (con saturación: la décima repetición suma menos que la primera);</li>
+<li>lo raro que es cada término en la colección (un término raro como «Multi-AZ» pesa mucho más que «política»);</li>
+<li>la longitud del documento (penaliza los muy largos).</li>
+</ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.3 Búsqueda léxica: BM25</p><h2>Búsqueda léxica: BM25 <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Fortalezas y debilidades frente a la búsqueda semántica:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th></th>
+<th>Léxica (BM25)</th>
+<th>Semántica (embeddings)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Códigos, siglas, nombres propios (<code>ATL-INF-006</code>, <code>FARO-142</code>, <code>t3.medium</code>)</td>
+<td>Excelente</td>
+<td>Regular</td>
+</tr>
+<tr>
+<td>Sinónimos y paráfrasis («antelación» frente a «con cuánto tiempo»)</td>
+<td>Mala</td>
+<td>Excelente</td>
+</tr>
+<tr>
+<td>Otro idioma</td>
+<td>No funciona</td>
+<td>Funciona con modelos multilingües</td>
+</tr>
+<tr>
+<td>Explicabilidad</td>
+<td>Alta: se ve qué palabras coincidieron</td>
+<td>Baja</td>
+</tr>
+<tr>
+<td>Coste</td>
+<td>Mínimo</td>
+<td>Calcular y guardar vectores</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u6-4" data-menu="6.4 Búsqueda híbrida y fusión de rankings" data-transition="fade"><div class="divisor"><span class="numero">6.4</span><h2>Búsqueda híbrida y fusión de rankings</h2><ul class=puntos><li>Reordenación (<em>reranking</em>)</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.4 Búsqueda híbrida y fusión de rankings</p><h2>Búsqueda híbrida y fusión de rankings <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>La búsqueda <strong>híbrida</strong> combina las dos: obtiene un ranking léxico y otro semántico y los fusiona. La forma más robusta de fusionar es <strong>Reciprocal Rank Fusion (RRF)</strong>, que solo usa las posiciones y no las puntuaciones (que no son comparables entre sí):</p><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>puntuación_RRF(d) = Σ  1 / (k + posición de d en el ranking i)      con k = 60
+                    i</code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.4 Búsqueda híbrida y fusión de rankings</p><h2>Búsqueda híbrida y fusión de rankings <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Un documento que sale tercero en BM25 y primero en semántica obtiene <code>1/63 + 1/61</code>. Uno que solo aparece en un ranking suma un único término.</p><p>En corpus grandes y variados, con códigos, siglas y nombres propios, la búsqueda híbrida suele ser igual o mejor que cualquiera de las dos por separado, y es la opción por defecto en muchos sistemas de producción. <strong>Pero no siempre gana</strong>: en el corpus pequeño de Atlántica, con un buen modelo multilingüe, la búsqueda semántica sola obtiene mejor MRR que la híbrida (lo comprobarás en el ejercicio 3). La conclusión profesional no es «usa siempre híbrida», sino <strong>«mide con tus datos y decide»</strong>.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.4 Búsqueda híbrida y fusión de rankings</p><h2>Reordenación (<em>reranking</em>)</h2></header><div class="cuerpo"><p>Un <strong>reordenador</strong> es un modelo que recibe la pregunta y un fragmento <strong>juntos</strong> y puntúa su relevancia. Es más preciso que comparar vectores calculados por separado, pero mucho más lento, así que se aplica solo a los 20-50 primeros candidatos. Se puede usar un modelo de reordenación específico o el propio LLM con un prompt («puntúa de 0 a 10 la relevancia de este fragmento para la pregunta»).</p></div></section>
+<section class="especial seccion" id="u6-5" data-menu="6.5 Bases de datos vectoriales" data-transition="fade"><div class="divisor"><span class="numero">6.5</span><h2>Bases de datos vectoriales</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.5 Bases de datos vectoriales</p><h2>Bases de datos vectoriales <span class="parte">1/3</span></h2></header><div class="cuerpo"><p>Con unos cientos de trozos basta un array de NumPy. Con millones hace falta una base de datos vectorial, que aporta:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Función</th>
+<th>Para qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Índice aproximado (ANN, normalmente HNSW)</td>
+<td>Buscar entre millones de vectores en milisegundos, a cambio de no garantizar el resultado exacto</td>
+</tr>
+<tr>
+<td>Persistencia</td>
+<td>No recalcular embeddings cada vez</td>
+</tr>
+<tr>
+<td>Metadatos y filtros</td>
+<td>«Solo documentos de RRHH», «solo clasificación Interno», «solo versión vigente»</td>
+</tr>
+<tr>
+<td>Actualización</td>
+<td>Añadir, modificar y borrar trozos sin reconstruir todo</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.5 Bases de datos vectoriales</p><h2>Bases de datos vectoriales <span class="parte">2/3</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Opción</th>
+<th>Tipo</th>
+<th>Cuándo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chroma</td>
+<td>Biblioteca embebida o servidor</td>
+<td>Prototipos y aplicaciones pequeñas; la del curso</td>
+</tr>
+<tr>
+<td>Qdrant</td>
+<td>Servidor dedicado</td>
+<td>Producción, filtros avanzados, gran volumen</td>
+</tr>
+<tr>
+<td>pgvector</td>
+<td>Extensión de PostgreSQL</td>
+<td>Si el cliente ya usa PostgreSQL (es el estándar de Atlántica)</td>
+</tr>
+<tr>
+<td>FAISS</td>
+<td>Biblioteca de búsqueda</td>
+<td>Máximo rendimiento sin servidor</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.5 Bases de datos vectoriales</p><h2>Bases de datos vectoriales <span class="parte">3/3</span></h2></header><div class="cuerpo"><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">import</span><span class="w"> </span><span class="nn">chromadb</span>
+
+<span class="n">cliente</span> <span class="o">=</span> <span class="n">chromadb</span><span class="o">.</span><span class="n">PersistentClient</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"indices/chroma"</span><span class="p">)</span>
+<span class="n">coleccion</span> <span class="o">=</span> <span class="n">cliente</span><span class="o">.</span><span class="n">get_or_create_collection</span><span class="p">(</span><span class="s2">"atlantica"</span><span class="p">,</span> <span class="n">embedding_function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                             <span class="n">configuration</span><span class="o">=</span><span class="p">{</span><span class="s2">"hnsw"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"space"</span><span class="p">:</span> <span class="s2">"cosine"</span><span class="p">}})</span>
+<span class="n">coleccion</span><span class="o">.</span><span class="n">upsert</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">documents</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">embeddings</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">metadatas</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>
+<span class="n">resultado</span> <span class="o">=</span> <span class="n">coleccion</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query_embeddings</span><span class="o">=</span><span class="p">[</span><span class="n">vector</span><span class="p">],</span> <span class="n">n_results</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">{</span><span class="s2">"documento"</span><span class="p">:</span> <span class="s2">"06_politica_infraestructura_cloud.md"</span><span class="p">})</span></code></pre></div><p>Pasamos <code>embedding_function=None</code> y los vectores calculados por nosotros para controlar exactamente qué modelo se usa (el mismo en la ingesta y en la consulta).</p></div></section>
+<section class="especial seccion" id="u6-6" data-menu="6.6 Métricas de recuperación" data-transition="fade"><div class="divisor"><span class="numero">6.6</span><h2>Métricas de recuperación</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.6 Métricas de recuperación</p><h2>Métricas de recuperación <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Para comparar estrategias necesitas preguntas con su fuente correcta (<code>datos/atlantica/evaluacion/preguntas_rag.jsonl</code>) y métricas:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Qué mide</th>
+<th>Cálculo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hit@k</strong> (tasa de acierto)</td>
+<td>¿Aparece la fuente correcta entre los <code>k</code> primeros?</td>
+<td>Proporción de preguntas en que sí</td>
+</tr>
+<tr>
+<td><strong>MRR</strong> (<em>Mean Reciprocal Rank</em>)</td>
+<td>¿En qué posición aparece?</td>
+<td>Media de <code>1 / posición</code> (0 si no aparece)</td>
+</tr>
+<tr>
+<td>Precisión@k</td>
+<td>¿Qué proporción de los <code>k</code> recuperados es relevante?</td>
+<td>Útil cuando hay varias fuentes correctas</td>
+</tr>
+<tr>
+<td>Recall@k</td>
+<td>¿Qué proporción de las fuentes relevantes se recupera?</td>
+<td>Ídem</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">6.6 Métricas de recuperación</p><h2>Métricas de recuperación <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Si la fuente correcta está primera en todas las preguntas, MRR = 1. Si está siempre segunda, 0,5. Hit@k y MRR son las dos métricas que usarás en la tabla comparativa de hoy y en el checklist de calidad de la sesión 7.</p></div></section>
+<section data-menu="Errores frecuentes"><header class="cabecera"><p class="antetitulo">Sesión 6</p><h2>Errores frecuentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mezclar vectores de dos modelos</td>
+<td>Resultados absurdos</td>
+<td>Un índice, un modelo; si cambias de modelo, reindexa</td>
+</tr>
+<tr>
+<td>No normalizar al usar producto escalar</td>
+<td>Los textos largos ganan siempre</td>
+<td>Normaliza o usa coseno</td>
+</tr>
+<tr>
+<td>Tokenizar BM25 sin quitar tildes ni mayúsculas</td>
+<td>«Política» y «politica» no coinciden</td>
+<td>Normaliza igual la consulta y los documentos</td>
+</tr>
+<tr>
+<td>Comparar estrategias con 3 preguntas</td>
+<td>Conclusiones aleatorias</td>
+<td>Al menos 20-30 preguntas</td>
+</tr>
+<tr>
+<td>Olvidar <code>embedding_function=None</code> en Chroma</td>
+<td>Chroma descarga su propio modelo</td>
+<td>Pasa tus embeddings</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section data-menu="Para saber más"><header class="cabecera"><p class="antetitulo">Sesión 6</p><h2>Para saber más</h2></header><div class="cuerpo"><ul>
+<li>Robertson y Zaragoza (2009), <em>The Probabilistic Relevance Framework: BM25 and Beyond</em>.</li>
+<li>Cormack et al. (2009), <em>Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods</em>.</li>
+<li>Tabla de clasificación de modelos de embeddings MTEB: <a href="https://huggingface.co/spaces/mteb/leaderboard" target="_blank" rel="noopener">huggingface.co/spaces/mteb/leaderboard</a></li>
+<li>Documentación de Chroma: <a href="https://docs.trychroma.com/" target="_blank" rel="noopener">docs.trychroma.com</a></li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Ejercicio 1. Medidas de similitud (laboratorio, 20 min)</li><li>Ejercicio 2. BM25, semántica e híbrida (laboratorio, 50 min)</li><li>Ejercicio 3. Métricas y tabla comparativa (Reto 1, 30 min)</li><li>Ejercicio 4. Base vectorial persistente con Chroma (Reto 2, 25 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa cada fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_06_embeddings_busqueda<span class="w"> </span>-v</code></pre></div><p>A partir de hoy los laboratorios cargan los documentos con la versión de referencia de <code>comun/documentos.py</code> (equivalente a tu ejercicio de la sesión 5), para que nadie dependa de haberlo terminado.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Medidas de similitud (laboratorio, 20 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Medidas de similitud (laboratorio, 20 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s06_ej1_similitud.py</code></p><ol>
+<li><code>normalizar(v)</code> (cuidado con la norma 0).</li>
+<li><code>coseno(a, b)</code> y <code>distancia_euclidea(a, b)</code>.</li>
+<li><code>matriz_similitud(vectores)</code>: <strong>sin bucles</strong>, con una multiplicación de matrices.</li>
+<li><code>mas_similares(consulta, vectores, k)</code>.</li>
+</ol><p>Ejecuta <code>ejemplos/01_similitudes.py</code> y responde: ¿qué pareja de frases sin palabras en común tiene mayor similitud? ¿Y la frase en inglés?</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 2. BM25, semántica e híbrida (laboratorio, 50 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. BM25, semántica e híbrida (laboratorio, 50 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s06_ej2_busqueda.py</code></p><ol>
+<li><code>tokenizar(texto)</code>: la normalización tiene que ser idéntica para documentos y consultas. Conserva la ñ (<code>años</code> no es <code>anos</code>) y los términos técnicos con punto o guion (<code>t3.medium</code>, <code>FARO-142</code>).</li>
+<li><code>BuscadorBM25</code>: construye <code>BM25Okapi</code> y busca con <code>get_scores</code>.</li>
+<li><code>BuscadorSemantico</code>: una llamada a <code>llm.embeddings</code> para todos los trozos; normaliza.</li>
+<li><code>fusion_rrf(rankings, k)</code>: la fórmula de los apuntes. Los tests comprueban las puntuaciones exactas.</li>
+<li><code>BuscadorHibrido.buscar</code>.</li>
+</ol><p>Ejecuta el fichero con tres consultas y observa qué buscador acierta en cada caso.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 3. Métricas y tabla comparativa (Reto 1, 30 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. Métricas y tabla comparativa (Reto 1, 30 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s06_ej3_metricas.py</code></p><ol>
+<li><code>acierto_en_k</code> y <code>rango_reciproco</code>.</li>
+<li><code>cargar_preguntas</code>: solo las preguntas con fuente.</li>
+<li><code>evaluar(buscar, preguntas, k)</code>: hit@k, MRR y lista de fallos.</li>
+<li><code>tabla(resultados, k)</code>.</li>
+</ol><p>Ejecuta el fichero: produce la tabla comparativa de las tres estrategias con k = 1 y k = 3 sobre las 28 preguntas con fuente. <strong>Antes de ejecutarlo, apuesta en el chat qué estrategia ganará.</strong></p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 4. Base vectorial persistente con Chroma (Reto 2, 25 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 4. Base vectorial persistente con Chroma (Reto 2, 25 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s06_ej4_chroma.py</code></p><ol>
+<li><code>crear_coleccion(ruta, nombre)</code>: distancia coseno y <code>embedding_function=None</code>.</li>
+<li><code>indexar(coleccion, trozos, lote)</code>: <code>upsert</code> por lotes, con metadatos.</li>
+<li><code>consultar(coleccion, pregunta, k, documento)</code>: con filtro opcional por documento y similitud = 1 − distancia.</li>
+</ol><p>Ejecuta el fichero dos veces: la segunda no recalcula nada en Chroma porque <code>upsert</code> reemplaza los mismos ids. Mira la carpeta <code>indices/chroma</code>: es tu base vectorial.</p></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Comparativa de estrategias de búsqueda y base vectorial del reto</h2><ul class=puntos><li>Reto 1. Comparación de estrategias de búsqueda (70 min)</li><li>Reto 2. Base vectorial persistente con Chroma (56 min)</li><li>Entrega</li><li>Criterios de evaluación (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 6. Comparativa de estrategias de búsqueda y base vectorial del reto</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>Entregables del equipo: <code>rag/busqueda.py</code> (o un cuaderno <code>.ipynb</code>) y <code>docs/comparativa_busqueda.md</code>.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 6. Comparativa de estrategias de búsqueda y base vectorial del reto · Reto 1. Comparación de estrategias de búsqueda (70 min)</p><h2>1. Preguntas de evaluación del reto (20 min)</h2></header><div class="cuerpo"><p>Escribid en <code>evals/preguntas_recuperacion.jsonl</code> <strong>al menos 15 preguntas</strong> de vuestro reto con el documento que debería recuperarse (mismo formato que <code>datos/atlantica/evaluacion/preguntas_rag.jsonl</code>). Incluid:</p><ul>
+<li>5 preguntas con las mismas palabras que el documento.</li>
+<li>5 preguntas parafraseadas o con sinónimos («¿cuándo se juntan los del CAB?»).</li>
+<li>3 preguntas con códigos, siglas o identificadores (<code>ATL-INF-006</code>, <code>FARO-142</code>, <code>m6i.large</code>).</li>
+<li>2 preguntas sin fuente (deben quedar fuera de los resultados relevantes).</li>
+</ul><p>Para PMO Copilot, añadid las actas como documentos indexables: cargadlas con <code>cargar_trozos(carpeta=DATOS / "proyectos" / "actas")</code> además de los documentos generales.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 6. Comparativa de estrategias de búsqueda y base vectorial del reto · Reto 1. Comparación de estrategias de búsqueda (70 min)</p><h2>2. Comparativa (50 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Con vuestro código de los ejercicios 2 y 3, comparad al menos <strong>cinco configuraciones</strong> y documentad la tabla:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Configuración</th>
+<th>Hit@1</th>
+<th>Hit@3</th>
+<th>MRR</th>
+<th>Fallos</th>
+<th>Latencia media</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BM25</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Semántica (<code>embeddinggemma</code>)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Híbrida RRF</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Semántica con trozos de 500 caracteres</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Una variante vuestra (otro modelo de embeddings, otro <code>k</code> de RRF, reordenación con el LLM…)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 6. Comparativa de estrategias de búsqueda y base vectorial del reto · Reto 1. Comparación de estrategias de búsqueda (70 min)</p><h2>2. Comparativa (50 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Para medir la latencia, usad <code>medir</code> de la sesión 2. Para probar otro modelo de embeddings: <code>ollama pull bge-m3</code> y cambiad <code>EMBED_MODEL</code> (recordad reindexar).</p><p>Analizad cada fallo: ¿es un problema de vocabulario, de troceado o de que la pregunta es ambigua?</p></div></section>
+<section class="ejercicio" data-menu="Reto 2. Base vectorial persistente con Chroma (56 min)"><header class="cabecera"><p class="antetitulo">Práctica 6. Comparativa de estrategias de búsqueda y base vectorial del reto</p><h2>Reto 2. Base vectorial persistente con Chroma (56 min)</h2></header><div class="cuerpo"><ol>
+<li>Cread <code>rag/busqueda.py</code> en el repositorio del equipo con una función <code>buscar(pregunta, k)</code> que use <strong>la configuración ganadora</strong> sobre una colección Chroma persistente con los documentos de vuestro reto.</li>
+<li>Añadid filtros por metadatos útiles para vuestro reto (por ejemplo, para InfraPilot, buscar solo en la política y el catálogo).</li>
+<li>Escribid una prueba de humo en <code>tests/test_busqueda.py</code> que compruebe que tres preguntas recuperan su documento correcto entre los 3 primeros (podéis marcarla para que solo se ejecute con el modelo real).</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Entrega"><header class="cabecera"><p class="antetitulo">Práctica 6. Comparativa de estrategias de búsqueda y base vectorial del reto</p><h2>Entrega</h2></header><div class="cuerpo"><ol>
+<li><code>evals/preguntas_recuperacion.jsonl</code> con 15 o más preguntas.</li>
+<li><code>docs/comparativa_busqueda.md</code> con la tabla, el análisis de fallos y la decisión (actualizad el ADR de la sesión 5 si cambia).</li>
+<li><code>rag/busqueda.py</code> y su prueba.</li>
+<li>Commit: <code>Sesión 6: comparativa de búsqueda y base vectorial</code>.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 6. Comparativa de estrategias de búsqueda y base vectorial del reto</p><h2>Criterios de evaluación (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Preguntas</td>
+<td>15 o más, de los cuatro tipos, con fuente correcta</td>
+</tr>
+<tr>
+<td>Comparativa</td>
+<td>Cinco configuraciones medidas con hit@k, MRR y latencia</td>
+</tr>
+<tr>
+<td>Análisis</td>
+<td>Cada fallo diagnosticado y decisión justificada con datos</td>
+</tr>
+<tr>
+<td>Implementación</td>
+<td>Búsqueda persistente, con filtros y prueba</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 6</p><h1>Embeddings, búsqueda semántica y bases de datos vectoriales</h1><div class="acciones"><a class="boton" href="sesion_07.html">Sesión 7. Indexación y evaluación RAG · Introducción a los agentes <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 6. Embeddings, búsqueda semántica y bases de datos vectoriales</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 6. Embeddings, búsqueda semántica y bases de datos vectoriales</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a> · <a href="sesion_07.html">Sesión 7 →</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+
+</body>
+</html>

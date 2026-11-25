@@ -1,0 +1,30 @@
+{"id": "Q01", "pregunta": "¿Cuántos días de vacaciones tiene cada persona al año?", "fuente": "11_politica_vacaciones_teletrabajo.md", "respuesta": "25 días laborables"}
+{"id": "Q02", "pregunta": "¿Con cuánta antelación hay que pedir las vacaciones y dónde?", "fuente": "11_politica_vacaciones_teletrabajo.md", "respuesta": "Con al menos 15 días naturales de antelación, en el portal Ancla"}
+{"id": "Q03", "pregunta": "¿Cuántos días a la semana se puede teletrabajar?", "fuente": "11_politica_vacaciones_teletrabajo.md", "respuesta": "Hasta 3 días por semana en puestos de oficina elegibles"}
+{"id": "Q04", "pregunta": "¿En cuánto tiempo hay que comunicar un incidente de seguridad?", "fuente": "02_politica_seguridad_informacion.md", "respuesta": "En un máximo de 1 hora, a seguridad@atlantica.example"}
+{"id": "Q05", "pregunta": "¿Cuánto tiempo se conservan los logs de seguridad?", "fuente": "02_politica_seguridad_informacion.md", "respuesta": "400 días"}
+{"id": "Q06", "pregunta": "¿Qué longitud mínima deben tener las contraseñas?", "fuente": "02_politica_seguridad_informacion.md", "respuesta": "14 caracteres"}
+{"id": "Q07", "pregunta": "¿Puedo pegar el contrato de un cliente en un chatbot externo para resumirlo?", "fuente": "03_politica_uso_ia.md", "respuesta": "No: los contratos son información Confidencial y está prohibido introducirla en herramientas de IA externas no aprobadas; se debe usar Faro-IA"}
+{"id": "Q08", "pregunta": "¿Qué hace falta para acceder a Faro-IA?", "fuente": "03_politica_uso_ia.md", "respuesta": "Superar la certificación interna de uso responsable de la IA, de 4 horas, en el portal Ancla"}
+{"id": "Q09", "pregunta": "¿Cuándo se reúne el Comité de IA?", "fuente": "03_politica_uso_ia.md", "respuesta": "El primer martes de cada mes"}
+{"id": "Q10", "pregunta": "¿Qué tipo de dato hay que usar para representar importes en Python?", "fuente": "04_guia_estilo_python.md", "respuesta": "decimal.Decimal, nunca float, con redondeo ROUND_HALF_UP a 2 decimales al final"}
+{"id": "Q11", "pregunta": "¿Cuál es la longitud de línea en el código Python?", "fuente": "04_guia_estilo_python.md", "respuesta": "100 caracteres, con black"}
+{"id": "Q12", "pregunta": "¿Qué cobertura de pruebas se exige en los módulos nuevos?", "fuente": "04_guia_estilo_python.md", "respuesta": "Un mínimo del 80 %"}
+{"id": "Q13", "pregunta": "¿Se puede usar print en el código de producción?", "fuente": "04_guia_estilo_python.md", "respuesta": "No, está prohibido; se usa el módulo logging"}
+{"id": "Q14", "pregunta": "¿Qué base de datos relacional es el estándar?", "fuente": "05_arquitectura_referencia.md", "respuesta": "PostgreSQL 16"}
+{"id": "Q15", "pregunta": "¿Cómo deben acceder los servicios a los modelos de lenguaje?", "fuente": "05_arquitectura_referencia.md", "respuesta": "Solo a través de la pasarela de Faro-IA, que ofrece una API compatible con OpenAI"}
+{"id": "Q16", "pregunta": "¿En qué región se despliega la infraestructura principal?", "fuente": "06_politica_infraestructura_cloud.md", "respuesta": "eu-south-2 (España)"}
+{"id": "Q17", "pregunta": "¿Qué etiquetas son obligatorias en los recursos en la nube?", "fuente": "06_politica_infraestructura_cloud.md", "respuesta": "proyecto, entorno, centro_coste y responsable"}
+{"id": "Q18", "pregunta": "¿Cuántos días se conservan las copias de la base de datos en producción?", "fuente": "06_politica_infraestructura_cloud.md", "respuesta": "30 días, y la base de datos es Multi-AZ"}
+{"id": "Q19", "pregunta": "¿Cuál es la versión del módulo postgres_gestionado?", "fuente": "07_catalogo_modulos_terraform.md", "respuesta": "v3.1.0"}
+{"id": "Q20", "pregunta": "¿Cuánto cuesta al mes una máquina m6i.large?", "fuente": "07_catalogo_modulos_terraform.md", "respuesta": "Unos 85 € al mes"}
+{"id": "Q21", "pregunta": "¿Cuándo se reúne el Comité de Cambios y cuál es el plazo para presentar solicitudes?", "fuente": "08_procedimiento_gestion_cambios.md", "respuesta": "Los jueves a las 10:00; las solicitudes se registran antes del martes a las 14:00"}
+{"id": "Q22", "pregunta": "¿Cuáles son las ventanas de cambio en producción?", "fuente": "08_procedimiento_gestion_cambios.md", "respuesta": "Martes y jueves de 22:00 a 02:00"}
+{"id": "Q23", "pregunta": "¿Cuánto duran los sprints?", "fuente": "09_metodologia_proyectos.md", "respuesta": "2 semanas"}
+{"id": "Q24", "pregunta": "¿A partir de qué exposición se escala un riesgo al comité de dirección?", "fuente": "09_metodologia_proyectos.md", "respuesta": "Exposición (probabilidad × impacto) igual o superior a 15"}
+{"id": "Q25", "pregunta": "¿Cuál es el tiempo de resolución objetivo de una incidencia P1?", "fuente": "10_procedimiento_incidencias.md", "respuesta": "4 horas, con primera respuesta en 15 minutos"}
+{"id": "Q26", "pregunta": "¿Qué plazo hay para la revisión posterior de una P1?", "fuente": "10_procedimiento_incidencias.md", "respuesta": "5 días laborables"}
+{"id": "Q27", "pregunta": "¿En cuánto tiempo están activas las cuentas de una persona nueva?", "fuente": "12_manual_onboarding.md", "respuesta": "En un máximo de 24 horas"}
+{"id": "Q28", "pregunta": "¿Cuántas personas trabajan en el área de Tecnología?", "fuente": "01_presentacion_empresa.md", "respuesta": "85 personas"}
+{"id": "Q29", "pregunta": "¿Cuál es el precio de la licencia anual de Faro-IA?", "fuente": null, "respuesta": "No consta en la documentación: el asistente debe decir que no lo sabe"}
+{"id": "Q30", "pregunta": "¿Quién es el director de seguridad de Atlántica?", "fuente": null, "respuesta": "No consta en la documentación: el asistente debe decir que no lo sabe"}

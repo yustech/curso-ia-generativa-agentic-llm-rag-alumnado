@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 10. Workflows multiagente y frameworks: LangChain, LlamaIndex y MCP</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 10 · Jueves 17 de diciembre de 2026 · 09:00-15:00 · Remoto</p><h1>Workflows multiagente y frameworks: LangChain, LlamaIndex y MCP</h1><div class="objetivo"><p>Hasta ahora has construido todo a mano, y por eso sabes qué hace cada pieza. Hoy conocerás los frameworks que usarás en los proyectos (LangChain y LangGraph, LlamaIndex) y el protocolo que se ha convertido en el estándar para conectar herramientas a los agentes (MCP). Sobre todo, aprenderás a elegir con criterio, que es lo que un cliente espera de ti. Cierra el Hito 3.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="6">6</b><span>unidades</span></div><div class="cifra"><b data-cuenta="4">4</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 10 · M5 · Agentic AI y herramientas avanzadas (6 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n6"><a class="tarjeta" href="#/u10-1"><span class="n">10.1</span><span class="t">¿Un agente o varios?</span></a><a class="tarjeta" href="#/u10-2"><span class="n">10.2</span><span class="t">Patrones multiagente</span></a><a class="tarjeta" href="#/u10-3"><span class="n">10.3</span><span class="t">Model Context Protocol (MCP)</span></a><a class="tarjeta" href="#/u10-4"><span class="n">10.4</span><span class="t">LangChain y LangGraph</span></a><a class="tarjeta" href="#/u10-5"><span class="n">10.5</span><span class="t">LlamaIndex</span></a><a class="tarjeta" href="#/u10-6"><span class="n">10.6</span><span class="t">Elegir: matriz de decisión</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 10 · Jueves 17 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: ¿un agente o varios?</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>55</td>
+<td>Teoría</td>
+<td>Teoría I: patrones multiagente y Model Context Protocol</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Laboratorio: tu propio servidor MCP</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:30</td>
+<td>50</td>
+<td>Teoría</td>
+<td>Teoría II: LangChain, LangGraph y LlamaIndex</td>
+</tr>
+<tr>
+<td>12:20</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Reto 1: flujo multiagente con LangGraph</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>13:40</td>
+<td>56</td>
+<td>Práctica</td>
+<td>Reto 2: comparativa y matriz de decisión tecnológica</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Cierre: Hito 3</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 10</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Workflow multiagente del reto</td>
+<td><code>agente/flujo.py</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Matriz de decisión tecnológica</td>
+<td><code>docs/matriz_decision.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Servidor MCP con las herramientas del reto</td>
+<td><code>mcp/servidor.py</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 4 con los tests en verde</td>
+<td><code>sesion_10_multiagente_frameworks/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u10-1" data-menu="10.1 ¿Un agente o varios?" data-transition="fade"><div class="divisor"><span class="numero">10.1</span><h2>¿Un agente o varios?</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.1 ¿Un agente o varios?</p><h2>¿Un agente o varios?</h2></header><div class="cuerpo"><p>Un sistema <strong>multiagente</strong> reparte el trabajo entre varios agentes especializados, cada uno con su propio prompt, sus herramientas y su responsabilidad.</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Ventajas</th>
+<th>Costes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prompts más cortos y enfocados: cada agente hace una cosa</td>
+<td>Más llamadas al modelo: más latencia y coste</td>
+</tr>
+<tr>
+<td>Herramientas y permisos separados por rol</td>
+<td>Más difícil de depurar: hay que seguir la conversación entre agentes</td>
+</tr>
+<tr>
+<td>Se puede usar un modelo distinto en cada rol</td>
+<td>Los errores se propagan de un agente a otro</td>
+</tr>
+<tr>
+<td>Encaja con procesos que ya tienen roles (redactar, revisar, aprobar)</td>
+<td>Riesgo de sobreingeniería</td>
+</tr>
+</tbody>
+</table></div><p>La pregunta de diseño es la misma que en la sesión 7: <strong>¿lo resuelve un sistema más simple?</strong> Varios agentes se justifican cuando las tareas son realmente distintas (investigar frente a redactar), necesitan permisos distintos o se benefician de una revisión independiente.</p></div></section>
+<section class="especial seccion" id="u10-2" data-menu="10.2 Patrones multiagente" data-transition="fade"><div class="divisor"><span class="numero">10.2</span><h2>Patrones multiagente</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.2 Patrones multiagente</p><h2>Patrones multiagente <span class="parte">1/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Patrón</th>
+<th>Funcionamiento</th>
+<th>Ejemplo en los retos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Secuencial (cadena)</td>
+<td>A → B → C, cada uno con su rol</td>
+<td>Investigador → redactor → revisor</td>
+</tr>
+<tr>
+<td>Supervisor</td>
+<td>Un agente reparte el trabajo y combina los resultados</td>
+<td>Un coordinador que pide a «estilo», «seguridad» y «pruebas» que revisen una MR</td>
+</tr>
+<tr>
+<td>Evaluador-optimizador</td>
+<td>Uno genera y otro critica hasta aprobar (con máximo de vueltas)</td>
+<td>Historia de usuario revisada contra la definición de preparado</td>
+</tr>
+<tr>
+<td>Paralelo y votación</td>
+<td>Varios resuelven lo mismo y se compara</td>
+<td>Tres clasificaciones de una incidencia y se queda la mayoritaria</td>
+</tr>
+<tr>
+<td>Traspaso (<em>handoff</em>)</td>
+<td>Un agente pasa la conversación a otro más adecuado</td>
+<td>El asistente general pasa una petición de entorno a InfraPilot</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.2 Patrones multiagente</p><h2>Patrones multiagente <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Hoy implementarás el patrón secuencial con evaluador-optimizador: investigador, redactor y revisor, con un bucle de correcciones limitado.</p></div></section>
+<section class="especial seccion" id="u10-3" data-menu="10.3 Model Context Protocol (MCP)" data-transition="fade"><div class="divisor"><span class="numero">10.3</span><h2>Model Context Protocol (MCP)</h2><ul class=puntos><li>Seguridad en MCP</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.3 Model Context Protocol (MCP)</p><h2>Model Context Protocol (MCP) <span class="parte">1/4</span></h2></header><div class="cuerpo"><p><strong>MCP</strong> es un protocolo abierto para conectar aplicaciones de IA con herramientas y datos. Resuelve un problema de integración: sin un estándar, cada asistente necesita un conector propio para cada sistema (N × M integraciones); con MCP, cada sistema publica un servidor y cada asistente es un cliente (N + M).</p><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code> Aplicación (host)                        Servidores MCP
+┌──────────────────────┐        ┌─────────────────────────────┐
+│ Agente / IDE / chat  │        │ atlantica-documentacion     │ → documentos
+│   └── Cliente MCP ───┼─stdio──┤   herramientas · recursos   │
+│   └── Cliente MCP ───┼─HTTP───┤ backlog-faro                │ → API del backlog
+└──────────────────────┘        └─────────────────────────────┘</code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.3 Model Context Protocol (MCP)</p><h2>Model Context Protocol (MCP) <span class="parte">2/4</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Primitiva</th>
+<th>Qué es</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Herramientas (<em>tools</em>)</td>
+<td>Funciones que el modelo puede invocar</td>
+<td><code>buscar_documentacion</code>, <code>leer_documento</code></td>
+</tr>
+<tr>
+<td>Recursos (<em>resources</em>)</td>
+<td>Datos que la aplicación puede leer y poner en contexto</td>
+<td><code>atlantica://indice</code></td>
+</tr>
+<tr>
+<td>Prompts</td>
+<td>Plantillas reutilizables que ofrece el servidor</td>
+<td>«Revisa esta MR según la guía»</td>
+</tr>
+</tbody>
+</table></div><div class="tabla"><table>
+<thead>
+<tr>
+<th>Transporte</th>
+<th>Cuándo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>stdio</td>
+<td>El cliente lanza el servidor como proceso local. Lo que usarás hoy</td>
+</tr>
+<tr>
+<td>HTTP (<em>streamable HTTP</em>)</td>
+<td>Servidor remoto compartido, con autenticación</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.3 Model Context Protocol (MCP)</p><h2>Model Context Protocol (MCP) <span class="parte">3/4</span></h2></header><div class="cuerpo"><p>Con el SDK oficial de Python, un servidor son unas líneas:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">from</span><span class="w"> </span><span class="nn">mcp.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">MCPServer</span>
+
+<span class="n">servidor</span> <span class="o">=</span> <span class="n">MCPServer</span><span class="p">(</span><span class="s2">"atlantica-documentacion"</span><span class="p">)</span>
+
+<span class="nd">@servidor</span><span class="o">.</span><span class="n">tool</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">leer_documento</span><span class="p">(</span><span class="n">nombre</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""Devuelve el texto completo de un documento interno."""</span>
+    <span class="o">...</span>
+
+<span class="n">servidor</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>   <span class="c1"># stdio</span></code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.3 Model Context Protocol (MCP)</p><h2>Model Context Protocol (MCP) <span class="parte">4/4</span></h2></header><div class="cuerpo"><p>El SDK genera el esquema de la herramienta a partir de la firma y el docstring, igual que tu <code>Registro</code> de la sesión 9.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.3 Model Context Protocol (MCP)</p><h2>Seguridad en MCP</h2></header><div class="cuerpo"><p>Un servidor MCP es código que se ejecuta con tus permisos y unas descripciones de herramientas que el modelo lee como instrucciones. Por eso:</p><ul>
+<li>Instala solo servidores de confianza y revisa qué herramientas exponen.</li>
+<li>Aplica en el servidor los mismos controles de la sesión 9: validación, mínimo privilegio y rutas restringidas (<code>leer_documento</code> no puede salir de su carpeta).</li>
+<li>Las acciones con efectos siguen necesitando confirmación humana en el cliente.</li>
+<li>Desconfía de las descripciones de herramientas de terceros: pueden contener instrucciones maliciosas (<em>tool poisoning</em>).</li>
+</ul></div></section>
+<section class="especial seccion" id="u10-4" data-menu="10.4 LangChain y LangGraph" data-transition="fade"><div class="divisor"><span class="numero">10.4</span><h2>LangChain y LangGraph</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.4 LangChain y LangGraph</p><h2>LangChain y LangGraph <span class="parte">1/3</span></h2></header><div class="cuerpo"><p><strong>LangChain</strong> es la biblioteca más extendida para construir aplicaciones con LLM. Aporta abstracciones comunes para modelos de muchos proveedores, mensajes, plantillas, herramientas, salidas estructuradas y cientos de integraciones.</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOpenAI</span>
+
+<span class="n">modelo</span> <span class="o">=</span> <span class="n">ChatOpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"granite4:micro"</span><span class="p">,</span> <span class="n">base_url</span><span class="o">=</span><span class="s2">"http://localhost:11434/v1"</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">"ollama"</span><span class="p">)</span>
+<span class="n">modelo_con_herramientas</span> <span class="o">=</span> <span class="n">modelo</span><span class="o">.</span><span class="n">bind_tools</span><span class="p">([</span><span class="n">coste_instancia</span><span class="p">])</span></code></pre></div><p><strong>LangGraph</strong>, del mismo ecosistema, modela una aplicación como un <strong>grafo de estado</strong>: nodos (funciones que reciben y actualizan el estado), aristas (incluidas las condicionales) y un estado tipado que fluye entre ellos. Es la formalización de la máquina de estados de la sesión 8.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.4 LangChain y LangGraph</p><h2>LangChain y LangGraph <span class="parte">2/3</span></h2></header><div class="cuerpo"><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">from</span><span class="w"> </span><span class="nn">langgraph.graph</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateGraph</span><span class="p">,</span> <span class="n">START</span><span class="p">,</span> <span class="n">END</span>
+
+<span class="n">grafo</span> <span class="o">=</span> <span class="n">StateGraph</span><span class="p">(</span><span class="n">Estado</span><span class="p">)</span>
+<span class="n">grafo</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">"redactor"</span><span class="p">,</span> <span class="n">nodo_redactor</span><span class="p">)</span>
+<span class="n">grafo</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="s2">"revisor"</span><span class="p">,</span> <span class="n">nodo_revisor</span><span class="p">)</span>
+<span class="n">grafo</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">START</span><span class="p">,</span> <span class="s2">"redactor"</span><span class="p">)</span>
+<span class="n">grafo</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="s2">"redactor"</span><span class="p">,</span> <span class="s2">"revisor"</span><span class="p">)</span>
+<span class="n">grafo</span><span class="o">.</span><span class="n">add_conditional_edges</span><span class="p">(</span><span class="s2">"revisor"</span><span class="p">,</span> <span class="n">siguiente</span><span class="p">,</span> <span class="p">[</span><span class="s2">"redactor"</span><span class="p">,</span> <span class="n">END</span><span class="p">])</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">grafo</span><span class="o">.</span><span class="n">compile</span><span class="p">()</span>
+<span class="n">app</span><span class="o">.</span><span class="n">invoke</span><span class="p">({</span><span class="s2">"pregunta"</span><span class="p">:</span> <span class="s2">"..."</span><span class="p">})</span></code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.4 LangChain y LangGraph</p><h2>LangChain y LangGraph <span class="parte">3/3</span></h2></header><div class="cuerpo"><p>Lo que aporta LangGraph frente a tu bucle: flujos con ramas y ciclos explícitos, puntos de control (<em>checkpoints</em>) para pausar y reanudar (por ejemplo, esperando una aprobación humana), ejecución en streaming y visualización del grafo.</p></div></section>
+<section class="especial seccion" id="u10-5" data-menu="10.5 LlamaIndex" data-transition="fade"><div class="divisor"><span class="numero">10.5</span><h2>LlamaIndex</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.5 LlamaIndex</p><h2>LlamaIndex</h2></header><div class="cuerpo"><p><strong>LlamaIndex</strong> nació para el RAG y es especialmente fuerte en todo lo que rodea a los datos: lectores de decenas de formatos, troceadores, índices, recuperadores, reordenadores y motores de consulta.</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">from</span><span class="w"> </span><span class="nn">llama_index.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleDirectoryReader</span><span class="p">,</span> <span class="n">VectorStoreIndex</span>
+
+<span class="n">documentos</span> <span class="o">=</span> <span class="n">SimpleDirectoryReader</span><span class="p">(</span><span class="s2">"datos/atlantica/documentos"</span><span class="p">)</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+<span class="n">indice</span> <span class="o">=</span> <span class="n">VectorStoreIndex</span><span class="o">.</span><span class="n">from_documents</span><span class="p">(</span><span class="n">documentos</span><span class="p">)</span>
+<span class="n">respuesta</span> <span class="o">=</span> <span class="n">indice</span><span class="o">.</span><span class="n">as_query_engine</span><span class="p">(</span><span class="n">similarity_top_k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">"¿Cuáles son las ventanas de cambio?"</span><span class="p">)</span></code></pre></div><p>Es tu RAG de la sesión 5 en cinco líneas. La contrapartida es que cada línea esconde decisiones (troceado, prompt, número de trozos) que tienes que conocer y ajustar: ahora sabes cuáles son.</p></div></section>
+<section class="especial seccion" id="u10-6" data-menu="10.6 Elegir: matriz de decisión" data-transition="fade"><div class="divisor"><span class="numero">10.6</span><h2>Elegir: matriz de decisión</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.6 Elegir: matriz de decisión</p><h2>Elegir: matriz de decisión <span class="parte">1/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th></th>
+<th>Sin framework</th>
+<th>LangChain / LangGraph</th>
+<th>LlamaIndex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Punto fuerte</td>
+<td>Control total, cero dependencias</td>
+<td>Agentes y flujos con estado; integraciones</td>
+<td>RAG y conectores de datos</td>
+</tr>
+<tr>
+<td>Punto débil</td>
+<td>Hay que escribirlo y mantenerlo todo</td>
+<td>Capas de abstracción; cambios entre versiones</td>
+<td>Menos flexible fuera del RAG</td>
+</tr>
+<tr>
+<td>Cuándo</td>
+<td>Lógica sencilla, requisitos estrictos de auditoría, equipo con criterio</td>
+<td>Flujos con varios pasos, ramas, aprobaciones humanas</td>
+<td>Muchas fuentes y formatos, RAG avanzado</td>
+</tr>
+</tbody>
+</table></div><p>Criterios para una matriz de decisión ponderada: simplicidad, control, facilidad de depuración, soporte de RAG, soporte multiagente, ecosistema y estabilidad de la API. Los pesos dependen del proyecto: un cliente regulado pondrá más peso en control y depuración; una prueba de concepto rápida, en ecosistema.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">10.6 Elegir: matriz de decisión</p><h2>Elegir: matriz de decisión <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>No es una elección excluyente: es habitual usar LlamaIndex para la ingesta, LangGraph para el flujo y MCP para exponer las herramientas. <strong>La independencia del motor de inferencia</strong> (API compatible con OpenAI) se mantiene con los tres.</p></div></section>
+<section data-menu="Errores frecuentes"><header class="cabecera"><p class="antetitulo">Sesión 10</p><h2>Errores frecuentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Varios agentes para un problema simple</td>
+<td>Lento, caro y difícil de depurar</td>
+<td>Un agente o un workflow</td>
+</tr>
+<tr>
+<td>Bucle de revisión sin máximo</td>
+<td>El redactor y el revisor no terminan nunca</td>
+<td>Máximo de iteraciones</td>
+</tr>
+<tr>
+<td>Adoptar un framework sin entender lo que hace</td>
+<td>Comportamientos inexplicables</td>
+<td>Revisa troceado, prompts y parámetros por defecto</td>
+</tr>
+<tr>
+<td>Servidor MCP que permite leer cualquier ruta</td>
+<td>Fuga de ficheros</td>
+<td>Restringir rutas y validar argumentos</td>
+</tr>
+<tr>
+<td>Mezclar versiones mayores de un SDK</td>
+<td>Errores de importación</td>
+<td>Fija versiones en <code>requirements.txt</code></td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section data-menu="Para saber más"><header class="cabecera"><p class="antetitulo">Sesión 10</p><h2>Para saber más</h2></header><div class="cuerpo"><ul>
+<li>Especificación y documentación de MCP: <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener">modelcontextprotocol.io</a></li>
+<li>SDK de Python de MCP: <a href="https://github.com/modelcontextprotocol/python-sdk" target="_blank" rel="noopener">github.com/modelcontextprotocol/python-sdk</a></li>
+<li>Documentación de LangGraph: <a href="https://langchain-ai.github.io/langgraph/" target="_blank" rel="noopener">langchain-ai.github.io/langgraph</a></li>
+<li>Documentación de LlamaIndex: <a href="https://docs.llamaindex.ai/" target="_blank" rel="noopener">docs.llamaindex.ai</a></li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Ejercicio 1. Tu propio servidor MCP (laboratorio, 35 min)</li><li>Ejercicio 2. Cliente MCP y agente (laboratorio, 35 min)</li><li>Ejercicio 3. Flujo multiagente con LangGraph (Reto 1, 50 min)</li><li>Ejercicio 4. Matriz de decisión (Reto 2, 20 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa cada fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_10_multiagente_frameworks<span class="w"> </span>-v</code></pre></div><blockquote>
+<p>Las versiones de las bibliotecas están fijadas en <code>requirements.txt</code>. El SDK de MCP 2.x llama <code>MCPServer</code> a lo que en la versión 1 se llamaba <code>FastMCP</code>, y sus objetos usan nombres de atributos de estilo Python (<code>input_schema</code>, <code>is_error</code>). Si encuentras ejemplos en internet con la sintaxis antigua, adáptalos.</p>
+</blockquote></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Tu propio servidor MCP (laboratorio, 35 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Tu propio servidor MCP (laboratorio, 35 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s10_ej1_servidor_mcp.py</code></p><ol>
+<li><code>listar_documentos()</code>.</li>
+<li><code>leer_documento(nombre)</code>: con la restricción de rutas. Es el control de seguridad más importante del servidor.</li>
+<li><code>buscar_documentacion(consulta, k)</code>: usa la de <code>comun.herramientas</code> y limita <code>k</code> entre 1 y 8.</li>
+<li><code>indice()</code>: el recurso <code>atlantica://indice</code>.</li>
+</ol><p>El registro en el servidor ya está hecho al final del fichero. Los docstrings son lo que verá el modelo: léelos con esa mirada.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 2. Cliente MCP y agente (laboratorio, 35 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. Cliente MCP y agente (laboratorio, 35 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s10_ej2_cliente_mcp.py</code></p><ol>
+<li><code>mcp_a_openai(herramienta)</code>: convierte la definición MCP al formato de herramienta de la API de OpenAI.</li>
+<li><code>texto_resultado(resultado)</code>.</li>
+<li><code>agente_mcp(objetivo, ruta, max_pasos, sistema)</code>: el bucle de agente de siempre, pero las herramientas se ejecutan en el servidor con <code>await sesion.call_tool(...)</code>. Es una función asíncrona porque el cliente MCP lo es.</li>
+</ol><p>Ejecuta el fichero. El agente lanza tu servidor como proceso, descubre sus herramientas y las usa.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 3. Flujo multiagente con LangGraph (Reto 1, 50 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. Flujo multiagente con LangGraph (Reto 1, 50 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s10_ej3_multiagente.py</code></p><ol>
+<li><code>nodo_investigador</code>, <code>nodo_redactor</code> y <code>nodo_revisor</code>: cada nodo recibe el estado y devuelve <strong>solo las claves que cambia</strong>.</li>
+<li><code>siguiente(estado)</code>: la arista condicional, con el máximo de revisiones.</li>
+<li><code>construir_grafo(buscar)</code>.</li>
+</ol><p>Antes, ejecuta <code>ejemplos/01_langchain_basico.py</code> para ver LangChain contra Ollama. Después ejecuta el fichero con el modelo real y responde: ¿cuántas vueltas da el revisor? ¿Mejora el borrador tras la corrección?</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 4. Matriz de decisión (Reto 2, 20 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 4. Matriz de decisión (Reto 2, 20 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s10_ej4_matriz_decision.py</code></p><ol>
+<li><code>normalizar_pesos</code>, <code>puntuar</code>, <code>ranking</code> y <code>tabla</code>.</li>
+</ol><p>Ejecuta <code>ejemplos/02_llamaindex_rag.py</code> y compara con tu RAG de la sesión 5: mismas respuestas en muchas menos líneas, pero ¿sabes qué troceado y qué prompt ha usado?</p></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Workflow multiagente y matriz de decisión tecnológica (Hito 3)</h2><ul class=puntos><li>Reto 1. Flujo multiagente con roles especializados (70 min)</li><li>Reto 2. Comparativa y matriz de decisión tecnológica (56 min)</li><li>Entrega del Hito 3</li><li>Criterios de evaluación (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 10. Workflow multiagente y matriz de decisión tecnológica (Hito 3)</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>Entregables del equipo: <code>agente/flujo.py</code>, <code>mcp/servidor.py</code>, <code>docs/matriz_decision.md</code> y <code>docs/comparativa_frameworks.md</code>.</p></div></section>
+<section class="ejercicio" data-menu="Reto 1. Flujo multiagente con roles especializados (70 min)"><header class="cabecera"><p class="antetitulo">Práctica 10. Workflow multiagente y matriz de decisión tecnológica (Hito 3)</p><h2>Reto 1. Flujo multiagente con roles especializados (70 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Diseñad e implementad con LangGraph un flujo con <strong>al menos tres roles</strong> para vuestro reto. Propuestas:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Reto</th>
+<th>Roles</th>
+<th>Herramientas por rol</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 · DevAssist</td>
+<td>Analista (lee código y guía) → generador de pruebas → verificador (ejecuta las pruebas y devuelve los fallos al generador)</td>
+<td><code>leer_fichero</code>, <code>comprobar_estilo</code> / ninguna / <code>ejecutar_pruebas</code></td>
+</tr>
+<tr>
+<td>R2 · InfraPilot</td>
+<td>Recopilador (completa la petición y pregunta lo que falta) → diseñador (propone recursos) → auditor de política (valida y devuelve incumplimientos) → preparador del cambio (con aprobación humana)</td>
+<td>ninguna / <code>consultar_catalogo</code> / <code>validar_peticion</code>, <code>estimar_coste</code> / <code>registrar_solicitud_cambio</code></td>
+</tr>
+<tr>
+<td>R3 · PMO Copilot</td>
+<td>Extractor (acciones y riesgos del acta) → redactor de historias → revisor de la definición de preparado</td>
+<td><code>leer_acta</code> / ninguna / <code>problemas_preparacion</code></td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 10. Workflow multiagente y matriz de decisión tecnológica (Hito 3)</p><h2>Reto 1. Flujo multiagente con roles especializados (70 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Requisitos:</p><ol>
+<li>Estado tipado con los campos que comparten los roles.</li>
+<li>Al menos una arista condicional con máximo de iteraciones.</li>
+<li>Cada rol solo tiene las herramientas que necesita.</li>
+<li>Las acciones con efectos pasan por confirmación humana.</li>
+<li>Probad el flujo con 3 casos del conjunto dorado y guardad las trazas o la salida.</li>
+</ol><p>Además, exponed las herramientas de vuestro reto en un <strong>servidor MCP</strong> (<code>mcp/servidor.py</code>) siguiendo el ejercicio 1, con las restricciones de seguridad de las herramientas.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 10. Workflow multiagente y matriz de decisión tecnológica (Hito 3) · Reto 2. Comparativa y matriz de decisión tecnológica (56 min)</p><h2>1. Comparativa (36 min)</h2></header><div class="cuerpo"><p>Implementad <strong>la misma tarea acotada</strong> de vuestro reto de dos formas: con vuestro agente sin framework (sesiones 8 y 9) y con el flujo de LangGraph (o con LlamaIndex si vuestra tarea es sobre todo de recuperación). Comparad con 5 casos:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Sin framework</th>
+<th>LangGraph / LlamaIndex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Casos correctos (de 5)</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Latencia media</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Llamadas al modelo por caso</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Líneas de código</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Facilidad para depurar un fallo (1-5)</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 10. Workflow multiagente y matriz de decisión tecnológica (Hito 3) · Reto 2. Comparativa y matriz de decisión tecnológica (56 min)</p><h2>2. Matriz de decisión (20 min)</h2></header><div class="cuerpo"><p>Con el ejercicio 4, construid la matriz ponderada para vuestro asistente de cara al proyecto final: opciones (sin framework, LangGraph, LlamaIndex y, si queréis, una combinación), criterios con pesos justificados por las necesidades del cliente y decisión final. Registrad la decisión también como ADR.</p></div></section>
+<section class="ejercicio" data-menu="Entrega del Hito 3"><header class="cabecera"><p class="antetitulo">Práctica 10. Workflow multiagente y matriz de decisión tecnológica (Hito 3)</p><h2>Entrega del Hito 3</h2></header><div class="cuerpo"><ol>
+<li><code>agente/flujo.py</code> y su ejecución con 3 casos.</li>
+<li><code>mcp/servidor.py</code>.</li>
+<li><code>docs/comparativa_frameworks.md</code> y <code>docs/matriz_decision.md</code>.</li>
+<li><code>docs/adr/ADR-00N.md</code> con la decisión tecnológica.</li>
+<li>Commit: <code>Sesión 10: flujo multiagente, servidor MCP y matriz de decisión</code>.</li>
+</ol><p>Comprobad el checklist del Hito 3: especificación del agente, trazas y registro de errores, herramientas con contrato y pruebas, flujo multiagente y selección de framework.</p></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 10. Workflow multiagente y matriz de decisión tecnológica (Hito 3)</p><h2>Criterios de evaluación (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Flujo multiagente</td>
+<td>Tres roles con permisos separados, arista condicional con máximo y confirmación humana</td>
+</tr>
+<tr>
+<td>Servidor MCP</td>
+<td>Herramientas del reto expuestas con validación y restricciones</td>
+</tr>
+<tr>
+<td>Comparativa</td>
+<td>Las dos implementaciones medidas con los mismos casos</td>
+</tr>
+<tr>
+<td>Decisión</td>
+<td>Pesos justificados por el cliente, coherente con la comparativa, registrada como ADR</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 10</p><h1>Workflows multiagente y frameworks: LangChain, LlamaIndex y MCP</h1><div class="acciones"><a class="boton" href="sesion_11.html">Sesión 11. Automatización con agentes · Asistentes inteligentes y chatbots <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 10. Workflows multiagente y frameworks: LangChain, LlamaIndex y MCP</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 10. Workflows multiagente y frameworks: LangChain, LlamaIndex y MCP</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a> · <a href="sesion_11.html">Sesión 11 →</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+
+</body>
+</html>

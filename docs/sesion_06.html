@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Embeddings, búsqueda semántica y bases de datos vectoriales · Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</title>
+<style>
+:root {
+  --fondo: #fbfaf7; --panel: #ffffff; --texto: #1f2328; --suave: #5b6470;
+  --borde: #e2ddd3; --acento: #2f6f9f; --acento-suave: #e8f1f8;
+  --codigo: #f4f1ea; --tabla: #f7f4ee;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+    --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+    --codigo: #22272e; --tabla: #20252b;
+  }
+}
+:root[data-theme="dark"] {
+  --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+  --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+  --codigo: #22272e; --tabla: #20252b;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body {
+  margin: 0; background: var(--fondo); color: var(--texto);
+  font: 17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--acento); }
+header.barra {
+  position: sticky; top: 0; z-index: 5; display: flex; gap: 1rem;
+  align-items: center; padding: .7rem 1.25rem; background: var(--panel);
+  border-bottom: 1px solid var(--borde);
+}
+header.barra .curso { font-weight: 650; text-decoration: none; color: var(--texto); }
+header.barra nav { margin-left: auto; display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+header.barra button {
+  font: inherit; font-size: .85rem; padding: .25rem .6rem; cursor: pointer;
+  background: transparent; color: var(--suave); border: 1px solid var(--borde); border-radius: 6px;
+}
+.pagina { display: grid; grid-template-columns: 17rem minmax(0, 1fr); max-width: 78rem; margin: 0 auto; }
+aside.indice {
+  position: sticky; top: 3.4rem; align-self: start; max-height: calc(100vh - 3.4rem);
+  overflow: auto; padding: 1.5rem 1rem 2rem 1.25rem; font-size: .9rem;
+}
+aside.indice .rotulo { text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; color: var(--suave); }
+aside.indice ul { list-style: none; margin: .4rem 0 0; padding: 0; }
+aside.indice ul ul { padding-left: .9rem; margin: 0; }
+aside.indice a { display: block; padding: .18rem 0; color: var(--suave); text-decoration: none; }
+aside.indice a:hover { color: var(--acento); }
+main { padding: 2rem 1.5rem 5rem; min-width: 0; max-width: 52rem; }
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 1rem; text-wrap: balance; }
+h2 { font-size: 1.5rem; margin: 2.8rem 0 .8rem; padding-top: .6rem; border-top: 1px solid var(--borde); }
+h3 { font-size: 1.15rem; margin: 2rem 0 .5rem; }
+hr { display: none; }
+p, li { text-wrap: pretty; }
+code { font: .88em/1.5 ui-monospace, "Cascadia Code", Consolas, Menlo, monospace; background: var(--codigo); padding: .12em .35em; border-radius: 4px; }
+.codehilite, pre { background: var(--codigo); border: 1px solid var(--borde); border-radius: 8px; overflow-x: auto; }
+.codehilite pre { border: 0; margin: 0; }
+pre { padding: .9rem 1rem; margin: 1rem 0; }
+pre code { background: none; padding: 0; font-size: .9rem; }
+.tabla { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--borde); vertical-align: top; }
+th { background: var(--tabla); font-weight: 600; }
+.pie { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--borde); font-size: .95rem; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: 1.1rem 1.2rem; }
+.tarjeta .num { color: var(--acento); font-weight: 650; font-size: .85rem; letter-spacing: .04em; text-transform: uppercase; }
+.tarjeta h3 { margin: .2rem 0 .5rem; }
+.tarjeta .enlaces { display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+.tarjeta.pendiente { opacity: .6; }
+.portada { max-width: 62rem; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+.portada .entrada { color: var(--suave); max-width: 44rem; }
+@media (max-width: 860px) {
+  .pagina { grid-template-columns: 1fr; }
+  aside.indice { display: none; }
+  main { padding: 1.5rem 1rem 4rem; }
+  body { font-size: 16px; }
+}
+@media print {
+  header.barra, aside.indice, .pie { display: none; }
+  .pagina { display: block; }
+  body { font-size: 11pt; background: #fff; color: #000; }
+  h2 { break-after: avoid; } pre, table { break-inside: avoid; }
+}
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.codehilite .hll { background-color: #ffffcc }
+.codehilite { background: #f0f0f0; }
+.codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #F00 } /* Error */
+.codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666 } /* Operator */
+.codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #007020 } /* Comment.Preproc */
+.codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.codehilite .gr { color: #F00 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #888 } /* Generic.Output */
+.codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #04D } /* Generic.Traceback */
+.codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+.codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #902000 } /* Keyword.Type */
+.codehilite .m { color: #40A070 } /* Literal.Number */
+.codehilite .s { color: #4070A0 } /* Literal.String */
+.codehilite .na { color: #4070A0 } /* Name.Attribute */
+.codehilite .nb { color: #007020 } /* Name.Builtin */
+.codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #60ADD5 } /* Name.Constant */
+.codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #007020 } /* Name.Exception */
+.codehilite .nf { color: #06287E } /* Name.Function */
+.codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+.codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #BB60D5 } /* Name.Variable */
+.codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #BBB } /* Text.Whitespace */
+.codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+.codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+.codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+.codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+.codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+.codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+.codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+.codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+.codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+.codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+.codehilite .sr { color: #235388 } /* Literal.String.Regex */
+.codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+.codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+.codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #06287E } /* Name.Function.Magic */
+.codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+.codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+.codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) pre { line-height: 125%; }
+:root:not([data-theme="light"]) td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) .codehilite .hll { background-color: #6e7681 }
+:root:not([data-theme="light"]) .codehilite { background: #0d1117; color: #E6EDF3 }
+:root:not([data-theme="light"]) .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root:not([data-theme="light"]) .codehilite .err { color: #F85149 } /* Error */
+:root:not([data-theme="light"]) .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root:not([data-theme="light"]) .codehilite .g { color: #E6EDF3 } /* Generic */
+:root:not([data-theme="light"]) .codehilite .k { color: #FF7B72 } /* Keyword */
+:root:not([data-theme="light"]) .codehilite .l { color: #A5D6FF } /* Literal */
+:root:not([data-theme="light"]) .codehilite .n { color: #E6EDF3 } /* Name */
+:root:not([data-theme="light"]) .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root:not([data-theme="light"]) .codehilite .x { color: #E6EDF3 } /* Other */
+:root:not([data-theme="light"]) .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root:not([data-theme="light"]) .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root:not([data-theme="light"]) .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root:not([data-theme="light"]) .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root:not([data-theme="light"]) .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root:not([data-theme="light"]) .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root:not([data-theme="light"]) .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root:not([data-theme="light"]) .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root:not([data-theme="light"]) .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root:not([data-theme="light"]) .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root:not([data-theme="light"]) .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root:not([data-theme="light"]) .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root:not([data-theme="light"]) .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root:not([data-theme="light"]) .codehilite .go { color: #8B949E } /* Generic.Output */
+:root:not([data-theme="light"]) .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root:not([data-theme="light"]) .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root:not([data-theme="light"]) .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root:not([data-theme="light"]) .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root:not([data-theme="light"]) .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root:not([data-theme="light"]) .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root:not([data-theme="light"]) .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root:not([data-theme="light"]) .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root:not([data-theme="light"]) .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root:not([data-theme="light"]) .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root:not([data-theme="light"]) .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root:not([data-theme="light"]) .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root:not([data-theme="light"]) .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root:not([data-theme="light"]) .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root:not([data-theme="light"]) .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root:not([data-theme="light"]) .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root:not([data-theme="light"]) .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root:not([data-theme="light"]) .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root:not([data-theme="light"]) .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root:not([data-theme="light"]) .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root:not([data-theme="light"]) .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root:not([data-theme="light"]) .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root:not([data-theme="light"]) .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root:not([data-theme="light"]) .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root:not([data-theme="light"]) .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root:not([data-theme="light"]) .codehilite .py { color: #79C0FF } /* Name.Property */
+:root:not([data-theme="light"]) .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root:not([data-theme="light"]) .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root:not([data-theme="light"]) .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root:not([data-theme="light"]) .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root:not([data-theme="light"]) .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root:not([data-theme="light"]) .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root:not([data-theme="light"]) .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root:not([data-theme="light"]) .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root:not([data-theme="light"]) .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root:not([data-theme="light"]) .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root:not([data-theme="light"]) .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root:not([data-theme="light"]) .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root:not([data-theme="light"]) .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root:not([data-theme="light"]) .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root:not([data-theme="light"]) .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root:not([data-theme="light"]) .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root:not([data-theme="light"]) .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root:not([data-theme="light"]) .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root:not([data-theme="light"]) .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root:not([data-theme="light"]) .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root:not([data-theme="light"]) .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root:not([data-theme="light"]) .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root:not([data-theme="light"]) .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root:not([data-theme="light"]) .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root:not([data-theme="light"]) .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root:not([data-theme="light"]) .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root:not([data-theme="light"]) .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root:not([data-theme="light"]) .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root:not([data-theme="light"]) .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root:not([data-theme="light"]) .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+}
+:root[data-theme="dark"] pre { line-height: 125%; }
+:root[data-theme="dark"] td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] .codehilite .hll { background-color: #6e7681 }
+:root[data-theme="dark"] .codehilite { background: #0d1117; color: #E6EDF3 }
+:root[data-theme="dark"] .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root[data-theme="dark"] .codehilite .err { color: #F85149 } /* Error */
+:root[data-theme="dark"] .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root[data-theme="dark"] .codehilite .g { color: #E6EDF3 } /* Generic */
+:root[data-theme="dark"] .codehilite .k { color: #FF7B72 } /* Keyword */
+:root[data-theme="dark"] .codehilite .l { color: #A5D6FF } /* Literal */
+:root[data-theme="dark"] .codehilite .n { color: #E6EDF3 } /* Name */
+:root[data-theme="dark"] .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root[data-theme="dark"] .codehilite .x { color: #E6EDF3 } /* Other */
+:root[data-theme="dark"] .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root[data-theme="dark"] .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root[data-theme="dark"] .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root[data-theme="dark"] .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root[data-theme="dark"] .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root[data-theme="dark"] .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root[data-theme="dark"] .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root[data-theme="dark"] .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root[data-theme="dark"] .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root[data-theme="dark"] .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root[data-theme="dark"] .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root[data-theme="dark"] .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root[data-theme="dark"] .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root[data-theme="dark"] .codehilite .go { color: #8B949E } /* Generic.Output */
+:root[data-theme="dark"] .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root[data-theme="dark"] .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root[data-theme="dark"] .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root[data-theme="dark"] .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root[data-theme="dark"] .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root[data-theme="dark"] .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root[data-theme="dark"] .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root[data-theme="dark"] .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root[data-theme="dark"] .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root[data-theme="dark"] .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root[data-theme="dark"] .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root[data-theme="dark"] .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root[data-theme="dark"] .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root[data-theme="dark"] .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root[data-theme="dark"] .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root[data-theme="dark"] .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root[data-theme="dark"] .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root[data-theme="dark"] .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root[data-theme="dark"] .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root[data-theme="dark"] .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root[data-theme="dark"] .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root[data-theme="dark"] .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root[data-theme="dark"] .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root[data-theme="dark"] .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root[data-theme="dark"] .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root[data-theme="dark"] .codehilite .py { color: #79C0FF } /* Name.Property */
+:root[data-theme="dark"] .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root[data-theme="dark"] .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root[data-theme="dark"] .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root[data-theme="dark"] .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root[data-theme="dark"] .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root[data-theme="dark"] .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root[data-theme="dark"] .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root[data-theme="dark"] .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root[data-theme="dark"] .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root[data-theme="dark"] .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root[data-theme="dark"] .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root[data-theme="dark"] .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root[data-theme="dark"] .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root[data-theme="dark"] .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root[data-theme="dark"] .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root[data-theme="dark"] .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root[data-theme="dark"] .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root[data-theme="dark"] .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root[data-theme="dark"] .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root[data-theme="dark"] .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root[data-theme="dark"] .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root[data-theme="dark"] .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root[data-theme="dark"] .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root[data-theme="dark"] .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root[data-theme="dark"] .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root[data-theme="dark"] .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root[data-theme="dark"] .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root[data-theme="dark"] .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root[data-theme="dark"] .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root[data-theme="dark"] .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+.codehilite { background: var(--codigo) !important; }
+.aviso-profe { border-left: 4px solid #c98a12; background: var(--acento-suave); padding: .6rem 1rem; border-radius: 6px; margin: 0 0 1.4rem; font-size: .95rem; }
+.ficha { display: flex; flex-wrap: wrap; gap: .4rem .8rem; margin: -.4rem 0 1.4rem; font-size: .9rem; color: var(--suave); }
+.ficha span { background: var(--acento-suave); padding: .1rem .6rem; border-radius: 20px; }
+.tarjeta .num.profe { color: #c98a12; }
+.seccion-indice { margin-top: 3rem; }
+pre.mermaid { background: var(--panel); text-align: center; }
+</style>
+
+</head>
+<body>
+<header class="barra">
+  <a class="curso" href="index.html">Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</a>
+  <nav><a href="sesion_06.html">Apuntes</a> <a href="sesion_06_ejercicios.html">Ejercicios</a> <a href="sesion_06_practica.html">Práctica</a> <a href="presentacion/sesion_06.html">Presentación</a></nav>
+  <button type="button" data-cambiar-tema>Claro / oscuro</button>
+</header>
+<div class="pagina">
+<aside class="indice"><div class="rotulo">En esta página</div><div class="toc">
+<ul>
+<li><a href="#agenda-de-la-sesion">Agenda de la sesión</a></li>
+<li><a href="#lo-que-entregas-hoy">Lo que entregas hoy</a></li>
+<li><a href="#61-que-es-un-embedding">6.1 Qué es un embedding</a><ul>
+<li><a href="#modelos-de-embeddings">Modelos de embeddings</a></li>
+</ul>
+</li>
+<li><a href="#62-similitud-entre-vectores">6.2 Similitud entre vectores</a></li>
+<li><a href="#63-busqueda-lexica-bm25">6.3 Búsqueda léxica: BM25</a></li>
+<li><a href="#64-busqueda-hibrida-y-fusion-de-rankings">6.4 Búsqueda híbrida y fusión de rankings</a><ul>
+<li><a href="#reordenacion-reranking">Reordenación (reranking)</a></li>
+</ul>
+</li>
+<li><a href="#65-bases-de-datos-vectoriales">6.5 Bases de datos vectoriales</a></li>
+<li><a href="#66-metricas-de-recuperacion">6.6 Métricas de recuperación</a></li>
+<li><a href="#errores-frecuentes">Errores frecuentes</a></li>
+<li><a href="#para-saber-mas">Para saber más</a></li>
+</ul>
+</div>
+</aside>
+<main>
+<h1 id="sesion-6-embeddings-busqueda-semantica-y-bases-de-datos-vectoriales">Sesión 6. Embeddings, búsqueda semántica y bases de datos vectoriales</h1>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Horario</th>
+<th>Modalidad</th>
+<th>Módulos</th>
+<th>Hito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Viernes 11 de diciembre de 2026</td>
+<td>09:00-15:00</td>
+<td>Remoto</td>
+<td>M4 · RAG (Retrieval-Augmented Generation) (6 h)</td>
+<td>H2 · Sistema RAG</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Objetivo:</strong> Interpretar cómo se representan y recuperan documentos mediante embeddings.</p>
+<p>Al terminar esta sesión entenderás cómo se representa el significado de un texto como un vector, sabrás comparar estrategias de búsqueda (léxica, semántica e híbrida) <strong>con métricas</strong> y tendrás tu primera base de datos vectorial persistente.</p>
+<h3 id="agenda-de-la-sesion">Agenda de la sesión</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: el significado como geometría</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>55</td>
+<td>Teoría</td>
+<td>Teoría I: embeddings y similitud</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Laboratorio: embeddings y ranking</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:30</td>
+<td>50</td>
+<td>Teoría</td>
+<td>Teoría II: búsqueda léxica, semántica e híbrida; bases vectoriales</td>
+</tr>
+<tr>
+<td>12:20</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Reto 1: comparación de estrategias de búsqueda</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>13:40</td>
+<td>56</td>
+<td>Práctica</td>
+<td>Reto 2: base vectorial persistente con Chroma</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Cierre: tabla comparativa y preguntas de repaso</td>
+</tr>
+</tbody>
+</table></div>
+<p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p>
+<h2 id="lo-que-entregas-hoy">Lo que entregas hoy</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Notebook o script funcional de búsqueda sobre los documentos del reto</td>
+<td><code>rag/busqueda.py</code> (o <code>.ipynb</code>) del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Tabla comparativa de estrategias con hit@k y MRR</td>
+<td><code>docs/comparativa_busqueda.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 4 con los tests en verde</td>
+<td><code>sesion_06_embeddings_busqueda/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="61-que-es-un-embedding">6.1 Qué es un embedding</h2>
+<p>Un <strong>embedding</strong> es un vector de números (de unos cientos a unos miles) que representa el significado de un texto. Lo produce un modelo entrenado para que textos con significado parecido tengan vectores cercanos.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">comun</span><span class="w"> </span><span class="kn">import</span> <span class="n">llm</span>
+
+<span class="n">v</span> <span class="o">=</span> <span class="n">llm</span><span class="o">.</span><span class="n">embeddings</span><span class="p">([</span><span class="s2">"¿Cuántos días de vacaciones tengo?"</span><span class="p">,</span> <span class="s2">"Política de vacaciones: 25 días laborables"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>   <span class="c1"># 768 dimensiones con embeddinggemma</span>
+</code></pre></div>
+
+<p>Propiedades que tienes que conocer:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Propiedad</th>
+<th>Consecuencia práctica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Captura significado, no palabras</td>
+<td>«Comité de Cambios» y «CAB» pueden quedar cerca aunque no compartan letras</td>
+</tr>
+<tr>
+<td>Depende del modelo</td>
+<td>Los vectores de dos modelos distintos no se pueden comparar ni mezclar en un índice</td>
+</tr>
+<tr>
+<td>Depende del idioma de entrenamiento</td>
+<td>Un modelo entrenado solo en inglés funciona mal en español: elige uno multilingüe</td>
+</tr>
+<tr>
+<td>Tiene longitud máxima</td>
+<td>Textos más largos se truncan: otra razón para trocear</td>
+</tr>
+<tr>
+<td>Es un cálculo barato frente a generar</td>
+<td>Se calcula una vez por trozo y se guarda</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="modelos-de-embeddings">Modelos de embeddings</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Modelo</th>
+<th>Dimensión</th>
+<th>Idiomas</th>
+<th>Notas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>embeddinggemma</code></td>
+<td>768</td>
+<td>Multilingüe</td>
+<td>Pequeño (300M), el del curso</td>
+</tr>
+<tr>
+<td><code>bge-m3</code></td>
+<td>1.024</td>
+<td>Multilingüe</td>
+<td>Muy bueno en español; más pesado</td>
+</tr>
+<tr>
+<td><code>nomic-embed-text</code></td>
+<td>768</td>
+<td>Sobre todo inglés</td>
+<td>Popular, rápido</td>
+</tr>
+<tr>
+<td><code>multilingual-e5</code></td>
+<td>384-1.024</td>
+<td>Multilingüe</td>
+<td>Requiere prefijos «query:» y «passage:»</td>
+</tr>
+</tbody>
+</table></div>
+<p>Algunos modelos funcionan mejor si distingues la pregunta del documento con un prefijo o una instrucción. Consulta su ficha.</p>
+<hr />
+<h2 id="62-similitud-entre-vectores">6.2 Similitud entre vectores</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Medida</th>
+<th>Fórmula</th>
+<th>Rango</th>
+<th>Uso</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Coseno</td>
+<td><code>a·b / (‖a‖‖b‖)</code></td>
+<td>-1 a 1</td>
+<td>La más usada: compara la dirección, no la longitud</td>
+</tr>
+<tr>
+<td>Producto escalar</td>
+<td><code>a·b</code></td>
+<td>Sin límite</td>
+<td>Igual al coseno si los vectores están normalizados (y más rápido)</td>
+</tr>
+<tr>
+<td>Distancia euclídea</td>
+<td><code>‖a − b‖</code></td>
+<td>0 a ∞</td>
+<td>Menor es más parecido</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Normalizar</strong> un vector es dividirlo por su norma para que mida 1. Con vectores normalizados, coseno y producto escalar coinciden y buscar se reduce a una multiplicación de matrices: así lo hace el buscador de referencia del curso (<code>comun/buscador.py</code>).</p>
+<p>Las puntuaciones absolutas no significan nada por sí solas: 0,54 puede ser un acierto con un modelo y ruido con otro. Lo que importa es el <strong>orden</strong>.</p>
+<hr />
+<h2 id="63-busqueda-lexica-bm25">6.3 Búsqueda léxica: BM25</h2>
+<p>Antes de los embeddings, los buscadores comparaban <strong>palabras</strong>. BM25 es el algoritmo léxico de referencia (lo usan Elasticsearch y OpenSearch). Puntúa un documento según:</p>
+<ul>
+<li>cuántas veces aparecen en él los términos de la consulta (con saturación: la décima repetición suma menos que la primera);</li>
+<li>lo raro que es cada término en la colección (un término raro como «Multi-AZ» pesa mucho más que «política»);</li>
+<li>la longitud del documento (penaliza los muy largos).</li>
+</ul>
+<p>Fortalezas y debilidades frente a la búsqueda semántica:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th></th>
+<th>Léxica (BM25)</th>
+<th>Semántica (embeddings)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Códigos, siglas, nombres propios (<code>ATL-INF-006</code>, <code>FARO-142</code>, <code>t3.medium</code>)</td>
+<td>Excelente</td>
+<td>Regular</td>
+</tr>
+<tr>
+<td>Sinónimos y paráfrasis («antelación» frente a «con cuánto tiempo»)</td>
+<td>Mala</td>
+<td>Excelente</td>
+</tr>
+<tr>
+<td>Otro idioma</td>
+<td>No funciona</td>
+<td>Funciona con modelos multilingües</td>
+</tr>
+<tr>
+<td>Explicabilidad</td>
+<td>Alta: se ve qué palabras coincidieron</td>
+<td>Baja</td>
+</tr>
+<tr>
+<td>Coste</td>
+<td>Mínimo</td>
+<td>Calcular y guardar vectores</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="64-busqueda-hibrida-y-fusion-de-rankings">6.4 Búsqueda híbrida y fusión de rankings</h2>
+<p>La búsqueda <strong>híbrida</strong> combina las dos: obtiene un ranking léxico y otro semántico y los fusiona. La forma más robusta de fusionar es <strong>Reciprocal Rank Fusion (RRF)</strong>, que solo usa las posiciones y no las puntuaciones (que no son comparables entre sí):</p>
+<div class="codehilite"><pre><span></span><code>puntuación_RRF(d) = Σ  1 / (k + posición de d en el ranking i)      con k = 60
+                    i
+</code></pre></div>
+
+<p>Un documento que sale tercero en BM25 y primero en semántica obtiene <code>1/63 + 1/61</code>. Uno que solo aparece en un ranking suma un único término.</p>
+<p>En corpus grandes y variados, con códigos, siglas y nombres propios, la búsqueda híbrida suele ser igual o mejor que cualquiera de las dos por separado, y es la opción por defecto en muchos sistemas de producción. <strong>Pero no siempre gana</strong>: en el corpus pequeño de Atlántica, con un buen modelo multilingüe, la búsqueda semántica sola obtiene mejor MRR que la híbrida (lo comprobarás en el ejercicio 3). La conclusión profesional no es «usa siempre híbrida», sino <strong>«mide con tus datos y decide»</strong>.</p>
+<h3 id="reordenacion-reranking">Reordenación (<em>reranking</em>)</h3>
+<p>Un <strong>reordenador</strong> es un modelo que recibe la pregunta y un fragmento <strong>juntos</strong> y puntúa su relevancia. Es más preciso que comparar vectores calculados por separado, pero mucho más lento, así que se aplica solo a los 20-50 primeros candidatos. Se puede usar un modelo de reordenación específico o el propio LLM con un prompt («puntúa de 0 a 10 la relevancia de este fragmento para la pregunta»).</p>
+<hr />
+<h2 id="65-bases-de-datos-vectoriales">6.5 Bases de datos vectoriales</h2>
+<p>Con unos cientos de trozos basta un array de NumPy. Con millones hace falta una base de datos vectorial, que aporta:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Función</th>
+<th>Para qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Índice aproximado (ANN, normalmente HNSW)</td>
+<td>Buscar entre millones de vectores en milisegundos, a cambio de no garantizar el resultado exacto</td>
+</tr>
+<tr>
+<td>Persistencia</td>
+<td>No recalcular embeddings cada vez</td>
+</tr>
+<tr>
+<td>Metadatos y filtros</td>
+<td>«Solo documentos de RRHH», «solo clasificación Interno», «solo versión vigente»</td>
+</tr>
+<tr>
+<td>Actualización</td>
+<td>Añadir, modificar y borrar trozos sin reconstruir todo</td>
+</tr>
+</tbody>
+</table></div>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Opción</th>
+<th>Tipo</th>
+<th>Cuándo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Chroma</td>
+<td>Biblioteca embebida o servidor</td>
+<td>Prototipos y aplicaciones pequeñas; la del curso</td>
+</tr>
+<tr>
+<td>Qdrant</td>
+<td>Servidor dedicado</td>
+<td>Producción, filtros avanzados, gran volumen</td>
+</tr>
+<tr>
+<td>pgvector</td>
+<td>Extensión de PostgreSQL</td>
+<td>Si el cliente ya usa PostgreSQL (es el estándar de Atlántica)</td>
+</tr>
+<tr>
+<td>FAISS</td>
+<td>Biblioteca de búsqueda</td>
+<td>Máximo rendimiento sin servidor</td>
+</tr>
+</tbody>
+</table></div>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">chromadb</span>
+
+<span class="n">cliente</span> <span class="o">=</span> <span class="n">chromadb</span><span class="o">.</span><span class="n">PersistentClient</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="s2">"indices/chroma"</span><span class="p">)</span>
+<span class="n">coleccion</span> <span class="o">=</span> <span class="n">cliente</span><span class="o">.</span><span class="n">get_or_create_collection</span><span class="p">(</span><span class="s2">"atlantica"</span><span class="p">,</span> <span class="n">embedding_function</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                             <span class="n">configuration</span><span class="o">=</span><span class="p">{</span><span class="s2">"hnsw"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"space"</span><span class="p">:</span> <span class="s2">"cosine"</span><span class="p">}})</span>
+<span class="n">coleccion</span><span class="o">.</span><span class="n">upsert</span><span class="p">(</span><span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">documents</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">embeddings</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">],</span> <span class="n">metadatas</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">])</span>
+<span class="n">resultado</span> <span class="o">=</span> <span class="n">coleccion</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query_embeddings</span><span class="o">=</span><span class="p">[</span><span class="n">vector</span><span class="p">],</span> <span class="n">n_results</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="p">{</span><span class="s2">"documento"</span><span class="p">:</span> <span class="s2">"06_politica_infraestructura_cloud.md"</span><span class="p">})</span>
+</code></pre></div>
+
+<p>Pasamos <code>embedding_function=None</code> y los vectores calculados por nosotros para controlar exactamente qué modelo se usa (el mismo en la ingesta y en la consulta).</p>
+<hr />
+<h2 id="66-metricas-de-recuperacion">6.6 Métricas de recuperación</h2>
+<p>Para comparar estrategias necesitas preguntas con su fuente correcta (<code>datos/atlantica/evaluacion/preguntas_rag.jsonl</code>) y métricas:</p>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Qué mide</th>
+<th>Cálculo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Hit@k</strong> (tasa de acierto)</td>
+<td>¿Aparece la fuente correcta entre los <code>k</code> primeros?</td>
+<td>Proporción de preguntas en que sí</td>
+</tr>
+<tr>
+<td><strong>MRR</strong> (<em>Mean Reciprocal Rank</em>)</td>
+<td>¿En qué posición aparece?</td>
+<td>Media de <code>1 / posición</code> (0 si no aparece)</td>
+</tr>
+<tr>
+<td>Precisión@k</td>
+<td>¿Qué proporción de los <code>k</code> recuperados es relevante?</td>
+<td>Útil cuando hay varias fuentes correctas</td>
+</tr>
+<tr>
+<td>Recall@k</td>
+<td>¿Qué proporción de las fuentes relevantes se recupera?</td>
+<td>Ídem</td>
+</tr>
+</tbody>
+</table></div>
+<p>Si la fuente correcta está primera en todas las preguntas, MRR = 1. Si está siempre segunda, 0,5. Hit@k y MRR son las dos métricas que usarás en la tabla comparativa de hoy y en el checklist de calidad de la sesión 7.</p>
+<hr />
+<h2 id="errores-frecuentes">Errores frecuentes</h2>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mezclar vectores de dos modelos</td>
+<td>Resultados absurdos</td>
+<td>Un índice, un modelo; si cambias de modelo, reindexa</td>
+</tr>
+<tr>
+<td>No normalizar al usar producto escalar</td>
+<td>Los textos largos ganan siempre</td>
+<td>Normaliza o usa coseno</td>
+</tr>
+<tr>
+<td>Tokenizar BM25 sin quitar tildes ni mayúsculas</td>
+<td>«Política» y «politica» no coinciden</td>
+<td>Normaliza igual la consulta y los documentos</td>
+</tr>
+<tr>
+<td>Comparar estrategias con 3 preguntas</td>
+<td>Conclusiones aleatorias</td>
+<td>Al menos 20-30 preguntas</td>
+</tr>
+<tr>
+<td>Olvidar <code>embedding_function=None</code> en Chroma</td>
+<td>Chroma descarga su propio modelo</td>
+<td>Pasa tus embeddings</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="para-saber-mas">Para saber más</h2>
+<ul>
+<li>Robertson y Zaragoza (2009), <em>The Probabilistic Relevance Framework: BM25 and Beyond</em>.</li>
+<li>Cormack et al. (2009), <em>Reciprocal Rank Fusion outperforms Condorcet and individual Rank Learning Methods</em>.</li>
+<li>Tabla de clasificación de modelos de embeddings MTEB: <a href="https://huggingface.co/spaces/mteb/leaderboard" target="_blank" rel="noopener">huggingface.co/spaces/mteb/leaderboard</a></li>
+<li>Documentación de Chroma: <a href="https://docs.trychroma.com/" target="_blank" rel="noopener">docs.trychroma.com</a></li>
+</ul>
+<div class="pie"><a href="sesion_05.html">&larr; Anterior</a><a href="index.html">Índice del curso</a><a href="sesion_07.html">Siguiente &rarr;</a></div>
+</main>
+</div>
+<script>
+(function () {
+  var raiz = document.documentElement, guardado = null;
+  try { guardado = localStorage.getItem("tema"); } catch (e) {}
+  if (guardado) raiz.setAttribute("data-theme", guardado);
+  document.addEventListener("click", function (ev) {
+    if (!ev.target.matches("[data-cambiar-tema]")) return;
+    var oscuro = raiz.getAttribute("data-theme") === "dark" ||
+      (!raiz.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+    var nuevo = oscuro ? "light" : "dark";
+    raiz.setAttribute("data-theme", nuevo);
+    try { localStorage.setItem("tema", nuevo); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

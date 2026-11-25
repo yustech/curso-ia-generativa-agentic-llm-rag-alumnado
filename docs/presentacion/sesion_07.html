@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 7. Indexación y evaluación RAG · Introducción a los agentes</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 7 · Lunes 14 de diciembre de 2026 · 09:00-15:00 · Presencial</p><h1>Indexación y evaluación RAG · Introducción a los agentes</h1><div class="objetivo"><p>Esta sesión cierra el bloque de RAG y abre el de agentes. En la primera parte construirás un pipeline de ingesta que se mantiene al día solo y aprenderás a evaluar un RAG de extremo a extremo con un checklist de calidad. En la segunda entenderás qué es un agente, en qué se diferencia de un chatbot y de un workflow, y programarás tu primer bucle de agente sin frameworks.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="5">5</b><span>unidades</span></div><div class="cifra"><b data-cuenta="3">3</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 7 · M4 · RAG (Retrieval-Augmented Generation) (2 h) + M5 · Agentic AI y herramientas avanzadas (4 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n5"><a class="tarjeta" href="#/u7-1"><span class="n">7.1</span><span class="t">El pipeline de ingesta en producción</span></a><a class="tarjeta" href="#/u7-2"><span class="n">7.2</span><span class="t">Evaluar un RAG de extremo a extremo</span></a><a class="tarjeta" href="#/u7-3"><span class="n">7.3</span><span class="t">Qué es un agente</span></a><a class="tarjeta" href="#/u7-4"><span class="n">7.4</span><span class="t">Chatbot, workflow y agente</span></a><a class="tarjeta" href="#/u7-5"><span class="n">7.5</span><span class="t">El bucle del agente</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 7 · Lunes 14 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Módulo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>M4</td>
+<td>Activación: reglas de la revisión intermedia</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>45</td>
+<td>Teoría</td>
+<td>M4</td>
+<td>Teoría: indexación y evaluación de la recuperación</td>
+</tr>
+<tr>
+<td>10:00</td>
+<td>60</td>
+<td>Práctica</td>
+<td>M4</td>
+<td>Laboratorio: pipeline de ingesta y métricas de recuperación</td>
+</tr>
+<tr>
+<td>11:00</td>
+<td>10</td>
+<td>Pausa</td>
+<td>M5</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:10</td>
+<td>60</td>
+<td>Teoría</td>
+<td>M5</td>
+<td>Teoría: introducción a los agentes</td>
+</tr>
+<tr>
+<td>12:10</td>
+<td>66</td>
+<td>Práctica</td>
+<td>M5</td>
+<td>Laboratorio: tu primer bucle de agente</td>
+</tr>
+<tr>
+<td>13:16</td>
+<td>80</td>
+<td>Práctica</td>
+<td>M5</td>
+<td>Reto: clasificación de soluciones y ficha de patrón del agente</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>M5</td>
+<td>Cierre: revisión intermedia presencial (8 min por equipo)</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 7</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Índice consultable del reto con ingesta incremental</td>
+<td><code>rag/ingesta.py</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Checklist de calidad del RAG con métricas</td>
+<td><code>docs/checklist_rag.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ficha de patrón del agente</td>
+<td><code>docs/ficha_patron_agente.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 3 con los tests en verde</td>
+<td><code>sesion_07_indexacion_agentes/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u7-1" data-menu="7.1 El pipeline de ingesta en producción" data-transition="fade"><div class="divisor"><span class="numero">7.1</span><h2>El pipeline de ingesta en producción</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">7.1 El pipeline de ingesta en producción</p><h2>El pipeline de ingesta en producción <span class="parte">1/3</span></h2></header><div class="cuerpo"><p>En la sesión 5 indexaste los documentos una vez. En un cliente real los documentos cambian cada día, y reconstruir el índice entero cada vez es lento y caro. Un pipeline de ingesta profesional:</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">7.1 El pipeline de ingesta en producción</p><h2>El pipeline de ingesta en producción <span class="parte">2/3</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Paso</th>
+<th>Qué hace</th>
+<th>Detalle práctico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Descubrir</td>
+<td>Lista los documentos de las fuentes</td>
+<td>Carpetas, SharePoint, wikis, bases de datos</td>
+</tr>
+<tr>
+<td>Detectar cambios</td>
+<td>Compara cada documento con la última versión indexada</td>
+<td><strong>Huella</strong> (hash) del contenido en un manifiesto</td>
+</tr>
+<tr>
+<td>Extraer y limpiar</td>
+<td>Convierte a texto conservando la estructura</td>
+<td>Títulos, tablas y listas</td>
+</tr>
+<tr>
+<td>Trocear</td>
+<td>Divide en fragmentos</td>
+<td>Por secciones, con título</td>
+</tr>
+<tr>
+<td>Enriquecer</td>
+<td>Añade metadatos</td>
+<td>Documento, sección, versión, clasificación, fecha, huella</td>
+</tr>
+<tr>
+<td>Vectorizar</td>
+<td>Calcula embeddings por lotes</td>
+<td>Mismo modelo que en la consulta</td>
+</tr>
+<tr>
+<td>Indexar</td>
+<td><code>upsert</code> de lo nuevo y modificado; borrado de lo eliminado</td>
+<td>Ids estables por documento y posición</td>
+</tr>
+<tr>
+<td>Registrar</td>
+<td>Guarda el manifiesto y un informe</td>
+<td>Qué cambió, cuántos trozos, errores</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">7.1 El pipeline de ingesta en producción</p><h2>El pipeline de ingesta en producción <span class="parte">3/3</span></h2></header><div class="cuerpo"><p>La <strong>ingesta incremental</strong> solo reprocesa lo que cambió: si de 4.000 documentos se modifican 12, solo se recalculan esos 12. Lo implementarás en el ejercicio 1 con una huella SHA-256 por documento.</p><p>Dos detalles que dan problemas en proyectos reales:</p><ul>
+<li><strong>Al modificar un documento hay que borrar sus trozos anteriores</strong> antes de indexar los nuevos: si el documento pasó de 5 secciones a 4, el quinto trozo antiguo seguiría en el índice respondiendo con información obsoleta.</li>
+<li><strong>Si cambias de modelo de embeddings o de estrategia de troceado, hay que reindexarlo todo.</strong> Guarda en el manifiesto con qué modelo se indexó.</li>
+</ul></div></section>
+<section class="especial seccion" id="u7-2" data-menu="7.2 Evaluar un RAG de extremo a extremo" data-transition="fade"><div class="divisor"><span class="numero">7.2</span><h2>Evaluar un RAG de extremo a extremo</h2><ul class=puntos><li>Checklist de calidad</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">7.2 Evaluar un RAG de extremo a extremo</p><h2>Evaluar un RAG de extremo a extremo</h2></header><div class="cuerpo"><p>En la sesión 6 mediste la recuperación. Un RAG completo se evalúa en dos niveles:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th>Pregunta</th>
+<th>Métrica del curso</th>
+<th>Herramientas en el mercado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Recuperación</td>
+<td>¿Llega la fuente correcta al modelo?</td>
+<td>Hit@k, MRR</td>
+<td>Las mismas en Ragas o DeepEval (<em>context recall</em>)</td>
+</tr>
+<tr>
+<td>Generación: fidelidad</td>
+<td>¿La respuesta se apoya en los fragmentos?</td>
+<td>¿Cita la fuente correcta?</td>
+<td><em>Faithfulness</em> con LLM como juez</td>
+</tr>
+<tr>
+<td>Generación: respuesta</td>
+<td>¿Responde lo que se esperaba?</td>
+<td>Cobertura de términos clave</td>
+<td><em>Answer relevancy</em>, <em>answer correctness</em></td>
+</tr>
+<tr>
+<td>Generación: prudencia</td>
+<td>¿Se abstiene cuando no hay fuente?</td>
+<td>Tasa de abstención correcta</td>
+<td>Casos negativos del conjunto</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">7.2 Evaluar un RAG de extremo a extremo</p><h2>Checklist de calidad</h2></header><div class="cuerpo"><p>Antes de enseñar un RAG a un cliente, fija <strong>umbrales</strong> y compruébalos con un conjunto de preguntas:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>Umbral orientativo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>La fuente correcta está entre los <code>k</code> recuperados</td>
+<td>≥ 85 %</td>
+</tr>
+<tr>
+<td>Se abstiene en todas las preguntas sin fuente</td>
+<td>100 %</td>
+</tr>
+<tr>
+<td>Cita la fuente correcta</td>
+<td>≥ 80 %</td>
+</tr>
+<tr>
+<td>Cubre los términos clave de la respuesta esperada</td>
+<td>≥ 50 %</td>
+</tr>
+<tr>
+<td>Latencia p95</td>
+<td>Según el caso de uso</td>
+</tr>
+</tbody>
+</table></div><p>Los umbrales los decide el negocio según el riesgo. Lo importante es que existan, que se midan siempre igual y que una caída bloquee el despliegue (lo automatizarás en la sesión 13).</p></div></section>
+<section class="especial seccion" id="u7-3" data-menu="7.3 Qué es un agente" data-transition="fade"><div class="divisor"><span class="numero">7.3</span><h2>Qué es un agente</h2><ul class=puntos><li>Cómo usa herramientas un LLM (<em>tool calling</em>)</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">7.3 Qué es un agente</p><h2>Qué es un agente</h2></header><div class="cuerpo"><p>Un <strong>agente</strong> es un sistema en el que un LLM <strong>decide qué acciones tomar</strong> para alcanzar un objetivo, las ejecuta mediante herramientas, observa el resultado y repite hasta terminar.</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Qué es</th>
+<th>En Atlántica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Modelo</td>
+<td>El LLM que razona y decide</td>
+<td><code>granite4:micro</code> o un modelo mayor del servidor</td>
+</tr>
+<tr>
+<td>Instrucciones</td>
+<td>Objetivo, reglas y límites</td>
+<td>«Nunca apliques cambios en producción»</td>
+</tr>
+<tr>
+<td>Herramientas</td>
+<td>Funciones que puede invocar</td>
+<td>Buscar en la documentación, validar Terraform, consultar el backlog</td>
+</tr>
+<tr>
+<td>Memoria y estado</td>
+<td>Lo que recuerda durante y entre tareas</td>
+<td>Historial, datos de la petición en curso</td>
+</tr>
+<tr>
+<td>Bucle</td>
+<td>Decidir → actuar → observar</td>
+<td>Hasta responder o alcanzar el máximo de pasos</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">7.3 Qué es un agente</p><h2>Cómo usa herramientas un LLM (<em>tool calling</em>)</h2></header><div class="cuerpo"><p>El modelo no ejecuta nada. Recibe la descripción de las herramientas (nombre, descripción y esquema JSON de los parámetros) y, cuando decide usar una, devuelve un mensaje especial con el nombre y los argumentos. <strong>Tu programa</strong> la ejecuta y le devuelve el resultado en un mensaje de rol <code>tool</code>.</p><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>usuario: «¿Cuánto cuestan dos m6i.large y una db.t3.medium?»
+   modelo → tool_call: buscar_documentacion(consulta="coste m6i.large db.t3.medium")
+programa → tool: «[1] ... m6i.large 85 € ... db.t3.medium 70 € ...»
+   modelo → tool_call: calcular(expresion="2 * 85 + 70")
+programa → tool: «240»
+   modelo → «Según el catálogo (ATL-INF-007), 240 € al mes.»</code></pre></div><p>Fíjate en que el agente <strong>combina</strong> RAG (buscar en la documentación) con una herramienta de cálculo, que resuelve la limitación aritmética de la sesión 4.</p></div></section>
+<section class="especial seccion" id="u7-4" data-menu="7.4 Chatbot, workflow y agente" data-transition="fade"><div class="divisor"><span class="numero">7.4</span><h2>Chatbot, workflow y agente</h2><ul class=puntos><li>Patrones intermedios</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">7.4 Chatbot, workflow y agente</p><h2>Chatbot, workflow y agente</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th></th>
+<th>Chatbot (con o sin RAG)</th>
+<th>Workflow con LLM</th>
+<th>Agente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Quién decide los pasos</td>
+<td>Nadie: pregunta y respuesta</td>
+<td>El programador, de antemano</td>
+<td>El modelo, en cada ejecución</td>
+</tr>
+<tr>
+<td>Flujo</td>
+<td>Fijo</td>
+<td>Fijo, con pasos que usan el LLM</td>
+<td>Dinámico</td>
+</tr>
+<tr>
+<td>Previsibilidad</td>
+<td>Alta</td>
+<td>Alta</td>
+<td>Menor</td>
+</tr>
+<tr>
+<td>Coste y latencia</td>
+<td>Bajos</td>
+<td>Medios y predecibles</td>
+<td>Variables y mayores</td>
+</tr>
+<tr>
+<td>Cuándo</td>
+<td>Responder preguntas</td>
+<td>El proceso se conoce y se repite</td>
+<td>El camino depende de lo que se vaya encontrando</td>
+</tr>
+<tr>
+<td>Ejemplo</td>
+<td>Asistente de vacaciones</td>
+<td>Acta → extraer acciones → crear historias → informe</td>
+<td>«Prepara el entorno de pre de Faro» con validaciones y aclaraciones</td>
+</tr>
+</tbody>
+</table></div><p><strong>La recomendación profesional: usa el sistema más simple que resuelva el problema.</strong> Muchos «agentes» de las demos son mejores como workflows: más baratos, más fiables y más fáciles de probar. Un agente se justifica cuando los pasos no se pueden prever.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">7.4 Chatbot, workflow y agente</p><h2>Patrones intermedios</h2></header><div class="cuerpo"><p>Entre el workflow fijo y el agente autónomo hay patrones muy útiles:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Patrón</th>
+<th>Qué hace</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Encadenamiento</td>
+<td>Pasos fijos, cada uno con el LLM</td>
+<td>Extraer → resumir → traducir</td>
+</tr>
+<tr>
+<td>Enrutador</td>
+<td>El LLM clasifica y se elige un camino</td>
+<td>Pregunta de normativa → RAG; de backlog → herramienta</td>
+</tr>
+<tr>
+<td>Paralelización</td>
+<td>Varios LLM a la vez y se combinan</td>
+<td>Revisar un código desde tres puntos de vista</td>
+</tr>
+<tr>
+<td>Orquestador-trabajadores</td>
+<td>Un LLM reparte subtareas</td>
+<td>Informe con secciones que escriben otros</td>
+</tr>
+<tr>
+<td>Evaluador-optimizador</td>
+<td>Un LLM genera y otro critica hasta aprobar</td>
+<td>Historia de usuario revisada contra la definición de preparado</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u7-5" data-menu="7.5 El bucle del agente" data-transition="fade"><div class="divisor"><span class="numero">7.5</span><h2>El bucle del agente</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">7.5 El bucle del agente</p><h2>El bucle del agente <span class="parte">1/2</span></h2></header><div class="cuerpo"><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="n">mensajes</span> <span class="o">=</span> <span class="p">[</span><span class="n">sistema</span><span class="p">,</span> <span class="n">objetivo</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">paso</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">MAX_PASOS</span><span class="p">):</span>
+    <span class="n">respuesta</span> <span class="o">=</span> <span class="n">llm</span><span class="p">(</span><span class="n">mensajes</span><span class="p">,</span> <span class="n">herramientas</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">no</span> <span class="n">hay</span> <span class="n">llamadas</span> <span class="n">a</span> <span class="n">herramientas</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">respuesta</span>                       <span class="c1"># terminado</span>
+    <span class="n">mensajes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">respuesta</span><span class="p">)</span>                 <span class="c1"># la petición de herramienta del modelo</span>
+    <span class="k">for</span> <span class="n">llamada</span> <span class="ow">in</span> <span class="n">respuesta</span><span class="o">.</span><span class="n">llamadas</span><span class="p">:</span>
+        <span class="n">resultado</span> <span class="o">=</span> <span class="n">ejecutar</span><span class="p">(</span><span class="n">llamada</span><span class="p">)</span>          <span class="c1"># ¡tu código, con tus controles!</span>
+        <span class="n">mensajes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">resultado</span><span class="p">)</span>             <span class="c1"># rol "tool"</span>
+<span class="k">return</span> <span class="s2">"No he podido completarlo"</span>              <span class="c1"># límite de pasos</span></code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">7.5 El bucle del agente</p><h2>El bucle del agente <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Cuatro reglas de diseño que aplicarás desde hoy:</p><ol>
+<li><strong>Límite de pasos siempre.</strong> Un agente sin límite puede entrar en un bucle infinito y costoso.</li>
+<li><strong>Las herramientas nunca lanzan excepciones al modelo</strong>: devuelven un error legible para que el modelo pueda reaccionar.</li>
+<li><strong>Valida los argumentos</strong> que propone el modelo antes de ejecutar (sesión 9).</li>
+<li><strong>Registra cada paso</strong>: herramienta, argumentos y resultado. Sin trazas no sabrás por qué el agente hizo lo que hizo (sesión 8).</li>
+</ol></div></section>
+<section data-menu="Errores frecuentes"><header class="cabecera"><p class="antetitulo">Sesión 7</p><h2>Errores frecuentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No borrar los trozos antiguos al modificar un documento</td>
+<td>El asistente responde con información obsoleta</td>
+<td>Borrar por documento antes de reindexar</td>
+</tr>
+<tr>
+<td>Evaluar solo con preguntas que tienen respuesta</td>
+<td>El sistema nunca aprende a abstenerse</td>
+<td>Incluir preguntas sin fuente</td>
+</tr>
+<tr>
+<td>Usar <code>eval()</code> en una herramienta de cálculo</td>
+<td>Ejecución de código arbitrario</td>
+<td>Evaluador seguro con <code>ast</code></td>
+</tr>
+<tr>
+<td>Olvidar el <code>tool_call_id</code> en el mensaje de la herramienta</td>
+<td>Error de la API</td>
+<td>Copiar el id de cada llamada</td>
+</tr>
+<tr>
+<td>Agente para un proceso que siempre es igual</td>
+<td>Coste y fallos innecesarios</td>
+<td>Workflow</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section data-menu="Para saber más"><header class="cabecera"><p class="antetitulo">Sesión 7</p><h2>Para saber más</h2></header><div class="cuerpo"><ul>
+<li>Anthropic, <em>Building effective agents</em>: <a href="https://www.anthropic.com/research/building-effective-agents" target="_blank" rel="noopener">anthropic.com/research/building-effective-agents</a></li>
+<li>Documentación de Ragas (métricas de RAG): <a href="https://docs.ragas.io/" target="_blank" rel="noopener">docs.ragas.io</a></li>
+<li>Guía de tool calling de Ollama: <a href="https://docs.ollama.com/capabilities/tool-calling" target="_blank" rel="noopener">docs.ollama.com/capabilities/tool-calling</a></li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Ejercicio 1. Pipeline de ingesta incremental (laboratorio de M4, 30 min)</li><li>Ejercicio 2. Evaluar el RAG de extremo a extremo (laboratorio de M4, 30 min)</li><li>Ejercicio 3. Tu primer bucle de agente (laboratorio de M5, 66 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa cada fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_07_indexacion_agentes<span class="w"> </span>-v</code></pre></div></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Pipeline de ingesta incremental (laboratorio de M4, 30 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Pipeline de ingesta incremental (laboratorio de M4, 30 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s07_ej1_ingesta.py</code></p><ol>
+<li><code>huella(texto)</code>.</li>
+<li><code>clasificar_cambios(documentos, manifiesto)</code>: nuevos, modificados, eliminados y sin cambios.</li>
+<li><code>PipelineIngesta.borrar_documento(nombre)</code>: <code>delete</code> con filtro <code>where</code> por metadato.</li>
+<li><code>PipelineIngesta.indexar_documento(documento)</code>: trocea con <code>trocear_por_secciones</code> de <code>comun.documentos</code>, una llamada de embeddings y <code>upsert</code>.</li>
+<li><code>PipelineIngesta.procesar(carpeta)</code>: el orden importa. Primero borra los modificados y los eliminados, después indexa los nuevos y los modificados, y al final guarda el manifiesto.</li>
+</ol><p>Prueba el comportamiento incremental: ejecuta el fichero dos veces (la segunda no indexa nada). Después copia la carpeta de documentos a <code>salidas/docs_prueba/</code>, modifica un documento, borra otro y ejecuta <code>PipelineIngesta(...).procesar("salidas/docs_prueba")</code>.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 2. Evaluar el RAG de extremo a extremo (laboratorio de M4, 30 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. Evaluar el RAG de extremo a extremo (laboratorio de M4, 30 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s07_ej2_evaluar_rag.py</code></p><ol>
+<li><code>se_abstiene(texto)</code>, <code>documentos_citados(texto, documentos)</code> y <code>cobertura(respuesta, esperado)</code>.</li>
+<li><code>evaluar_pregunta(pregunta, resultado)</code>: métricas distintas según la pregunta tenga fuente o no.</li>
+<li><code>agregar(por_pregunta)</code>: media de cada métrica solo sobre las preguntas en las que aparece.</li>
+<li><code>checklist(metricas, umbrales)</code>.</li>
+</ol><p>Ejecuta el fichero: evalúa el RAG de referencia con las 30 preguntas y muestra el checklist. Anota qué criterios no se cumplen y por qué.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 3. Tu primer bucle de agente (laboratorio de M5, 66 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. Tu primer bucle de agente (laboratorio de M5, 66 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Fichero: <code>s07_ej3_bucle_agente.py</code></p><ol>
+<li><code>calcular(expresion)</code>: evaluador aritmético <strong>seguro</strong> con el módulo <code>ast</code>. Nunca uses <code>eval</code>: un modelo manipulado podría pedirte que evalúes <code>__import__('os').system(...)</code>. Los tests lo comprueban.</li>
+<li><code>esquema(nombre, descripcion, propiedades, requeridas)</code>: el formato de herramienta de la API de OpenAI.</li>
+<li><code>ejecutar_herramienta(nombre, argumentos_json, registro)</code>: nunca lanza excepciones; los errores vuelven como texto <code>ERROR: ...</code>.</li>
+<li><code>bucle(objetivo, registro, herramientas, sistema, max_pasos)</code>: el bucle de los apuntes (7.5).</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. Tu primer bucle de agente (laboratorio de M5, 66 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Antes de programar el bucle, ejecuta <code>ejemplos/01_tool_calling_paso_a_paso.py</code> y lee los cuatro mensajes del intercambio.</p><p>Ejecuta el fichero con el modelo real: los dos objetivos combinan búsqueda en la documentación y cálculo. Lee los pasos que imprime. ¿Usa siempre <code>calcular</code> para las cuentas? ¿Qué pasa si quitas esa herramienta del registro?</p></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Índice consultable, checklist de calidad y ficha de patrón del agente</h2><ul class=puntos><li>Parte 1. Índice consultable con checklist (laboratorio de M4)</li><li>Parte 2. Reto: clasificación de soluciones y ficha de patrón (80 min)</li><li>Revisión intermedia presencial (cierre, 8 min por equipo)</li><li>Entrega</li><li>Criterios de evaluación (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 7. Índice consultable, checklist de calidad y ficha de patrón del agente</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>Entregables del equipo: <code>rag/ingesta.py</code>, <code>docs/checklist_rag.md</code>, <code>docs/ficha_patron_agente.md</code> y la presentación de la revisión intermedia.</p></div></section>
+<section class="ejercicio" data-menu="Parte 1. Índice consultable con checklist (laboratorio de M4)"><header class="cabecera"><p class="antetitulo">Práctica 7. Índice consultable, checklist de calidad y ficha de patrón del agente</p><h2>Parte 1. Índice consultable con checklist (laboratorio de M4)</h2></header><div class="cuerpo"><ol>
+<li>Adaptad el pipeline del ejercicio 1 a las fuentes de vuestro reto en <code>rag/ingesta.py</code>, con la configuración ganadora de la sesión 6.</li>
+<li>Evaluad vuestro RAG con vuestro conjunto de preguntas (<code>evals/preguntas_recuperacion.jsonl</code>, más al menos 3 preguntas sin fuente) usando el código del ejercicio 2.</li>
+<li>Escribid <code>docs/checklist_rag.md</code> con la tabla del checklist (criterio, valor, umbral, ¿cumple?) y, para cada criterio que no se cumpla, la causa y la acción prevista.</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 7. Índice consultable, checklist de calidad y ficha de patrón del agente · Parte 2. Reto: clasificación de soluciones y ficha de patrón (80 min)</p><h2>1. Clasificación de soluciones (25 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Para cada una de estas ocho situaciones, decidid si es mejor un <strong>chatbot con RAG</strong>, un <strong>workflow</strong> o un <strong>agente</strong>, y qué patrón de los apuntes (7.4) aplicaríais. Justificadlo en una línea.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 7. Índice consultable, checklist de calidad y ficha de patrón del agente · Parte 2. Reto: clasificación de soluciones y ficha de patrón (80 min)</p><h2>1. Clasificación de soluciones (25 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>N.º</th>
+<th>Situación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Responder a la plantilla dudas sobre la política de teletrabajo</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Cada viernes, a partir de las actas de la semana, generar el informe de estado con la estructura fija de la metodología</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Investigar por qué el pipeline de Faro falla de forma intermitente, consultando registros, cambios recientes y documentación</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Clasificar los correos de clientes y enviar cada uno al equipo correspondiente</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Atender una petición de entorno que puede venir incompleta, incumplir la política o requerir aprobación del CAB</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Traducir al inglés la guía de estilo</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Revisar una merge request desde tres puntos de vista (estilo, seguridad y pruebas) y combinar las observaciones</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Redactar una historia de usuario y revisarla contra la definición de preparado hasta que la cumpla</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 7. Índice consultable, checklist de calidad y ficha de patrón del agente · Parte 2. Reto: clasificación de soluciones y ficha de patrón (80 min)</p><h2>2. Ficha de patrón del agente del equipo (55 min)</h2></header><div class="cuerpo"><p>Rellenad <code>docs/ficha_patron_agente.md</code> a partir de la plantilla <code>plantillas/ficha_patron_agente.md</code>:</p><ul>
+<li><strong>Patrón elegido</strong> (workflow, enrutador, agente con herramientas…) y por qué no uno más simple.</li>
+<li><strong>Objetivo</strong> del asistente en una frase.</li>
+<li><strong>Herramientas</strong> previstas, separando las de solo lectura de las que modifican algo.</li>
+<li><strong>Bucle</strong>: máximo de pasos, cuándo termina, qué hace si una herramienta falla.</li>
+<li><strong>Puntos de intervención humana</strong>.</li>
+<li><strong>Diagrama</strong> en Mermaid del flujo.</li>
+</ul></div></section>
+<section class="ejercicio" data-menu="Revisión intermedia presencial (cierre, 8 min por equipo)"><header class="cabecera"><p class="antetitulo">Práctica 7. Índice consultable, checklist de calidad y ficha de patrón del agente</p><h2>Revisión intermedia presencial (cierre, 8 min por equipo)</h2></header><div class="cuerpo"><p>Cada equipo presenta:</p><ol>
+<li>Su RAG funcionando en directo con dos preguntas: una con respuesta y una sin ella.</li>
+<li>El checklist de calidad: qué cumple y qué no.</li>
+<li>La ficha de patrón del agente.</li>
+</ol><p>El docente y los otros dos equipos dan una valoración rápida: un acierto y una mejora.</p></div></section>
+<section class="ejercicio" data-menu="Entrega"><header class="cabecera"><p class="antetitulo">Práctica 7. Índice consultable, checklist de calidad y ficha de patrón del agente</p><h2>Entrega</h2></header><div class="cuerpo"><ol>
+<li><code>rag/ingesta.py</code> y el índice reproducible (instrucciones en el README del equipo).</li>
+<li><code>docs/checklist_rag.md</code>.</li>
+<li><code>docs/clasificacion_soluciones.md</code> con las 8 situaciones.</li>
+<li><code>docs/ficha_patron_agente.md</code>.</li>
+<li>Commit: <code>Sesión 7: índice, checklist y ficha de patrón del agente</code>.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 7. Índice consultable, checklist de calidad y ficha de patrón del agente</p><h2>Criterios de evaluación (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Índice</td>
+<td>Ingesta incremental funcionando sobre las fuentes del reto</td>
+</tr>
+<tr>
+<td>Checklist</td>
+<td>Métricas reales, umbrales justificados y acciones para lo que no cumple</td>
+</tr>
+<tr>
+<td>Clasificación</td>
+<td>Decisiones razonadas que eligen el sistema más simple suficiente</td>
+</tr>
+<tr>
+<td>Ficha de patrón</td>
+<td>Completa, coherente con el reto y con los puntos humanos bien situados</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 7</p><h1>Indexación y evaluación RAG · Introducción a los agentes</h1><div class="acciones"><a class="boton" href="sesion_08.html">Sesión 8. Agentes: planificación, memoria, estado y guardarraíles <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 7. Indexación y evaluación RAG · Introducción a los agentes</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 7. Indexación y evaluación RAG · Introducción a los agentes</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a> · <a href="sesion_08.html">Sesión 8 →</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+
+</body>
+</html>

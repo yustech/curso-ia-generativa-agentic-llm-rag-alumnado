@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 9. Herramientas y APIs: tool calling seguro y verificable</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 9 · Miércoles 16 de diciembre de 2026 · 09:00-15:00 · Remoto</p><h1>Herramientas y APIs: tool calling seguro y verificable</h1><div class="objetivo"><p>Al terminar esta sesión sabrás diseñar herramientas para agentes como contratos: con esquema, validación de entradas y salidas, errores comprensibles y nivel de permiso explícito. Integrarás una API REST real (simulada) con timeouts y reintentos, y probarás todo con pytest sin necesidad de un modelo.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="6">6</b><span>unidades</span></div><div class="cifra"><b data-cuenta="3">3</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 9 · M5 · Agentic AI y herramientas avanzadas (6 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n6"><a class="tarjeta" href="#/u9-1"><span class="n">9.1</span><span class="t">Una herramienta es un contrato</span></a><a class="tarjeta" href="#/u9-2"><span class="n">9.2</span><span class="t">Diseñar buenas herramientas</span></a><a class="tarjeta" href="#/u9-3"><span class="n">9.3</span><span class="t">Validación de entradas y salidas</span></a><a class="tarjeta" href="#/u9-4"><span class="n">9.4</span><span class="t">Integrar APIs externas</span></a><a class="tarjeta" href="#/u9-5"><span class="n">9.5</span><span class="t">Gestión de errores y recuperación</span></a><a class="tarjeta" href="#/u9-6"><span class="n">9.6</span><span class="t">Probar herramientas y agentes</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 9 · Miércoles 16 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: ¿qué puede salir mal al llamar a una API?</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>55</td>
+<td>Teoría</td>
+<td>Teoría I: contratos de herramientas y validación</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Laboratorio: herramientas validadas y API simulada</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:30</td>
+<td>50</td>
+<td>Teoría</td>
+<td>Teoría II: gestión de errores y recuperación</td>
+</tr>
+<tr>
+<td>12:20</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Reto 1: agente del equipo con dos herramientas</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>13:40</td>
+<td>56</td>
+<td>Práctica</td>
+<td>Reto 2: casos de prueba con pytest</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Cierre: revisión de contratos entre equipos</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 9</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prototipo funcional del agente con dos herramientas</td>
+<td><code>agente/</code> del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Contrato de herramientas</td>
+<td><code>docs/contrato_herramientas.md</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Casos de prueba con pytest</td>
+<td><code>tests/</code></td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 3 con los tests en verde</td>
+<td><code>sesion_09_herramientas_apis/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u9-1" data-menu="9.1 Una herramienta es un contrato" data-transition="fade"><div class="divisor"><span class="numero">9.1</span><h2>Una herramienta es un contrato</h2><ul class=puntos><li>La descripción es parte del prompt</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.1 Una herramienta es un contrato</p><h2>Una herramienta es un contrato <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Cuando le das una herramienta a un agente, le das una <strong>capacidad</strong> en un sistema real. Su definición es un contrato entre tres partes: el modelo que la invoca, el código que la ejecuta y el sistema que la sufre.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.1 Una herramienta es un contrato</p><h2>Una herramienta es un contrato <span class="parte">2/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Elemento del contrato</th>
+<th>Para quién</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nombre</td>
+<td>El modelo</td>
+<td><code>consultar_historia</code> (verbo + objeto, sin ambigüedad)</td>
+</tr>
+<tr>
+<td>Descripción</td>
+<td>El modelo</td>
+<td>«Devuelve todos los datos de un elemento del backlog. Úsala cuando conozcas el identificador»</td>
+</tr>
+<tr>
+<td>Esquema de argumentos</td>
+<td>El modelo y la validación</td>
+<td><code>identificador</code>: texto con el patrón <code>FARO-\d+</code></td>
+</tr>
+<tr>
+<td>Salida</td>
+<td>El modelo</td>
+<td>JSON con <code>ok</code>, <code>datos</code> o <code>error</code></td>
+</tr>
+<tr>
+<td>Efectos</td>
+<td>La persona responsable</td>
+<td>Solo lectura / modifica datos / irreversible</td>
+</tr>
+<tr>
+<td>Errores posibles</td>
+<td>El modelo y quien opera</td>
+<td>404 si no existe; 503 si el servicio no responde</td>
+</tr>
+<tr>
+<td>Límites</td>
+<td>Quien opera</td>
+<td>Timeout de 5 s, 3 reintentos</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.1 Una herramienta es un contrato</p><h2>La descripción es parte del prompt</h2></header><div class="cuerpo"><p>El modelo decide qué herramienta usar <strong>solo</strong> por su nombre, su descripción y su esquema. Una mala descripción produce llamadas equivocadas. Buenas prácticas:</p><ul>
+<li>Di <strong>cuándo</strong> usarla y cuándo no: «Úsala solo si conoces el identificador; si no, usa <code>listar_historias</code>».</li>
+<li>Describe cada parámetro con su formato y un ejemplo.</li>
+<li>Pocas herramientas, bien diferenciadas. Con más de 10-15, los modelos pequeños se confunden.</li>
+<li>Prefiere parámetros con valores cerrados (<code>Literal</code>) a texto libre.</li>
+</ul></div></section>
+<section class="especial seccion" id="u9-2" data-menu="9.2 Diseñar buenas herramientas" data-transition="fade"><div class="divisor"><span class="numero">9.2</span><h2>Diseñar buenas herramientas</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.2 Diseñar buenas herramientas</p><h2>Diseñar buenas herramientas <span class="parte">1/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Principio</th>
+<th>Mal</th>
+<th>Bien</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Granularidad adecuada</td>
+<td><code>ejecutar_sql(consulta)</code></td>
+<td><code>listar_historias(estado, sprint)</code></td>
+</tr>
+<tr>
+<td>Mínimo privilegio</td>
+<td><code>gestionar_backlog(accion, ...)</code> con borrado incluido</td>
+<td>Lectura y escritura en herramientas separadas, y sin borrado</td>
+</tr>
+<tr>
+<td>Determinismo donde se pueda</td>
+<td>Pedir al LLM que calcule el coste</td>
+<td><code>estimar_coste(recursos)</code> que calcula con el catálogo</td>
+</tr>
+<tr>
+<td>Idempotencia</td>
+<td><code>crear_historia</code> que duplica si se reintenta</td>
+<td>Usar un id de petición o comprobar antes</td>
+</tr>
+<tr>
+<td>Salidas compactas</td>
+<td>Devolver 200 campos</td>
+<td>Devolver los campos que el modelo necesita</td>
+</tr>
+<tr>
+<td>Errores accionables</td>
+<td><code>Exception</code></td>
+<td>«No existe FARO-999. Usa listar_historias para ver los identificadores»</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.2 Diseñar buenas herramientas</p><h2>Diseñar buenas herramientas <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>La regla más importante, que viste en la traza de la sesión 8: <strong>todo lo que se pueda calcular o comprobar con código no se deja al modelo</strong>. Las herramientas de los retos (<code>equipos/*/herramientas.py</code>) están diseñadas así: el validador de la política, la estimación de costes y el comprobador de estilo son deterministas.</p></div></section>
+<section class="especial seccion" id="u9-3" data-menu="9.3 Validación de entradas y salidas" data-transition="fade"><div class="divisor"><span class="numero">9.3</span><h2>Validación de entradas y salidas</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.3 Validación de entradas y salidas</p><h2>Validación de entradas y salidas <span class="parte">1/3</span></h2></header><div class="cuerpo"><p>Los argumentos que propone el modelo son <strong>datos no fiables</strong>: pueden tener un tipo incorrecto, valores fuera de rango o haber sido manipulados mediante una inyección. Valídalos siempre antes de ejecutar.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.3 Validación de entradas y salidas</p><h2>Validación de entradas y salidas <span class="parte">2/3</span></h2></header><div class="cuerpo"><p>Con Pydantic, un solo modelo te da el esquema que ve el LLM y la validación:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ArgsListar</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">estado</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">"Por hacer"</span><span class="p">,</span> <span class="s2">"En curso"</span><span class="p">,</span> <span class="s2">"En revisión"</span><span class="p">,</span> <span class="s2">"Hecho"</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">sprint</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Número de sprint"</span><span class="p">)</span>
+
+<span class="n">ArgsListar</span><span class="o">.</span><span class="n">model_json_schema</span><span class="p">()</span>      <span class="c1"># → lo que recibe el modelo</span>
+<span class="n">ArgsListar</span><span class="o">.</span><span class="n">model_validate</span><span class="p">(</span><span class="n">datos</span><span class="p">)</span>    <span class="c1"># → lanza ValidationError si no cumple</span></code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.3 Validación de entradas y salidas</p><h2>Validación de entradas y salidas <span class="parte">3/3</span></h2></header><div class="cuerpo"><p>Cuando la validación falla, <strong>devuelve el error al modelo</strong> en lenguaje claro («sprint: debe ser mayor o igual que 1»). Los modelos suelen corregirse en el siguiente paso.</p><p>Valida también las <strong>salidas</strong> cuando vayan a usarse para actuar: un Terraform generado se valida contra la política antes de proponerlo; un código generado se compila con <code>ast.parse</code> antes de ejecutar sus pruebas.</p></div></section>
+<section class="especial seccion" id="u9-4" data-menu="9.4 Integrar APIs externas" data-transition="fade"><div class="divisor"><span class="numero">9.4</span><h2>Integrar APIs externas</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.4 Integrar APIs externas</p><h2>Integrar APIs externas <span class="parte">1/2</span></h2></header><div class="cuerpo"><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="n">cliente</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">base_url</span><span class="o">=</span><span class="s2">"http://127.0.0.1:8765"</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">"X-Api-Key"</span><span class="p">:</span> <span class="n">clave</span><span class="p">})</span>
+<span class="n">respuesta</span> <span class="o">=</span> <span class="n">cliente</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/historias"</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"sprint"</span><span class="p">:</span> <span class="mi">23</span><span class="p">})</span>
+<span class="n">respuesta</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+<span class="n">historias</span> <span class="o">=</span> <span class="n">respuesta</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></code></pre></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.4 Integrar APIs externas</p><h2>Integrar APIs externas <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Lo que nunca debe faltar en una integración:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Timeout</strong></td>
+<td>Sin él, una API colgada bloquea al agente indefinidamente</td>
+</tr>
+<tr>
+<td>Autenticación con credenciales propias del agente</td>
+<td>Trazabilidad y mínimo privilegio; nunca las credenciales de una persona</td>
+</tr>
+<tr>
+<td>Secretos fuera del código</td>
+<td>Variables de entorno o gestor de secretos (<code>.env</code> no se sube a Git)</td>
+</tr>
+<tr>
+<td>Gestión de errores por tipo</td>
+<td>No es lo mismo un 404 (no existe) que un 503 (reintenta)</td>
+</tr>
+<tr>
+<td>Registro</td>
+<td>Cada llamada en la traza</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u9-5" data-menu="9.5 Gestión de errores y recuperación" data-transition="fade"><div class="divisor"><span class="numero">9.5</span><h2>Gestión de errores y recuperación</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.5 Gestión de errores y recuperación</p><h2>Gestión de errores y recuperación <span class="parte">1/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Tipo de fallo</th>
+<th>Ejemplos</th>
+<th>Estrategia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Transitorio</td>
+<td>503, 429, 502, timeout, conexión rechazada</td>
+<td><strong>Reintentar</strong> con espera exponencial (0,5 s, 1 s, 2 s…) y un máximo</td>
+</tr>
+<tr>
+<td>Definitivo del cliente</td>
+<td>400, 404, 422</td>
+<td>No reintentar; devolver el error al modelo para que corrija</td>
+</tr>
+<tr>
+<td>Autenticación</td>
+<td>401, 403</td>
+<td>No reintentar; avisar a quien opera</td>
+</tr>
+<tr>
+<td>Caída prolongada</td>
+<td>Todos los reintentos fallan</td>
+<td><strong>Modo degradado</strong>: responder sin inventar, decir qué no se puede hacer</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.5 Gestión de errores y recuperación</p><h2>Gestión de errores y recuperación <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Dos detalles profesionales:</p><ul>
+<li><strong>Los reintentos solo son seguros en operaciones idempotentes</strong> (consultar, o actualizar un estado a un valor concreto). Reintentar «crear historia» puede crear dos.</li>
+<li><strong>Un modo degradado es mejor que una respuesta inventada.</strong> Si el backlog no responde, el asistente dice «no puedo consultar el backlog ahora», no improvisa un estado.</li>
+</ul><p>Patrones avanzados que conviene conocer: <em>circuit breaker</em> (dejar de llamar a un servicio que falla durante un tiempo), <em>jitter</em> (aleatorizar la espera para no saturar al servicio cuando se recupera) y colas para operaciones que pueden esperar.</p></div></section>
+<section class="especial seccion" id="u9-6" data-menu="9.6 Probar herramientas y agentes" data-transition="fade"><div class="divisor"><span class="numero">9.6</span><h2>Probar herramientas y agentes</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.6 Probar herramientas y agentes</p><h2>Probar herramientas y agentes <span class="parte">1/2</span></h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Qué se prueba</th>
+<th>Cómo</th>
+<th>Sin modelo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Herramientas</td>
+<td>Pruebas unitarias normales</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Validación de argumentos</td>
+<td>Casos válidos y no válidos</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Cliente de API</td>
+<td><code>httpx.MockTransport</code> simula respuestas, errores y timeouts</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Bucle del agente</td>
+<td>LLM falso con respuestas programadas (<code>comun.llm.usar_llm_falso</code>)</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Comportamiento real</td>
+<td>Conjunto dorado con el modelo</td>
+<td>No (se marca como <code>llm_real</code>)</td>
+</tr>
+</tbody>
+</table></div><p>La pirámide es la de siempre: muchas pruebas rápidas y deterministas abajo, y pocas pruebas con el modelo real arriba. Las pruebas deterministas se ejecutan en cada cambio; las del modelo, antes de cada entrega.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">9.6 Probar herramientas y agentes</p><h2>Probar herramientas y agentes <span class="parte">2/2</span></h2></header><div class="cuerpo"><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="k">def</span><span class="w"> </span><span class="nf">test_reintenta_503</span><span class="p">():</span>
+    <span class="n">respuestas</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">([</span><span class="n">httpx</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="mi">503</span><span class="p">),</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="s2">"FARO-1"</span><span class="p">})])</span>
+    <span class="n">cliente</span> <span class="o">=</span> <span class="n">ClienteBacklog</span><span class="p">(</span><span class="s2">"http://api"</span><span class="p">,</span> <span class="n">transporte</span><span class="o">=</span><span class="n">httpx</span><span class="o">.</span><span class="n">MockTransport</span><span class="p">(</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="nb">next</span><span class="p">(</span><span class="n">respuestas</span><span class="p">)),</span>
+                             <span class="n">dormir</span><span class="o">=</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">cliente</span><span class="o">.</span><span class="n">obtener</span><span class="p">(</span><span class="s2">"FARO-1"</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="s2">"FARO-1"</span><span class="p">}</span></code></pre></div></div></section>
+<section data-menu="Errores frecuentes"><header class="cabecera"><p class="antetitulo">Sesión 9</p><h2>Errores frecuentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Una herramienta genérica tipo <code>ejecutar_sql</code></td>
+<td>El agente puede hacer cualquier cosa</td>
+<td>Herramientas específicas y de mínimo privilegio</td>
+</tr>
+<tr>
+<td>Ejecutar sin validar los argumentos</td>
+<td>Errores raros o acciones peligrosas</td>
+<td>Pydantic antes de ejecutar</td>
+</tr>
+<tr>
+<td>Lanzar la excepción al bucle</td>
+<td>El agente se cae</td>
+<td>Devolver el error como resultado</td>
+</tr>
+<tr>
+<td>Reintentar operaciones no idempotentes</td>
+<td>Datos duplicados</td>
+<td>Reintentar solo lecturas e idempotentes</td>
+</tr>
+<tr>
+<td>No poner timeout</td>
+<td>Agente colgado</td>
+<td>Timeout en todas las llamadas</td>
+</tr>
+<tr>
+<td>Probar solo con el modelo real</td>
+<td>Pruebas lentas y que fallan al azar</td>
+<td>Pruebas deterministas con dobles</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section data-menu="Para saber más"><header class="cabecera"><p class="antetitulo">Sesión 9</p><h2>Para saber más</h2></header><div class="cuerpo"><ul>
+<li>Guía de tool calling de OpenAI (formato que siguen Ollama, LM Studio y vLLM): <a href="https://platform.openai.com/docs/guides/function-calling" target="_blank" rel="noopener">platform.openai.com/docs/guides/function-calling</a></li>
+<li>Documentación de HTTPX, transportes y pruebas: <a href="https://www.python-httpx.org/" target="_blank" rel="noopener">www.python-httpx.org</a></li>
+<li>Documentación de Pydantic: <a href="https://docs.pydantic.dev/" target="_blank" rel="noopener">docs.pydantic.dev</a></li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Preparación: la API simulada del backlog</li><li>Ejercicio 1. Herramientas con contrato validado (laboratorio, 70 min)</li><li>Ejercicio 2. Cliente de API robusto (Reto 1, 35 min)</li><li>Ejercicio 3. Agente con dos herramientas y modo degradado (Reto 1, 35 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa cada fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_09_herramientas_apis<span class="w"> </span>-v</code></pre></div><p>Todas las pruebas de hoy son deterministas: ni el modelo ni la API real son necesarios para ponerlas en verde.</p></div></section>
+<section class="ejercicio" data-menu="Preparación: la API simulada del backlog"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Preparación: la API simulada del backlog</h2></header><div class="cuerpo"><p>Abre una segunda terminal (con el entorno virtual activado) y arranca la API:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>python<span class="w"> </span>-m<span class="w"> </span>comun.api_backlog<span class="w"> </span>--reiniciar</code></pre></div><p>Prueba en el navegador <code>http://127.0.0.1:8765/historias?sprint=23</code>. Para el ejercicio 2 la arrancarás con fallos simulados: <code>python -m comun.api_backlog --fallos 0.3</code>.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Herramientas con contrato validado (laboratorio, 70 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Herramientas con contrato validado (laboratorio, 70 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s09_ej1_herramientas.py</code></p><ol>
+<li><code>ResultadoHerramienta.como_texto()</code>.</li>
+<li><code>describir_errores(error)</code>: convierte un <code>ValidationError</code> en una línea que el modelo entienda.</li>
+<li><code>Registro.herramienta(argumentos, descripcion, con_efectos)</code>: un <strong>decorador con parámetros</strong> (una función que devuelve el decorador). Si nunca has escrito uno, mira el test <code>registro()</code> para ver cómo se usa.</li>
+<li><code>Registro.esquemas()</code>: el esquema sale de <code>model_json_schema()</code>.</li>
+<li><code>Registro.ejecutar(nombre, argumentos_json)</code>: valida y ejecuta sin lanzar nunca excepciones.</li>
+</ol><p>Ejecuta antes <code>ejemplos/01_esquema_desde_pydantic.py</code> para ver qué recibe el modelo y qué detecta la validación.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 2. Cliente de API robusto (Reto 1, 35 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. Cliente de API robusto (Reto 1, 35 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s09_ej2_cliente_api.py</code></p><ol>
+<li><code>espera_exponencial(intento, base, maximo)</code>.</li>
+<li><code>ClienteBacklog._peticion(...)</code>: la pieza central. Reintenta los errores transitorios y los de transporte; no reintenta los definitivos. Recibe <code>dormir</code> como parámetro para que los tests no esperen de verdad.</li>
+<li><code>listar</code>, <code>obtener</code> y <code>actualizar_estado</code>.</li>
+</ol><p>Arranca la API con <code>--fallos 0.3</code> y ejecuta el fichero varias veces. Observa en la terminal de la API las respuestas 503 y cómo el cliente las absorbe.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 3. Agente con dos herramientas y modo degradado (Reto 1, 35 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. Agente con dos herramientas y modo degradado (Reto 1, 35 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s09_ej3_agente_backlog.py</code></p><ol>
+<li><code>crear_registro(cliente)</code>: dos herramientas de solo lectura con sus modelos de argumentos (ya definidos).</li>
+<li><code>api_disponible(cliente)</code>.</li>
+<li><code>responder(pregunta, cliente)</code>: si la API no está disponible, responde con el mensaje degradado <strong>sin llamar al modelo</strong>; si lo está, usa <code>comun.agente.AgenteReAct</code>.</li>
+</ol><p>Ejecuta el fichero con la API arrancada con fallos. Después para la API (Ctrl+C) y vuelve a ejecutarlo: ¿qué responde ahora?</p></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Agente del equipo con dos herramientas, contrato y pruebas</h2><ul class=puntos><li>Reto 1. Agente del equipo con dos herramientas (70 min, tras los ejercicios 2 y 3)</li><li>Reto 2. Contrato de herramientas y pruebas (56 min)</li><li>Entrega</li><li>Criterios de evaluación (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 9. Agente del equipo con dos herramientas, contrato y pruebas</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>Entregables del equipo: <code>agente/</code> actualizado, <code>docs/contrato_herramientas.md</code> y <code>tests/</code> con las pruebas.</p></div></section>
+<section class="ejercicio" data-menu="Reto 1. Agente del equipo con dos herramientas (70 min, tras los ejercicios 2 y 3)"><header class="cabecera"><p class="antetitulo">Práctica 9. Agente del equipo con dos herramientas, contrato y pruebas</p><h2>Reto 1. Agente del equipo con dos herramientas (70 min, tras los ejercicios 2 y 3) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Integrad en vuestro agente <strong>al menos dos herramientas del reto</strong> usando el <code>Registro</code> del ejercicio 1, con modelos de argumentos Pydantic. Herramientas disponibles en <code>equipos/&lt;reto&gt;/herramientas.py</code>:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Reto</th>
+<th>Herramientas recomendadas</th>
+<th>¿Con efectos?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 · DevAssist</td>
+<td><code>leer_fichero</code>, <code>comprobar_estilo</code>, <code>ejecutar_pruebas</code>, <code>calcular_tarifa</code></td>
+<td>No</td>
+</tr>
+<tr>
+<td>R2 · InfraPilot</td>
+<td><code>validar_peticion</code>, <code>estimar_coste</code>, <code>generar_terraform</code>; <code>registrar_solicitud_cambio</code></td>
+<td>La última sí</td>
+</tr>
+<tr>
+<td>R3 · PMO Copilot</td>
+<td><code>Backlog.listar</code>, <code>metricas_sprint</code>, <code>historias_no_preparadas</code>, <code>leer_acta</code>; <code>actualizar_estado</code>, <code>crear_historia</code></td>
+<td>Las dos últimas sí</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 9. Agente del equipo con dos herramientas, contrato y pruebas</p><h2>Reto 1. Agente del equipo con dos herramientas (70 min, tras los ejercicios 2 y 3) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Requisitos:</p><ol>
+<li>Cada herramienta tiene un modelo de argumentos con descripciones, tipos cerrados (<code>Literal</code>) donde se pueda y restricciones (<code>ge</code>, <code>pattern</code>…).</li>
+<li>Las herramientas con efectos se registran con <code>con_efectos=True</code> y pasan por la <code>PoliticaHerramientas</code> de la sesión 8 (confirmación humana).</li>
+<li>Las herramientas que dependen de un servicio que puede fallar tienen timeout, reintentos y modo degradado.</li>
+<li>Probad el agente con 5 casos del conjunto dorado y guardad las trazas.</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 9. Agente del equipo con dos herramientas, contrato y pruebas · Reto 2. Contrato de herramientas y pruebas (56 min)</p><h2>1. Contrato (20 min)</h2></header><div class="cuerpo"><p>Rellenad <code>docs/contrato_herramientas.md</code> a partir de <code>plantillas/contrato_herramientas.md</code>, una ficha por herramienta: nombre, descripción tal como la ve el modelo, argumentos con tipo y restricciones, salida, efectos y nivel de permiso, errores posibles con el mensaje que recibe el modelo, idempotencia, timeout y reintentos.</p></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 9. Agente del equipo con dos herramientas, contrato y pruebas · Reto 2. Contrato de herramientas y pruebas (56 min)</p><h2>2. Pruebas (36 min)</h2></header><div class="cuerpo"><p>Escribid en <code>tests/</code> al menos <strong>10 pruebas deterministas</strong>:</p><ul>
+<li>4 de las herramientas (casos normales y frontera).</li>
+<li>3 de validación de argumentos (casos que deben rechazarse).</li>
+<li>2 del bucle del agente con <code>comun.llm.usar_llm_falso</code>: una con la secuencia correcta de herramientas y otra con un error de herramienta del que el agente se recupera.</li>
+<li>1 de la política de confirmación: una acción con efectos rechazada por la persona no se ejecuta.</li>
+</ul><p>Opcional: 2 pruebas con el modelo real marcadas con <code>@pytest.mark.llm_real</code>.</p></div></section>
+<section class="ejercicio" data-menu="Entrega"><header class="cabecera"><p class="antetitulo">Práctica 9. Agente del equipo con dos herramientas, contrato y pruebas</p><h2>Entrega</h2></header><div class="cuerpo"><ol>
+<li><code>agente/</code> con las dos herramientas integradas y sus guardarraíles.</li>
+<li><code>docs/contrato_herramientas.md</code>.</li>
+<li><code>tests/</code> con 10 o más pruebas en verde (<code>pytest tests -v</code>).</li>
+<li>Commit: <code>Sesión 9: herramientas con contrato y pruebas</code>.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 9. Agente del equipo con dos herramientas, contrato y pruebas</p><h2>Criterios de evaluación (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Integración</td>
+<td>Dos o más herramientas validadas, con permisos y recuperación ante fallos</td>
+</tr>
+<tr>
+<td>Contrato</td>
+<td>Completo, con errores, efectos e idempotencia</td>
+</tr>
+<tr>
+<td>Pruebas</td>
+<td>10 o más deterministas que cubren herramientas, validación, bucle y política</td>
+</tr>
+<tr>
+<td>Robustez</td>
+<td>El agente se recupera de un error de herramienta y degrada sin inventar</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 9</p><h1>Herramientas y APIs: tool calling seguro y verificable</h1><div class="acciones"><a class="boton" href="sesion_10.html">Sesión 10. Workflows multiagente y frameworks: LangChain, LlamaIndex y MCP <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 9. Herramientas y APIs: tool calling seguro y verificable</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 9. Herramientas y APIs: tool calling seguro y verificable</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a> · <a href="sesion_10.html">Sesión 10 →</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+
+</body>
+</html>

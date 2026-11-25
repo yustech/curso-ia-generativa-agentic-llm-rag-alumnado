@@ -1,0 +1,10 @@
+[
+  {"id": "C1", "caso": "Prever cuántos camiones hará falta cada día en el centro de Zaragoza a partir del histórico de pedidos de tres años."},
+  {"id": "C2", "caso": "Redactar automáticamente la respuesta a las reclamaciones de clientes por retrasos, a partir del texto de la reclamación y del historial del envío."},
+  {"id": "C3", "caso": "Leer las matrículas de los camiones que entran en el almacén de Vigo con las cámaras de la barrera."},
+  {"id": "C4", "caso": "Calcular la ruta óptima de reparto de 40 paradas respetando ventanas horarias."},
+  {"id": "C5", "caso": "Un asistente que responde a la plantilla preguntas sobre vacaciones, teletrabajo y permisos citando la política interna."},
+  {"id": "C6", "caso": "Detectar transacciones de combustible anómalas en las tarjetas de la flota (posible fraude)."},
+  {"id": "C7", "caso": "Agrupar a los clientes por su patrón de envíos para diseñar ofertas comerciales."},
+  {"id": "C8", "caso": "Un agente que recibe una petición de entorno, genera el Terraform, lo valida contra la política y abre la solicitud de cambio para que una persona la apruebe."}
+]

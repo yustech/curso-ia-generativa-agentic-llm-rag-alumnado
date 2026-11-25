@@ -1,0 +1,1685 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Plantillas · Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</title>
+<style>
+:root {
+  --fondo: #fbfaf7; --panel: #ffffff; --texto: #1f2328; --suave: #5b6470;
+  --borde: #e2ddd3; --acento: #2f6f9f; --acento-suave: #e8f1f8;
+  --codigo: #f4f1ea; --tabla: #f7f4ee;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+    --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+    --codigo: #22272e; --tabla: #20252b;
+  }
+}
+:root[data-theme="dark"] {
+  --fondo: #15181c; --panel: #1c2026; --texto: #e6e8eb; --suave: #a0a8b3;
+  --borde: #2e343c; --acento: #7db8e3; --acento-suave: #1f2c38;
+  --codigo: #22272e; --tabla: #20252b;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 4.5rem; }
+body {
+  margin: 0; background: var(--fondo); color: var(--texto);
+  font: 17px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--acento); }
+header.barra {
+  position: sticky; top: 0; z-index: 5; display: flex; gap: 1rem;
+  align-items: center; padding: .7rem 1.25rem; background: var(--panel);
+  border-bottom: 1px solid var(--borde);
+}
+header.barra .curso { font-weight: 650; text-decoration: none; color: var(--texto); }
+header.barra nav { margin-left: auto; display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+header.barra button {
+  font: inherit; font-size: .85rem; padding: .25rem .6rem; cursor: pointer;
+  background: transparent; color: var(--suave); border: 1px solid var(--borde); border-radius: 6px;
+}
+.pagina { display: grid; grid-template-columns: 17rem minmax(0, 1fr); max-width: 78rem; margin: 0 auto; }
+aside.indice {
+  position: sticky; top: 3.4rem; align-self: start; max-height: calc(100vh - 3.4rem);
+  overflow: auto; padding: 1.5rem 1rem 2rem 1.25rem; font-size: .9rem;
+}
+aside.indice .rotulo { text-transform: uppercase; letter-spacing: .06em; font-size: .72rem; color: var(--suave); }
+aside.indice ul { list-style: none; margin: .4rem 0 0; padding: 0; }
+aside.indice ul ul { padding-left: .9rem; margin: 0; }
+aside.indice a { display: block; padding: .18rem 0; color: var(--suave); text-decoration: none; }
+aside.indice a:hover { color: var(--acento); }
+main { padding: 2rem 1.5rem 5rem; min-width: 0; max-width: 52rem; }
+h1 { font-size: 2.1rem; line-height: 1.2; margin: 0 0 1rem; text-wrap: balance; }
+h2 { font-size: 1.5rem; margin: 2.8rem 0 .8rem; padding-top: .6rem; border-top: 1px solid var(--borde); }
+h3 { font-size: 1.15rem; margin: 2rem 0 .5rem; }
+hr { display: none; }
+p, li { text-wrap: pretty; }
+code { font: .88em/1.5 ui-monospace, "Cascadia Code", Consolas, Menlo, monospace; background: var(--codigo); padding: .12em .35em; border-radius: 4px; }
+.codehilite, pre { background: var(--codigo); border: 1px solid var(--borde); border-radius: 8px; overflow-x: auto; }
+.codehilite pre { border: 0; margin: 0; }
+pre { padding: .9rem 1rem; margin: 1rem 0; }
+pre code { background: none; padding: 0; font-size: .9rem; }
+.tabla { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+th, td { text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--borde); vertical-align: top; }
+th { background: var(--tabla); font-weight: 600; }
+.pie { display: flex; justify-content: space-between; gap: 1rem; margin-top: 3.5rem; padding-top: 1.2rem; border-top: 1px solid var(--borde); font-size: .95rem; }
+.tarjetas { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: 1.1rem 1.2rem; }
+.tarjeta .num { color: var(--acento); font-weight: 650; font-size: .85rem; letter-spacing: .04em; text-transform: uppercase; }
+.tarjeta h3 { margin: .2rem 0 .5rem; }
+.tarjeta .enlaces { display: flex; gap: .9rem; flex-wrap: wrap; font-size: .92rem; }
+.tarjeta.pendiente { opacity: .6; }
+.portada { max-width: 62rem; margin: 0 auto; padding: 2.5rem 1.5rem 5rem; }
+.portada .entrada { color: var(--suave); max-width: 44rem; }
+@media (max-width: 860px) {
+  .pagina { grid-template-columns: 1fr; }
+  aside.indice { display: none; }
+  main { padding: 1.5rem 1rem 4rem; }
+  body { font-size: 16px; }
+}
+@media print {
+  header.barra, aside.indice, .pie { display: none; }
+  .pagina { display: block; }
+  body { font-size: 11pt; background: #fff; color: #000; }
+  h2 { break-after: avoid; } pre, table { break-inside: avoid; }
+}
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.codehilite .hll { background-color: #ffffcc }
+.codehilite { background: #f0f0f0; }
+.codehilite .c { color: #60A0B0; font-style: italic } /* Comment */
+.codehilite .err { border: 1px solid #F00 } /* Error */
+.codehilite .k { color: #007020; font-weight: bold } /* Keyword */
+.codehilite .o { color: #666 } /* Operator */
+.codehilite .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.codehilite .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.codehilite .cp { color: #007020 } /* Comment.Preproc */
+.codehilite .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.codehilite .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.codehilite .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.codehilite .gd { color: #A00000 } /* Generic.Deleted */
+.codehilite .ge { font-style: italic } /* Generic.Emph */
+.codehilite .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.codehilite .gr { color: #F00 } /* Generic.Error */
+.codehilite .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codehilite .gi { color: #00A000 } /* Generic.Inserted */
+.codehilite .go { color: #888 } /* Generic.Output */
+.codehilite .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.codehilite .gs { font-weight: bold } /* Generic.Strong */
+.codehilite .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codehilite .gt { color: #04D } /* Generic.Traceback */
+.codehilite .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.codehilite .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.codehilite .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.codehilite .kp { color: #007020 } /* Keyword.Pseudo */
+.codehilite .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.codehilite .kt { color: #902000 } /* Keyword.Type */
+.codehilite .m { color: #40A070 } /* Literal.Number */
+.codehilite .s { color: #4070A0 } /* Literal.String */
+.codehilite .na { color: #4070A0 } /* Name.Attribute */
+.codehilite .nb { color: #007020 } /* Name.Builtin */
+.codehilite .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.codehilite .no { color: #60ADD5 } /* Name.Constant */
+.codehilite .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.codehilite .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.codehilite .ne { color: #007020 } /* Name.Exception */
+.codehilite .nf { color: #06287E } /* Name.Function */
+.codehilite .nl { color: #002070; font-weight: bold } /* Name.Label */
+.codehilite .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.codehilite .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.codehilite .nv { color: #BB60D5 } /* Name.Variable */
+.codehilite .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.codehilite .w { color: #BBB } /* Text.Whitespace */
+.codehilite .mb { color: #40A070 } /* Literal.Number.Bin */
+.codehilite .mf { color: #40A070 } /* Literal.Number.Float */
+.codehilite .mh { color: #40A070 } /* Literal.Number.Hex */
+.codehilite .mi { color: #40A070 } /* Literal.Number.Integer */
+.codehilite .mo { color: #40A070 } /* Literal.Number.Oct */
+.codehilite .sa { color: #4070A0 } /* Literal.String.Affix */
+.codehilite .sb { color: #4070A0 } /* Literal.String.Backtick */
+.codehilite .sc { color: #4070A0 } /* Literal.String.Char */
+.codehilite .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.codehilite .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.codehilite .s2 { color: #4070A0 } /* Literal.String.Double */
+.codehilite .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.codehilite .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.codehilite .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.codehilite .sx { color: #C65D09 } /* Literal.String.Other */
+.codehilite .sr { color: #235388 } /* Literal.String.Regex */
+.codehilite .s1 { color: #4070A0 } /* Literal.String.Single */
+.codehilite .ss { color: #517918 } /* Literal.String.Symbol */
+.codehilite .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.codehilite .fm { color: #06287E } /* Name.Function.Magic */
+.codehilite .vc { color: #BB60D5 } /* Name.Variable.Class */
+.codehilite .vg { color: #BB60D5 } /* Name.Variable.Global */
+.codehilite .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.codehilite .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.codehilite .il { color: #40A070 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+:root:not([data-theme="light"]) pre { line-height: 125%; }
+:root:not([data-theme="light"]) td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root:not([data-theme="light"]) .codehilite .hll { background-color: #6e7681 }
+:root:not([data-theme="light"]) .codehilite { background: #0d1117; color: #E6EDF3 }
+:root:not([data-theme="light"]) .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root:not([data-theme="light"]) .codehilite .err { color: #F85149 } /* Error */
+:root:not([data-theme="light"]) .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root:not([data-theme="light"]) .codehilite .g { color: #E6EDF3 } /* Generic */
+:root:not([data-theme="light"]) .codehilite .k { color: #FF7B72 } /* Keyword */
+:root:not([data-theme="light"]) .codehilite .l { color: #A5D6FF } /* Literal */
+:root:not([data-theme="light"]) .codehilite .n { color: #E6EDF3 } /* Name */
+:root:not([data-theme="light"]) .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root:not([data-theme="light"]) .codehilite .x { color: #E6EDF3 } /* Other */
+:root:not([data-theme="light"]) .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root:not([data-theme="light"]) .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root:not([data-theme="light"]) .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root:not([data-theme="light"]) .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root:not([data-theme="light"]) .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root:not([data-theme="light"]) .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root:not([data-theme="light"]) .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root:not([data-theme="light"]) .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root:not([data-theme="light"]) .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root:not([data-theme="light"]) .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root:not([data-theme="light"]) .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root:not([data-theme="light"]) .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root:not([data-theme="light"]) .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root:not([data-theme="light"]) .codehilite .go { color: #8B949E } /* Generic.Output */
+:root:not([data-theme="light"]) .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root:not([data-theme="light"]) .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root:not([data-theme="light"]) .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root:not([data-theme="light"]) .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root:not([data-theme="light"]) .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root:not([data-theme="light"]) .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root:not([data-theme="light"]) .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root:not([data-theme="light"]) .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root:not([data-theme="light"]) .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root:not([data-theme="light"]) .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root:not([data-theme="light"]) .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root:not([data-theme="light"]) .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root:not([data-theme="light"]) .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root:not([data-theme="light"]) .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root:not([data-theme="light"]) .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root:not([data-theme="light"]) .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root:not([data-theme="light"]) .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root:not([data-theme="light"]) .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root:not([data-theme="light"]) .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root:not([data-theme="light"]) .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root:not([data-theme="light"]) .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root:not([data-theme="light"]) .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root:not([data-theme="light"]) .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root:not([data-theme="light"]) .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root:not([data-theme="light"]) .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root:not([data-theme="light"]) .codehilite .py { color: #79C0FF } /* Name.Property */
+:root:not([data-theme="light"]) .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root:not([data-theme="light"]) .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root:not([data-theme="light"]) .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root:not([data-theme="light"]) .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root:not([data-theme="light"]) .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root:not([data-theme="light"]) .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root:not([data-theme="light"]) .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root:not([data-theme="light"]) .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root:not([data-theme="light"]) .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root:not([data-theme="light"]) .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root:not([data-theme="light"]) .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root:not([data-theme="light"]) .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root:not([data-theme="light"]) .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root:not([data-theme="light"]) .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root:not([data-theme="light"]) .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root:not([data-theme="light"]) .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root:not([data-theme="light"]) .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root:not([data-theme="light"]) .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root:not([data-theme="light"]) .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root:not([data-theme="light"]) .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root:not([data-theme="light"]) .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root:not([data-theme="light"]) .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root:not([data-theme="light"]) .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root:not([data-theme="light"]) .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root:not([data-theme="light"]) .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root:not([data-theme="light"]) .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root:not([data-theme="light"]) .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root:not([data-theme="light"]) .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root:not([data-theme="light"]) .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root:not([data-theme="light"]) .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+}
+:root[data-theme="dark"] pre { line-height: 125%; }
+:root[data-theme="dark"] td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+:root[data-theme="dark"] .codehilite .hll { background-color: #6e7681 }
+:root[data-theme="dark"] .codehilite { background: #0d1117; color: #E6EDF3 }
+:root[data-theme="dark"] .codehilite .c { color: #8B949E; font-style: italic } /* Comment */
+:root[data-theme="dark"] .codehilite .err { color: #F85149 } /* Error */
+:root[data-theme="dark"] .codehilite .esc { color: #E6EDF3 } /* Escape */
+:root[data-theme="dark"] .codehilite .g { color: #E6EDF3 } /* Generic */
+:root[data-theme="dark"] .codehilite .k { color: #FF7B72 } /* Keyword */
+:root[data-theme="dark"] .codehilite .l { color: #A5D6FF } /* Literal */
+:root[data-theme="dark"] .codehilite .n { color: #E6EDF3 } /* Name */
+:root[data-theme="dark"] .codehilite .o { color: #FF7B72; font-weight: bold } /* Operator */
+:root[data-theme="dark"] .codehilite .x { color: #E6EDF3 } /* Other */
+:root[data-theme="dark"] .codehilite .p { color: #E6EDF3 } /* Punctuation */
+:root[data-theme="dark"] .codehilite .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+:root[data-theme="dark"] .codehilite .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+:root[data-theme="dark"] .codehilite .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+:root[data-theme="dark"] .codehilite .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+:root[data-theme="dark"] .codehilite .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+:root[data-theme="dark"] .codehilite .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+:root[data-theme="dark"] .codehilite .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+:root[data-theme="dark"] .codehilite .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+:root[data-theme="dark"] .codehilite .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+:root[data-theme="dark"] .codehilite .gr { color: #FFA198 } /* Generic.Error */
+:root[data-theme="dark"] .codehilite .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+:root[data-theme="dark"] .codehilite .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+:root[data-theme="dark"] .codehilite .go { color: #8B949E } /* Generic.Output */
+:root[data-theme="dark"] .codehilite .gp { color: #8B949E } /* Generic.Prompt */
+:root[data-theme="dark"] .codehilite .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+:root[data-theme="dark"] .codehilite .gu { color: #79C0FF } /* Generic.Subheading */
+:root[data-theme="dark"] .codehilite .gt { color: #FF7B72 } /* Generic.Traceback */
+:root[data-theme="dark"] .codehilite .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+:root[data-theme="dark"] .codehilite .kc { color: #79C0FF } /* Keyword.Constant */
+:root[data-theme="dark"] .codehilite .kd { color: #FF7B72 } /* Keyword.Declaration */
+:root[data-theme="dark"] .codehilite .kn { color: #FF7B72 } /* Keyword.Namespace */
+:root[data-theme="dark"] .codehilite .kp { color: #79C0FF } /* Keyword.Pseudo */
+:root[data-theme="dark"] .codehilite .kr { color: #FF7B72 } /* Keyword.Reserved */
+:root[data-theme="dark"] .codehilite .kt { color: #FF7B72 } /* Keyword.Type */
+:root[data-theme="dark"] .codehilite .ld { color: #79C0FF } /* Literal.Date */
+:root[data-theme="dark"] .codehilite .m { color: #A5D6FF } /* Literal.Number */
+:root[data-theme="dark"] .codehilite .s { color: #A5D6FF } /* Literal.String */
+:root[data-theme="dark"] .codehilite .na { color: #E6EDF3 } /* Name.Attribute */
+:root[data-theme="dark"] .codehilite .nb { color: #E6EDF3 } /* Name.Builtin */
+:root[data-theme="dark"] .codehilite .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+:root[data-theme="dark"] .codehilite .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+:root[data-theme="dark"] .codehilite .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+:root[data-theme="dark"] .codehilite .ni { color: #FFA657 } /* Name.Entity */
+:root[data-theme="dark"] .codehilite .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+:root[data-theme="dark"] .codehilite .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+:root[data-theme="dark"] .codehilite .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+:root[data-theme="dark"] .codehilite .nn { color: #FF7B72 } /* Name.Namespace */
+:root[data-theme="dark"] .codehilite .nx { color: #E6EDF3 } /* Name.Other */
+:root[data-theme="dark"] .codehilite .py { color: #79C0FF } /* Name.Property */
+:root[data-theme="dark"] .codehilite .nt { color: #7EE787 } /* Name.Tag */
+:root[data-theme="dark"] .codehilite .nv { color: #79C0FF } /* Name.Variable */
+:root[data-theme="dark"] .codehilite .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+:root[data-theme="dark"] .codehilite .pm { color: #E6EDF3 } /* Punctuation.Marker */
+:root[data-theme="dark"] .codehilite .w { color: #6E7681 } /* Text.Whitespace */
+:root[data-theme="dark"] .codehilite .mb { color: #A5D6FF } /* Literal.Number.Bin */
+:root[data-theme="dark"] .codehilite .mf { color: #A5D6FF } /* Literal.Number.Float */
+:root[data-theme="dark"] .codehilite .mh { color: #A5D6FF } /* Literal.Number.Hex */
+:root[data-theme="dark"] .codehilite .mi { color: #A5D6FF } /* Literal.Number.Integer */
+:root[data-theme="dark"] .codehilite .mo { color: #A5D6FF } /* Literal.Number.Oct */
+:root[data-theme="dark"] .codehilite .sa { color: #79C0FF } /* Literal.String.Affix */
+:root[data-theme="dark"] .codehilite .sb { color: #A5D6FF } /* Literal.String.Backtick */
+:root[data-theme="dark"] .codehilite .sc { color: #A5D6FF } /* Literal.String.Char */
+:root[data-theme="dark"] .codehilite .dl { color: #79C0FF } /* Literal.String.Delimiter */
+:root[data-theme="dark"] .codehilite .sd { color: #A5D6FF } /* Literal.String.Doc */
+:root[data-theme="dark"] .codehilite .s2 { color: #A5D6FF } /* Literal.String.Double */
+:root[data-theme="dark"] .codehilite .se { color: #79C0FF } /* Literal.String.Escape */
+:root[data-theme="dark"] .codehilite .sh { color: #79C0FF } /* Literal.String.Heredoc */
+:root[data-theme="dark"] .codehilite .si { color: #A5D6FF } /* Literal.String.Interpol */
+:root[data-theme="dark"] .codehilite .sx { color: #A5D6FF } /* Literal.String.Other */
+:root[data-theme="dark"] .codehilite .sr { color: #79C0FF } /* Literal.String.Regex */
+:root[data-theme="dark"] .codehilite .s1 { color: #A5D6FF } /* Literal.String.Single */
+:root[data-theme="dark"] .codehilite .ss { color: #A5D6FF } /* Literal.String.Symbol */
+:root[data-theme="dark"] .codehilite .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+:root[data-theme="dark"] .codehilite .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+:root[data-theme="dark"] .codehilite .vc { color: #79C0FF } /* Name.Variable.Class */
+:root[data-theme="dark"] .codehilite .vg { color: #79C0FF } /* Name.Variable.Global */
+:root[data-theme="dark"] .codehilite .vi { color: #79C0FF } /* Name.Variable.Instance */
+:root[data-theme="dark"] .codehilite .vm { color: #79C0FF } /* Name.Variable.Magic */
+:root[data-theme="dark"] .codehilite .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+.codehilite { background: var(--codigo) !important; }
+.aviso-profe { border-left: 4px solid #c98a12; background: var(--acento-suave); padding: .6rem 1rem; border-radius: 6px; margin: 0 0 1.4rem; font-size: .95rem; }
+.ficha { display: flex; flex-wrap: wrap; gap: .4rem .8rem; margin: -.4rem 0 1.4rem; font-size: .9rem; color: var(--suave); }
+.ficha span { background: var(--acento-suave); padding: .1rem .6rem; border-radius: 20px; }
+.tarjeta .num.profe { color: #c98a12; }
+.seccion-indice { margin-top: 3rem; }
+pre.mermaid { background: var(--panel); text-align: center; }
+</style>
+<script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs";var oscuro = document.documentElement.getAttribute("data-theme") === "dark" || (!document.documentElement.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);mermaid.initialize({ startOnLoad: true, theme: oscuro ? "dark" : "default" });</script>
+</head>
+<body>
+<header class="barra">
+  <a class="curso" href="index.html">Inteligencia Artificial Generativa, Agentic AI, LLM y RAG</a>
+  <nav></nav>
+  <button type="button" data-cambiar-tema>Claro / oscuro</button>
+</header>
+<div class="pagina">
+<aside class="indice"><div class="rotulo">En esta página</div><div class="toc">
+<ul>
+<li><a href="#adr-">ADR-:</a><ul>
+<li><a href="#contexto">Contexto</a></li>
+<li><a href="#opciones-consideradas">Opciones consideradas</a></li>
+<li><a href="#decision">Decisión</a></li>
+<li><a href="#consecuencias">Consecuencias</a></li>
+</ul>
+</li>
+<li><a href="#canvas-del-caso-de-uso">Canvas del caso de uso ·</a><ul>
+<li><a href="#supuestos-mas-fragiles">Supuestos más frágiles</a></li>
+</ul>
+</li>
+<li><a href="#contrato-de-herramientas">Contrato de herramientas ·</a><ul>
+<li><a href="#herramienta-nombre">Herramienta: &lt;nombre&gt;</a></li>
+</ul>
+</li>
+<li><a href="#especificacion-del-agente-tarea-acotada">Especificación del agente · · tarea acotada</a><ul>
+<li><a href="#1-objetivo">1. Objetivo</a></li>
+<li><a href="#2-entradas-y-salidas">2. Entradas y salidas</a></li>
+<li><a href="#3-herramientas">3. Herramientas</a></li>
+<li><a href="#4-estado-de-trabajo">4. Estado de trabajo</a></li>
+<li><a href="#5-patron">5. Patrón</a></li>
+<li><a href="#6-limites">6. Límites</a></li>
+<li><a href="#7-guardarrailes">7. Guardarraíles</a></li>
+<li><a href="#8-criterios-de-exito">8. Criterios de éxito</a></li>
+</ul>
+</li>
+<li><a href="#ficha-del-sistema">Ficha del sistema ·</a><ul>
+<li><a href="#rendimiento">Rendimiento</a></li>
+<li><a href="#limitaciones-conocidas">Limitaciones conocidas</a></li>
+<li><a href="#riesgos-residuales">Riesgos residuales</a></li>
+<li><a href="#contacto-y-version-de-la-ficha">Contacto y versión de la ficha</a></li>
+</ul>
+</li>
+<li><a href="#ficha-de-patron-del-agente">Ficha de patrón del agente ·</a><ul>
+<li><a href="#1-objetivo-en-una-frase">1. Objetivo en una frase</a></li>
+<li><a href="#2-patron-elegido">2. Patrón elegido</a></li>
+<li><a href="#3-herramientas-previstas">3. Herramientas previstas</a></li>
+<li><a href="#4-bucle">4. Bucle</a></li>
+<li><a href="#5-puntos-de-intervencion-humana">5. Puntos de intervención humana</a></li>
+<li><a href="#6-diagrama">6. Diagrama</a></li>
+</ul>
+</li>
+<li><a href="#informe-de-evaluacion-final">Informe de evaluación final ·</a><ul>
+<li><a href="#1-configuracion-evaluada">1. Configuración evaluada</a></li>
+<li><a href="#2-resultados">2. Resultados</a></li>
+<li><a href="#3-por-tipo-de-caso">3. Por tipo de caso</a></li>
+<li><a href="#4-analisis-de-errores">4. Análisis de errores</a></li>
+<li><a href="#5-cambios-desde-la-linea-base-y-su-efecto">5. Cambios desde la línea base y su efecto</a></li>
+<li><a href="#6-conclusion">6. Conclusión</a></li>
+</ul>
+</li>
+<li><a href="#matriz-de-riesgos">Matriz de riesgos ·</a></li>
+<li><a href="#plan-de-validacion">Plan de validación ·</a><ul>
+<li><a href="#1-conjunto-dorado">1. Conjunto dorado</a></li>
+<li><a href="#2-metricas-y-umbrales-de-aceptacion">2. Métricas y umbrales de aceptación</a></li>
+<li><a href="#3-calibracion-del-juez">3. Calibración del juez</a></li>
+<li><a href="#4-regresiones-vigiladas">4. Regresiones vigiladas</a></li>
+<li><a href="#5-revision-humana-en-produccion">5. Revisión humana en producción</a></li>
+</ul>
+</li>
+<li><a href="#presentacion-del-demo-day">Presentación del Demo Day ·</a><ul>
+<li><a href="#plan-b">Plan B</a></li>
+<li><a href="#preguntas-previsibles-y-respuesta-preparada">Preguntas previsibles y respuesta preparada</a></li>
+</ul>
+</li>
+<li><a href="#propuesta-tecnica">Propuesta técnica ·</a><ul>
+<li><a href="#1-arquitectura">1. Arquitectura</a></li>
+<li><a href="#2-modelo-y-motor-de-inferencia">2. Modelo y motor de inferencia</a></li>
+<li><a href="#3-rag">3. RAG</a></li>
+<li><a href="#4-herramientas-y-permisos">4. Herramientas y permisos</a></li>
+<li><a href="#5-guardarrailes">5. Guardarraíles</a></li>
+<li><a href="#6-framework">6. Framework</a></li>
+<li><a href="#7-requisitos-de-hardware-y-despliegue">7. Requisitos de hardware y despliegue</a></li>
+</ul>
+</li>
+<li><a href="#registro-de-errores-del-agente">Registro de errores del agente ·</a><ul>
+<li><a href="#tipos-de-error-frecuentes">Tipos de error frecuentes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+<main>
+<h1 id="plantillas-de-los-entregables">Plantillas de los entregables</h1>
+<p>Copia cada plantilla en la carpeta <code>docs/</code> del repositorio de tu equipo y rellénala. La plantilla del proyecto (<code>equipos/plantilla_proyecto/docs/</code>) ya las incluye.</p>
+<h2 id="adr-">ADR-<nnnn>: <título de la decisión></h2>
+<ul>
+<li><strong>Estado:</strong> propuesta / aceptada / sustituida por ADR-xxxx</li>
+<li><strong>Fecha:</strong> <aaaa-mm-dd></li>
+<li><strong>Decisores:</strong> <roles></li>
+</ul>
+<h3 id="contexto">Contexto</h3>
+<p><Qué problema hay que resolver y qué restricciones existen (16 GB de RAM, datos que no pueden salir, plazo...).></p>
+<h3 id="opciones-consideradas">Opciones consideradas</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Opción</th>
+<th>A favor</th>
+<th>En contra</th>
+<th>Evidencia</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>B</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>C</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="decision">Decisión</h3>
+<p><Elegimos X porque...></p>
+<h3 id="consecuencias">Consecuencias</h3>
+<ul>
+<li>Positivas: &lt;...&gt;</li>
+<li>Negativas o riesgos aceptados: &lt;...&gt;</li>
+<li>Qué nos haría revisar esta decisión: &lt;...&gt;</li>
+</ul>
+<p><em>Fichero: <code>plantillas/adr.md</code></em></p>
+<h2 id="canvas-del-caso-de-uso">Canvas del caso de uso · <reto></h2>
+<blockquote>
+<p>Sesión 13. Todo con datos de Atlántica: nada de «mejora la productividad» sin un número.</p>
+</blockquote>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Bloque</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Problema</strong></td>
+<td><Qué duele hoy, a quién y con qué frecuencia. AS-IS en minutos (sesión 11).></td>
+</tr>
+<tr>
+<td><strong>Usuarios</strong></td>
+<td><Perfil, número de personas, contexto de uso.></td>
+</tr>
+<tr>
+<td><strong>Propuesta de valor</strong></td>
+<td><Qué cambia con el asistente. TO-BE en minutos.></td>
+</tr>
+<tr>
+<td><strong>Datos y fuentes</strong></td>
+<td><Documentos, sistemas y APIs. Propietario, frecuencia de actualización, sensibilidad.></td>
+</tr>
+<tr>
+<td><strong>Solución</strong></td>
+<td><Asistente, patrón, herramientas, interfaz. Qué hace la persona y qué hace la máquina.></td>
+</tr>
+<tr>
+<td><strong>Métricas de éxito</strong></td>
+<td><Calidad (conjunto dorado), adopción, tiempo ahorrado, errores evitados.></td>
+</tr>
+<tr>
+<td><strong>Riesgos y controles</strong></td>
+<td><Los 3 riesgos principales de la matriz y su control.></td>
+</tr>
+<tr>
+<td><strong>Costes</strong></td>
+<td><Hardware o servidor, mantenimiento, horas de equipo (ejercicio 4 de la sesión 13).></td>
+</tr>
+<tr>
+<td><strong>Beneficio</strong></td>
+<td><Ahorro mensual, retorno, meses para recuperar la inversión.></td>
+</tr>
+<tr>
+<td><strong>Clasificación AI Act</strong></td>
+<td><Riesgo mínimo / limitado / alto, y por qué. Obligaciones de transparencia.></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="supuestos-mas-fragiles">Supuestos más frágiles</h3>
+<ol>
+<li>&lt;...&gt;</li>
+<li>&lt;...&gt;</li>
+</ol>
+<p><em>Fichero: <code>plantillas/canvas_caso_uso.md</code></em></p>
+<h2 id="contrato-de-herramientas">Contrato de herramientas · <reto></h2>
+<blockquote>
+<p>Sesión 9. Una ficha por herramienta. La descripción y los argumentos son <strong>lo que ve el modelo</strong>: escribidlos para él.</p>
+</blockquote>
+<h3 id="herramienta-nombre">Herramienta: <code>&lt;nombre&gt;</code></h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Descripción (tal como la ve el modelo)</td>
+<td><Qué hace, cuándo usarla y cuándo NO usarla></td>
+</tr>
+<tr>
+<td>Sistema del cliente</td>
+<td><API, fichero, función de <code>equipos/...</code>></td>
+</tr>
+<tr>
+<td>Efectos</td>
+<td>Ninguno (solo lectura) / Modifica &lt;...&gt; / Acción externa</td>
+</tr>
+<tr>
+<td>Nivel de permiso</td>
+<td>lectura / escritura / requiere confirmación humana</td>
+</tr>
+<tr>
+<td>Idempotente</td>
+<td>Sí / No (explicad qué pasa si se llama dos veces)</td>
+</tr>
+<tr>
+<td>Timeout y reintentos</td>
+<td><p. ej. 10 s, 3 reintentos con espera exponencial solo en errores 5xx y de red></td>
+</tr>
+<tr>
+<td>Modo degradado</td>
+<td><Qué responde si el servicio no está disponible></td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="argumentos">Argumentos</h4>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Nombre</th>
+<th>Tipo</th>
+<th>Obligatorio</th>
+<th>Restricciones</th>
+<th>Descripción para el modelo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td><code>str</code></td>
+<td>Sí</td>
+<td><code>pattern=...</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>Literal[...]</code></td>
+<td></td>
+<td>valores cerrados</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td><code>int</code></td>
+<td></td>
+<td><code>ge=..., le=...</code></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<div class="codehilite"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">ArgumentosEjemplo</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Copiad aquí el modelo Pydantic real."""</span>
+</code></pre></div>
+
+<h4 id="salida">Salida</h4>
+<p><Formato de la salida (texto breve o JSON) y un ejemplo real.></p>
+<h4 id="errores">Errores</h4>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Situación</th>
+<th>Mensaje que recibe el modelo</th>
+<th>Qué debe hacer el modelo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Argumentos inválidos</td>
+<td><code>ERROR: argumentos no válidos: ...</code></td>
+<td>Corregir y reintentar una vez</td>
+</tr>
+<tr>
+<td>Recurso no encontrado</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Servicio no disponible</td>
+<td></td>
+<td>Informar al usuario sin inventar</td>
+</tr>
+<tr>
+<td>Acción no autorizada</td>
+<td><code>ERROR: acción no autorizada (...)</code></td>
+<td>No reintentar</td>
+</tr>
+</tbody>
+</table></div>
+<h4 id="pruebas">Pruebas</h4>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Prueba</th>
+<th>Fichero</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Caso normal</td>
+<td><code>tests/test_herramientas.py::test_...</code></td>
+</tr>
+<tr>
+<td>Caso frontera</td>
+<td></td>
+</tr>
+<tr>
+<td>Argumentos rechazados</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><em>Fichero: <code>plantillas/contrato_herramientas.md</code></em></p>
+<h2 id="especificacion-del-agente-tarea-acotada">Especificación del agente · <reto> · tarea acotada</h2>
+<blockquote>
+<p>Sesión 8. Especificad <strong>una sola tarea</strong> antes de programar. Si una sección no se puede rellenar, la tarea no está lista.</p>
+</blockquote>
+<h3 id="1-objetivo">1. Objetivo</h3>
+<p><Una frase con verbo, objeto y criterio de terminado.></p>
+<h3 id="2-entradas-y-salidas">2. Entradas y salidas</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th></th>
+<th>Descripción</th>
+<th>Formato</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entrada</td>
+<td></td>
+<td>texto libre / JSON</td>
+<td></td>
+</tr>
+<tr>
+<td>Salida</td>
+<td></td>
+<td>texto con citas / JSON validado (Pydantic)</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="3-herramientas">3. Herramientas</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Argumentos</th>
+<th>Permiso</th>
+<th>Confirmación humana</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td>lectura / escritura / acción externa</td>
+<td>no / sí</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="4-estado-de-trabajo">4. Estado de trabajo</h3>
+<p><Qué guarda el agente entre pasos: plan, resultados intermedios, memoria de conversación (ventana o resumen), datos pendientes de pedir al usuario.></p>
+<h3 id="5-patron">5. Patrón</h3>
+<ul>
+<li>[ ] ReAct · [ ] Planificar-ejecutar · [ ] Workflow con un paso de LLM</li>
+<li>Por qué: &lt;...&gt;</li>
+</ul>
+<h3 id="6-limites">6. Límites</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Límite</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pasos máximos</td>
+<td></td>
+</tr>
+<tr>
+<td>Repeticiones de la misma llamada</td>
+<td></td>
+</tr>
+<tr>
+<td>Tiempo máximo por tarea</td>
+<td></td>
+</tr>
+<tr>
+<td>Tokens de contexto (<code>num_ctx</code>)</td>
+<td></td>
+</tr>
+<tr>
+<td>Temas fuera de alcance</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="7-guardarrailes">7. Guardarraíles</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Control</th>
+<th>Dónde está en el código</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entrada</td>
+<td>Detección de inyección / datos personales</td>
+<td></td>
+</tr>
+<tr>
+<td>Herramientas</td>
+<td>Lista blanca, validación de argumentos, mínimo privilegio</td>
+<td></td>
+</tr>
+<tr>
+<td>Salida</td>
+<td>Formato, citas, abstención</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="8-criterios-de-exito">8. Criterios de éxito</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Umbral</th>
+<th>Cómo se mide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tarea completada correctamente</td>
+<td>≥ 80 % de 5 casos del conjunto dorado</td>
+<td>Revisión manual de trazas</td>
+</tr>
+<tr>
+<td>Herramientas correctas en el orden correcto</td>
+<td></td>
+<td>Trazas</td>
+</tr>
+<tr>
+<td>Sin acciones con efectos sin confirmación</td>
+<td>100 %</td>
+<td>Prueba automática</td>
+</tr>
+</tbody>
+</table></div>
+<p><em>Fichero: <code>plantillas/especificacion_agente.md</code></em></p>
+<h2 id="ficha-del-sistema">Ficha del sistema · <nombre del asistente></h2>
+<blockquote>
+<p>Documento de transparencia que acompaña al asistente (equivalente a una <em>model card</em> del sistema completo). Lo lee el cliente, no el equipo.</p>
+</blockquote>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Campo</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Nombre y versión</td>
+<td><asistente-xxx v1.0></td>
+</tr>
+<tr>
+<td>Equipo</td>
+<td><Equipo n · roles></td>
+</tr>
+<tr>
+<td>Propósito</td>
+<td><Para qué sirve, en una frase></td>
+</tr>
+<tr>
+<td>Usuarios previstos</td>
+<td></td>
+</tr>
+<tr>
+<td>Usos fuera de alcance</td>
+<td><Lo que NO debe hacerse con él></td>
+</tr>
+<tr>
+<td>Modelo(s)</td>
+<td><nombre, tamaño, cuantización, licencia></td>
+</tr>
+<tr>
+<td>Motor de inferencia</td>
+<td><Ollama / LM Studio / vLLM / Colibri></td>
+</tr>
+<tr>
+<td>Fuentes de conocimiento</td>
+<td><Documentos indexados y fecha></td>
+</tr>
+<tr>
+<td>Herramientas y permisos</td>
+<td></td>
+</tr>
+<tr>
+<td>Supervisión humana</td>
+<td><Qué acciones requieren confirmación></td>
+</tr>
+<tr>
+<td>Datos personales</td>
+<td><Cuáles trata, base legal, minimización></td>
+</tr>
+<tr>
+<td>Clasificación AI Act</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="rendimiento">Rendimiento</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Resultado</th>
+<th>Conjunto</th>
+<th>Fecha</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="limitaciones-conocidas">Limitaciones conocidas</h3>
+<ul>
+<li>&lt;...&gt;</li>
+</ul>
+<h3 id="riesgos-residuales">Riesgos residuales</h3>
+<ul>
+<li>&lt;...&gt;</li>
+</ul>
+<h3 id="contacto-y-version-de-la-ficha">Contacto y versión de la ficha</h3>
+<p><Responsable · fecha></p>
+<p><em>Fichero: <code>plantillas/ficha_agente.md</code></em></p>
+<h2 id="ficha-de-patron-del-agente">Ficha de patrón del agente · <reto></h2>
+<blockquote>
+<p>Sesión 7. Una página. Justificad cada decisión: la respuesta por defecto es «la solución más simple que funcione».</p>
+</blockquote>
+<h3 id="1-objetivo-en-una-frase">1. Objetivo en una frase</h3>
+<p><El asistente ayuda a [usuario] a [tarea] para conseguir [resultado medible].></p>
+<h3 id="2-patron-elegido">2. Patrón elegido</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Opción</th>
+<th>¿Sirve?</th>
+<th>Motivo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Prompt único</td>
+<td>Sí / No</td>
+<td></td>
+</tr>
+<tr>
+<td>Workflow fijo (pasos en código)</td>
+<td>Sí / No</td>
+<td></td>
+</tr>
+<tr>
+<td>Enrutador (clasifica y deriva)</td>
+<td>Sí / No</td>
+<td></td>
+</tr>
+<tr>
+<td>Agente con herramientas (ReAct)</td>
+<td>Sí / No</td>
+<td></td>
+</tr>
+<tr>
+<td>Planificar-ejecutar</td>
+<td>Sí / No</td>
+<td></td>
+</tr>
+<tr>
+<td>Multiagente</td>
+<td>Sí / No</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Patrón elegido:</strong> &lt;...&gt; <strong>porque</strong> &lt;...&gt;. <strong>No elegimos uno más simple porque</strong> &lt;...&gt;.</p>
+<h3 id="3-herramientas-previstas">3. Herramientas previstas</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Qué hace</th>
+<th>Solo lectura / con efectos</th>
+<th>Sistema del cliente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>buscar_documentacion</code></td>
+<td>Busca en el índice RAG</td>
+<td>Solo lectura</td>
+<td>Documentación de Atlántica</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="4-bucle">4. Bucle</h3>
+<ul>
+<li>Máximo de pasos: &lt;6&gt;</li>
+<li>Termina cuando: <el modelo responde sin pedir herramientas / se alcanza el máximo / se detecta un bucle></li>
+<li>Si una herramienta falla: <el error vuelve al modelo como texto; tras 2 fallos responde con lo que tiene y lo indica></li>
+</ul>
+<h3 id="5-puntos-de-intervencion-humana">5. Puntos de intervención humana</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Momento</th>
+<th>Qué decide la persona</th>
+<th>Cómo se presenta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="6-diagrama">6. Diagrama</h3>
+<pre class="mermaid">flowchart LR
+    U[Usuario] --&gt; A[Agente]
+    A --&gt;|consulta| R[(Índice RAG)]
+    A --&gt;|propone acción| H{¿Confirma la persona?}
+    H --&gt;|sí| T[Herramienta con efectos]
+    H --&gt;|no| A
+    A --&gt; U</pre>
+
+<p><em>Fichero: <code>plantillas/ficha_patron_agente.md</code></em></p>
+<h2 id="informe-de-evaluacion-final">Informe de evaluación final · <reto></h2>
+<blockquote>
+<p>Sesión 14. Resultados finales comparados con la línea base de la sesión 13. Datos, no adjetivos.</p>
+</blockquote>
+<h3 id="1-configuracion-evaluada">1. Configuración evaluada</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Versión (commit / etiqueta)</td>
+<td></td>
+</tr>
+<tr>
+<td>Modelo de chat y parámetros</td>
+<td></td>
+</tr>
+<tr>
+<td>Índice (documentos, trozos, huella)</td>
+<td></td>
+</tr>
+<tr>
+<td>Fecha y hardware</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="2-resultados">2. Resultados</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Umbral</th>
+<th>Línea base S13</th>
+<th>Final S14</th>
+<th>¿Cumple?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exactitud (conjunto dorado)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Cita correcta</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Abstención correcta</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hit@3 / MRR</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Ataques bloqueados</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Latencia p50 / p95 (1 · 4 · 8 usuarios)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="3-por-tipo-de-caso">3. Por tipo de caso</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Casos</th>
+<th>Aciertos</th>
+<th>Fallos típicos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="4-analisis-de-errores">4. Análisis de errores</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Caso</th>
+<th>Qué falló</th>
+<th>Causa (recuperación / generación / herramienta / guardarraíl)</th>
+<th>Acción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="5-cambios-desde-la-linea-base-y-su-efecto">5. Cambios desde la línea base y su efecto</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Cambio</th>
+<th>Métrica afectada</th>
+<th>Antes</th>
+<th>Después</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="6-conclusion">6. Conclusión</h3>
+<p>&lt;¿Está listo para un piloto? ¿Con qué condiciones?&gt;</p>
+<p><em>Fichero: <code>plantillas/informe_evaluacion.md</code></em></p>
+<h2 id="matriz-de-riesgos">Matriz de riesgos · <reto></h2>
+<blockquote>
+<p>Sesión 2 (se actualiza en las sesiones 8, 13 y 14). Probabilidad e impacto de 1 a 5; exposición = probabilidad × impacto. Con 15 o más se escala (metodología de Atlántica).</p>
+</blockquote>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Riesgo</th>
+<th>Categoría</th>
+<th>Prob.</th>
+<th>Impacto</th>
+<th>Exposición</th>
+<th>Control</th>
+<th>Responsable</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1</td>
+<td>Respuesta inventada presentada como cierta</td>
+<td>Alucinación</td>
+<td></td>
+<td></td>
+<td></td>
+<td>RAG + citas + abstención</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>R2</td>
+<td>Instrucción oculta en un documento recuperado</td>
+<td>Inyección indirecta (OWASP LLM01)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>R3</td>
+<td>Datos personales en prompts o trazas</td>
+<td>Privacidad (RGPD)</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>R4</td>
+<td>Acción con efectos sin supervisión</td>
+<td>Agencia excesiva (OWASP LLM06)</td>
+<td></td>
+<td></td>
+<td></td>
+<td>Confirmación humana</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>R5</td>
+<td>Sesgo o lenguaje inadecuado</td>
+<td>Uso responsable</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>R6</td>
+<td>Dependencia de un modelo o proveedor</td>
+<td>Operación</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>R7</td>
+<td>Latencia inaceptable con varios usuarios</td>
+<td>Rendimiento</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p>Categorías de referencia: OWASP Top 10 for LLM Applications 2025, Reglamento Europeo de IA, RGPD.</p>
+<p><em>Fichero: <code>plantillas/matriz_riesgos.md</code></em></p>
+<h2 id="plan-de-validacion">Plan de validación · <reto></h2>
+<blockquote>
+<p>Sesión 13. Define qué significa «suficientemente bueno» <strong>antes</strong> de la demo.</p>
+</blockquote>
+<h3 id="1-conjunto-dorado">1. Conjunto dorado</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Casos</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>normativa</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>tarea</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>ambigua</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>fuera_de_alcance</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>seguridad</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>≥ 30</strong></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="2-metricas-y-umbrales-de-aceptacion">2. Métricas y umbrales de aceptación</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Métrica</th>
+<th>Cómo se mide</th>
+<th>Umbral</th>
+<th>Línea base (S13)</th>
+<th>Final (S14)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exactitud</td>
+<td>Juez + revisión manual</td>
+<td>≥ 80 %</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Cita correcta</td>
+<td>Determinista</td>
+<td>≥ 90 %</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Abstención correcta (fuera de alcance)</td>
+<td>Determinista</td>
+<td>100 %</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>hit@3 de recuperación</td>
+<td>Determinista</td>
+<td>≥ 0,9</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Ataques bloqueados</td>
+<td>Red teaming</td>
+<td>≥ 90 %</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Latencia p95 (4 usuarios)</td>
+<td>Prueba de carga</td>
+<td>≤ 10 s</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="3-calibracion-del-juez">3. Calibración del juez</h3>
+<p><Casos revisados a mano, acuerdo juez-persona, desacuerdos y qué se cambió.></p>
+<h3 id="4-regresiones-vigiladas">4. Regresiones vigiladas</h3>
+<p><Casos que alguna vez fallaron y no deben volver a fallar. Se ejecutan en cada cambio de prompt, modelo o índice.></p>
+<h3 id="5-revision-humana-en-produccion">5. Revisión humana en producción</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Situación</th>
+<th>Quién revisa</th>
+<th>Cuándo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Acción con efectos</td>
+<td>Persona usuaria</td>
+<td>Antes de ejecutar</td>
+</tr>
+<tr>
+<td>Muestreo de respuestas</td>
+<td>Producto y calidad</td>
+<td>Semanal, 20 respuestas</td>
+</tr>
+<tr>
+<td>Respuestas marcadas como incorrectas</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><em>Fichero: <code>plantillas/plan_validacion.md</code></em></p>
+<h2 id="presentacion-del-demo-day">Presentación del Demo Day · <reto></h2>
+<blockquote>
+<p>15 minutos. Reparto de la palabra entre los cuatro miembros. Ensayad con cronómetro.</p>
+</blockquote>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Min</th>
+<th>Bloque</th>
+<th>Quién</th>
+<th>Contenido</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0-2</td>
+<td>Problema</td>
+<td></td>
+<td>Usuario, dolor y AS-IS con números</td>
+</tr>
+<tr>
+<td>2-4</td>
+<td>Solución</td>
+<td></td>
+<td>Arquitectura en una diapositiva y qué hace la persona</td>
+</tr>
+<tr>
+<td>4-10</td>
+<td>Demo en directo</td>
+<td></td>
+<td>1) caso normal con citas · 2) herramienta con confirmación · 3) pregunta sin respuesta (se abstiene) · 4) intento de ataque bloqueado</td>
+</tr>
+<tr>
+<td>10-12</td>
+<td>Métricas</td>
+<td></td>
+<td>Línea base frente a final, red teaming, carga</td>
+</tr>
+<tr>
+<td>12-14</td>
+<td>Valor</td>
+<td></td>
+<td>Caso de negocio: ahorro, coste, retorno</td>
+</tr>
+<tr>
+<td>14-15</td>
+<td>Siguientes pasos</td>
+<td></td>
+<td>Qué haría falta para un piloto real y riesgos abiertos</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="plan-b">Plan B</h3>
+<p><Capturas o vídeo de la demo por si falla el directo. Dónde están.></p>
+<h3 id="preguntas-previsibles-y-respuesta-preparada">Preguntas previsibles y respuesta preparada</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Pregunta</th>
+<th>Respuesta (con dato)</th>
+<th>Quién responde</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><em>Fichero: <code>plantillas/presentacion.md</code></em></p>
+<h2 id="propuesta-tecnica">Propuesta técnica · <reto></h2>
+<blockquote>
+<p>Sesión 13. Documento que entregaríais al cliente para aprobar el paso a piloto.</p>
+</blockquote>
+<h3 id="1-arquitectura">1. Arquitectura</h3>
+<pre class="mermaid">flowchart LR
+    U[Usuario] --&gt; UI[Interfaz Streamlit]
+    UI --&gt; AG[Agente]
+    AG --&gt; G[Guardarraíles]
+    AG --&gt; RAG[(Índice RAG)]
+    AG --&gt; TOOLS[Herramientas]
+    AG --&gt; LLM[Motor de inferencia]
+    TOOLS --&gt; SIS[Sistemas de Atlántica]</pre>
+
+<p><Explicación de cada componente en 1-2 líneas.></p>
+<h3 id="2-modelo-y-motor-de-inferencia">2. Modelo y motor de inferencia</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Decisión</th>
+<th>Elección</th>
+<th>Alternativas evaluadas</th>
+<th>Evidencia (métrica)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Modelo de chat</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Modelo de embeddings</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Motor en desarrollo</td>
+<td>Ollama / LM Studio</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Motor en piloto</td>
+<td>Ollama servidor / vLLM / Colibri</td>
+<td></td>
+<td>Prueba de carga</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="3-rag">3. RAG</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Aspecto</th>
+<th>Decisión</th>
+<th>Por qué</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fuentes</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Troceado</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Búsqueda</td>
+<td>semántica / BM25 / híbrida (RRF)</td>
+<td>hit@k, MRR</td>
+</tr>
+<tr>
+<td><code>k</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Actualización</td>
+<td>incremental por huella</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="4-herramientas-y-permisos">4. Herramientas y permisos</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Herramienta</th>
+<th>Permiso</th>
+<th>Confirmación humana</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="5-guardarrailes">5. Guardarraíles</h3>
+<p><Por capas: entrada, herramientas, salida. Resultado del red teaming.></p>
+<h3 id="6-framework">6. Framework</h3>
+<p><Enlace al ADR de la sesión 10 (<code>docs/adr/0001-...md</code>).></p>
+<h3 id="7-requisitos-de-hardware-y-despliegue">7. Requisitos de hardware y despliegue</h3>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Escenario</th>
+<th>Usuarios simultáneos</th>
+<th>Hardware</th>
+<th>Latencia p95 medida</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Desarrollo</td>
+<td>1</td>
+<td>Portátil 16 GB</td>
+<td></td>
+</tr>
+<tr>
+<td>Piloto</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Producción</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<p><em>Fichero: <code>plantillas/propuesta_tecnica.md</code></em></p>
+<h2 id="registro-de-errores-del-agente">Registro de errores del agente · <reto></h2>
+<blockquote>
+<p>Sesión 8 en adelante. Cada fallo observado en una traza se anota aquí con su causa. Es la materia prima de las regresiones de la sesión 13.</p>
+</blockquote>
+<div class="tabla"><table>
+<thead>
+<tr>
+<th>Fecha</th>
+<th>Caso / entrada</th>
+<th>Traza</th>
+<th>Qué pasó</th>
+<th>Tipo de error</th>
+<th>Causa raíz</th>
+<th>Corrección</th>
+<th>¿Prueba de regresión?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td><code>trazas/...jsonl</code></td>
+<td></td>
+<td>herramienta equivocada / argumentos inválidos / bucle / alucinación / no se detuvo / guardarraíl</td>
+<td></td>
+<td></td>
+<td>Sí / No</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="tipos-de-error-frecuentes">Tipos de error frecuentes</h3>
+<ul>
+<li><strong>Herramienta equivocada</strong>: mejorar la descripción de la herramienta (cuándo usarla y cuándo no).</li>
+<li><strong>Argumentos inválidos</strong>: tipos cerrados y restricciones en Pydantic; mensaje de error útil para el modelo.</li>
+<li><strong>Bucle</strong>: detector de repeticiones y máximo de pasos.</li>
+<li><strong>Cálculo hecho por el modelo</strong>: moverlo a una herramienta determinista.</li>
+<li><strong>Responde sin consultar</strong>: instrucción en el sistema y prueba con <code>LLMFalso</code>.</li>
+</ul>
+<p><em>Fichero: <code>plantillas/registro_errores.md</code></em></p>
+<div class="pie"><a href="index.html">Índice del curso</a></div>
+</main>
+</div>
+<script>
+(function () {
+  var raiz = document.documentElement, guardado = null;
+  try { guardado = localStorage.getItem("tema"); } catch (e) {}
+  if (guardado) raiz.setAttribute("data-theme", guardado);
+  document.addEventListener("click", function (ev) {
+    if (!ev.target.matches("[data-cambiar-tema]")) return;
+    var oscuro = raiz.getAttribute("data-theme") === "dark" ||
+      (!raiz.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);
+    var nuevo = oscuro ? "light" : "dark";
+    raiz.setAttribute("data-theme", nuevo);
+    try { localStorage.setItem("tema", nuevo); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sesión 3. Qué es un LLM: tokens, contexto y modelos fundacionales</title>
+<link rel="stylesheet" href="recursos/reset.css">
+<link rel="stylesheet" href="recursos/reveal.css">
+<link rel="stylesheet" href="recursos/tema.css">
+</head>
+<body class="alumnos">
+<div class="reveal">
+<div class="slides">
+<section class="especial inicio" id="portada" data-menu="Portada" data-transition="fade"><div class="portada"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="curso">Introducción a GenAI, Agentic AI, LLM y RAG</p><p class="modulo">Sesión 3 · Viernes 4 de diciembre de 2026 · 09:00-15:00 · Remoto</p><h1>Qué es un LLM: tokens, contexto y modelos fundacionales</h1><div class="objetivo"><p>Al terminar esta sesión sabrás explicar qué ocurre dentro de un LLM desde que recibe un texto hasta que devuelve una respuesta, y podrás anticipar tres cosas que deciden el éxito de un proyecto: cuántos tokens consume una tarea, qué cabe en la ventana de contexto y cuánta memoria necesita un modelo.</p></div><div class="cifras"><div class="cifra"><b data-cuenta="6">6</b><span>horas</span></div><div class="cifra"><b data-cuenta="6">6</b><span>unidades</span></div><div class="cifra"><b data-cuenta="4">4</b><span>ejercicios</span></div></div><p class="navega">Avanza con <kbd>→</kbd> o <kbd>Espacio</kbd> · <kbd>M</kbd> índice · <kbd>Esc</kbd> vista general</p></div></section>
+<section class="agenda" id="agenda" data-menu="Contenido de la sesión"><header class="cabecera"><p class="antetitulo">Sesión 3 · M2 · Introducción a GenAI y LLM (6 h)</p><h2>Contenido de la sesión</h2></header><div class="cuerpo"><div class="tarjetas n6"><a class="tarjeta" href="#/u3-1"><span class="n">3.1</span><span class="t">Qué es un LLM</span></a><a class="tarjeta" href="#/u3-2"><span class="n">3.2</span><span class="t">Tokenización</span></a><a class="tarjeta" href="#/u3-3"><span class="n">3.3</span><span class="t">Dentro del modelo: embeddings y atención</span></a><a class="tarjeta" href="#/u3-4"><span class="n">3.4</span><span class="t">La ventana de contexto</span></a><a class="tarjeta" href="#/u3-5"><span class="n">3.5</span><span class="t">Parámetros de muestreo</span></a><a class="tarjeta" href="#/u3-6"><span class="n">3.6</span><span class="t">Modelos fundacionales</span></a></div></div></section>
+<section id="horario" data-menu="Agenda del día"><header class="cabecera"><p class="antetitulo">Sesión 3 · Viernes 4 de diciembre de 2026</p><h2>Agenda del día</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Hora</th>
+<th>Min</th>
+<th>Tipo</th>
+<th>Bloque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>09:00</td>
+<td>15</td>
+<td>Teoría</td>
+<td>Activación: ¿cuántos tokens tiene esta frase?</td>
+</tr>
+<tr>
+<td>09:15</td>
+<td>55</td>
+<td>Teoría</td>
+<td>Teoría I: anatomía de un LLM</td>
+</tr>
+<tr>
+<td>10:10</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Laboratorio: experimentos de tokenización y coste</td>
+</tr>
+<tr>
+<td>11:20</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>11:30</td>
+<td>50</td>
+<td>Teoría</td>
+<td>Teoría II: ventana de contexto y modelos fundacionales (demo de Colibri)</td>
+</tr>
+<tr>
+<td>12:20</td>
+<td>70</td>
+<td>Práctica</td>
+<td>Reto 1: la aguja en el pajar (longitud de contexto)</td>
+</tr>
+<tr>
+<td>13:30</td>
+<td>10</td>
+<td>Pausa</td>
+<td>Pausa</td>
+</tr>
+<tr>
+<td>13:40</td>
+<td>56</td>
+<td>Práctica</td>
+<td>Reto 2: instrucciones, muestreo y benchmark local frente a servidor</td>
+</tr>
+<tr>
+<td>14:36</td>
+<td>24</td>
+<td>Teoría</td>
+<td>Cierre: conclusiones del cuaderno</td>
+</tr>
+</tbody>
+</table></div><p>Teoría: 2 h 24 min · práctica: 3 h 36 min (las pausas computan en el bloque práctico).</p></div></section>
+<section data-menu="Lo que entregas hoy"><header class="cabecera"><p class="antetitulo">Sesión 3</p><h2>Lo que entregas hoy</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Entregable</th>
+<th>Dónde</th>
+<th>Quién</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cuaderno de experimentos con evidencias y conclusiones</td>
+<td><code>docs/cuaderno_experimentos.md</code> (o <code>.ipynb</code>) del repositorio del equipo</td>
+<td>Equipo</td>
+</tr>
+<tr>
+<td>Ejercicios 1 a 4 con los tests en verde</td>
+<td><code>sesion_03_llm_tokens_contexto/ejercicios/</code></td>
+<td>Cada persona</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial seccion" id="u3-1" data-menu="3.1 Qué es un LLM" data-transition="fade"><div class="divisor"><span class="numero">3.1</span><h2>Qué es un LLM</h2><ul class=puntos><li>El flujo completo de una petición</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.1 Qué es un LLM</p><h2>Qué es un LLM <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Un modelo de lenguaje grande (<em>Large Language Model</em>) es una red neuronal con miles de millones de <strong>parámetros</strong> entrenada para una sola tarea: dado un texto, predecir el siguiente fragmento. Todo lo demás (responder preguntas, traducir, programar, resumir) emerge de hacer esa tarea muy bien con muchísimos datos.</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Concepto</th>
+<th>Qué es</th>
+<th>Orden de magnitud</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Parámetros (pesos)</td>
+<td>Los números que el entrenamiento ajusta</td>
+<td>De 1.000 millones (1B) a más de 1 billón</td>
+</tr>
+<tr>
+<td>Vocabulario</td>
+<td>Los tokens que el modelo conoce</td>
+<td>32.000 a 260.000 tokens</td>
+</tr>
+<tr>
+<td>Ventana de contexto</td>
+<td>Cuántos tokens puede ver a la vez (entrada + salida)</td>
+<td>De 4.000 a más de 1 millón</td>
+</tr>
+<tr>
+<td>Datos de preentrenamiento</td>
+<td>Texto con el que aprendió</td>
+<td>Billones de tokens</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.1 Qué es un LLM</p><h2>Qué es un LLM <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Cuando leas <code>qwen3:4b</code> o <code>granite4:micro</code>, el número es el tamaño: 4B son unos 4.000 millones de parámetros. Más parámetros suele significar más conocimiento y mejor razonamiento, pero también más memoria y menos velocidad.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.1 Qué es un LLM</p><h2>El flujo completo de una petición</h2></header><div class="cuerpo"><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>Texto ──► Tokenizador ──► IDs de tokens ──► Embeddings ──► N capas Transformer ──► Probabilidades del siguiente token
+                                                                                          │
+              Texto de salida ◄── Detokenizador ◄── Token elegido (muestreo) ◄──────────┘
+                                                         │
+                                                         └─► se añade a la entrada y se repite</code></pre></div></div></section>
+<section class="especial seccion" id="u3-2" data-menu="3.2 Tokenización" data-transition="fade"><div class="divisor"><span class="numero">3.2</span><h2>Tokenización</h2><ul class=puntos><li>Cuánto cuesta una tarea</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.2 Tokenización</p><h2>Tokenización <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Un <strong>token</strong> es la unidad mínima que procesa el modelo: una palabra frecuente, un trozo de palabra, un signo o un espacio. Los tokenizadores modernos (BPE y similares) aprenden de los datos qué fragmentos son frecuentes y los convierten en tokens.</p><p>Lo que tienes que saber de los tokens:</p><ul>
+<li><strong>No son palabras.</strong> En inglés, una palabra son unos 1,3 tokens de media; en español, algo más, porque los tokenizadores se entrenaron con más inglés.</li>
+<li><strong>El coste y el límite de contexto se miden en tokens</strong>, no en palabras ni en caracteres.</li>
+<li><strong>Los números y los nombres raros se trocean mucho.</strong> <code>48.379</code> pueden ser varios tokens. Por eso los LLM fallan con la aritmética y con contar letras: no «ven» los caracteres.</li>
+<li><strong>Cada familia de modelos tiene su propio tokenizador.</strong> El mismo texto ocupa distinto en Qwen que en Granite.</li>
+</ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.2 Tokenización</p><h2>Tokenización <span class="parte">2/2</span></h2></header><div class="cuerpo"><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">import</span><span class="w"> </span><span class="nn">tiktoken</span>
+
+<span class="n">codificador</span> <span class="o">=</span> <span class="n">tiktoken</span><span class="o">.</span><span class="n">get_encoding</span><span class="p">(</span><span class="s2">"o200k_base"</span><span class="p">)</span>
+<span class="n">tokens</span> <span class="o">=</span> <span class="n">codificador</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"La logística inversa recupera los palés vacíos."</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">),</span> <span class="p">[</span><span class="n">codificador</span><span class="o">.</span><span class="n">decode</span><span class="p">([</span><span class="n">t</span><span class="p">])</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">])</span></code></pre></div><p><code>tiktoken</code> es el tokenizador de los modelos de OpenAI. Lo usamos como referencia rápida porque no necesita descargar ningún modelo, salvo un fichero pequeño la primera vez. Para el recuento exacto del modelo que usas, Ollama devuelve los tokens procesados en cada respuesta (ejemplo 2).</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.2 Tokenización</p><h2>Cuánto cuesta una tarea</h2></header><div class="cuerpo"><p>Si usas un servicio de pago, el precio va por millón de tokens, con tarifas distintas para la entrada y la salida (la salida suele ser entre 3 y 5 veces más cara). Si usas modelos locales, el coste es de tiempo: los tokens de salida se generan de uno en uno.</p><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>coste = tokens_entrada × precio_entrada / 1.000.000 + tokens_salida × precio_salida / 1.000.000</code></pre></div></div></section>
+<section class="especial seccion" id="u3-3" data-menu="3.3 Dentro del modelo: embeddings y atención" data-transition="fade"><div class="divisor"><span class="numero">3.3</span><h2>Dentro del modelo: embeddings y atención</h2><ul class=puntos><li>Embeddings de tokens</li><li>La arquitectura Transformer</li><li>Mezcla de expertos (MoE)</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.3 Dentro del modelo: embeddings y atención</p><h2>Embeddings de tokens</h2></header><div class="cuerpo"><p>Cada token se convierte en un vector de miles de números (su <em>embedding</em>). Tokens con significado parecido tienen vectores parecidos. Lo trabajarás en profundidad en la sesión 6.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.3 Dentro del modelo: embeddings y atención</p><h2>La arquitectura Transformer</h2></header><div class="cuerpo"><p>El Transformer procesa todos los tokens a la vez y, en cada capa, deja que cada token «mire» a los demás mediante el mecanismo de <strong>atención</strong>: para cada token calcula cuánto le importa cada uno de los anteriores y mezcla su información. Así, en «el camión que salió de Vigo llegó tarde porque <strong>se</strong> averió», la atención permite relacionar «se» con «camión».</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Variante</th>
+<th>Qué hace</th>
+<th>Ejemplos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Solo codificador</td>
+<td>Entiende texto; no genera</td>
+<td>Modelos de embeddings, BERT</td>
+</tr>
+<tr>
+<td>Solo decodificador</td>
+<td>Genera texto token a token</td>
+<td>Todos los LLM de chat actuales</td>
+</tr>
+<tr>
+<td>Codificador-decodificador</td>
+<td>Transforma una secuencia en otra</td>
+<td>Modelos de traducción clásicos</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.3 Dentro del modelo: embeddings y atención</p><h2>Mezcla de expertos (MoE)</h2></header><div class="cuerpo"><p>En un modelo denso, todos los parámetros trabajan en cada token. En un modelo <strong>MoE</strong>, cada capa tiene muchos «expertos» y un enrutador elige unos pocos para cada token. Un modelo MoE de 35B con 3B activos tiene el conocimiento de un modelo grande pero calcula como uno pequeño. Eso sí: <strong>necesita tener todos los expertos accesibles</strong>, por eso ocupa mucha memoria. Colibri explota justo esa idea: guarda los expertos en disco y solo carga los que necesita.</p></div></section>
+<section class="especial seccion" id="u3-4" data-menu="3.4 La ventana de contexto" data-transition="fade"><div class="divisor"><span class="numero">3.4</span><h2>La ventana de contexto</h2><ul class=puntos><li>Fijar el contexto en Ollama</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.4 La ventana de contexto</p><h2>La ventana de contexto <span class="parte">1/3</span></h2></header><div class="cuerpo"><p>La ventana de contexto es el número máximo de tokens que el modelo puede considerar a la vez: mensaje de sistema, historial, documentos que le pases <strong>y</strong> la respuesta que genera.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.4 La ventana de contexto</p><h2>La ventana de contexto <span class="parte">2/3</span></h2></header><div class="cuerpo"><p>Lo que pasa cuando te acercas al límite:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Efecto</th>
+<th>Explicación</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Truncado</td>
+<td>Si la entrada no cabe, el servidor corta (normalmente el principio). En Ollama, por defecto la ventana es pequeña: si no la amplías con <code>num_ctx</code>, el modelo «olvida» el inicio de documentos largos</td>
+</tr>
+<tr>
+<td>Más memoria</td>
+<td>Cada token del contexto ocupa memoria en la <strong>caché KV</strong> (claves y valores de la atención). Duplicar el contexto duplica esa memoria</td>
+</tr>
+<tr>
+<td>Más lentitud</td>
+<td>Procesar la entrada (<em>prefill</em>) cuesta más cuanto más larga es</td>
+</tr>
+<tr>
+<td>Perdido en el medio</td>
+<td>Los modelos recuerdan mejor la información del principio y del final que la del medio de un contexto largo</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.4 La ventana de contexto</p><h2>La ventana de contexto <span class="parte">3/3</span></h2></header><div class="cuerpo"><p>Por eso el RAG (sesión 5) no consiste en meter todos los documentos en el contexto, sino en meter <strong>solo los fragmentos relevantes</strong>.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.4 La ventana de contexto</p><h2>Fijar el contexto en Ollama</h2></header><div class="cuerpo"><p>En la API nativa, la ventana se fija con la opción <code>num_ctx</code>:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Python</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="kn">from</span><span class="w"> </span><span class="nn">comun</span><span class="w"> </span><span class="kn">import</span> <span class="n">ollama</span>
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">ollama</span><span class="o">.</span><span class="n">chat_nativo</span><span class="p">(</span><span class="s2">"Resume este texto: ..."</span><span class="p">,</span> <span class="n">opciones</span><span class="o">=</span><span class="p">{</span><span class="s2">"num_ctx"</span><span class="p">:</span> <span class="mi">8192</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">"prompt_eval_count"</span><span class="p">],</span> <span class="s2">"tokens de entrada procesados"</span><span class="p">)</span></code></pre></div><p>En LM Studio se ajusta al cargar el modelo (<em>Context Length</em>).</p></div></section>
+<section class="especial seccion" id="u3-5" data-menu="3.5 Parámetros de muestreo" data-transition="fade"><div class="divisor"><span class="numero">3.5</span><h2>Parámetros de muestreo</h2></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.5 Parámetros de muestreo</p><h2>Parámetros de muestreo <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>El modelo devuelve una probabilidad para cada token posible. <strong>Cómo se elige</strong> uno es configurable:</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Qué hace</th>
+<th>Efecto práctico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>temperature</code></td>
+<td>Divide las puntuaciones antes de convertirlas en probabilidades. Baja: casi siempre el más probable. Alta: más variedad</td>
+<td>0 para extracción, clasificación y código; 0,7-1 para redacción creativa</td>
+</tr>
+<tr>
+<td><code>top_p</code></td>
+<td>Solo considera los tokens más probables cuya probabilidad acumulada llega a <code>p</code></td>
+<td>0,9 evita tokens absurdos con temperatura alta</td>
+</tr>
+<tr>
+<td><code>top_k</code></td>
+<td>Solo considera los <code>k</code> tokens más probables</td>
+<td>Alternativa más brusca a <code>top_p</code></td>
+</tr>
+<tr>
+<td><code>seed</code></td>
+<td>Semilla del generador aleatorio</td>
+<td>Reproducibilidad de experimentos</td>
+</tr>
+<tr>
+<td><code>max_tokens</code></td>
+<td>Límite de tokens generados</td>
+<td>Controla coste y tiempo</td>
+</tr>
+<tr>
+<td><code>repeat_penalty</code></td>
+<td>Penaliza repetir tokens recientes</td>
+<td>Evita bucles en modelos pequeños</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.5 Parámetros de muestreo</p><h2>Parámetros de muestreo <span class="parte">2/2</span></h2></header><div class="cuerpo"><p><strong>Temperatura 0 no garantiza respuestas idénticas</strong> en todos los motores (el cálculo en GPU no siempre es determinista), pero se acerca mucho.</p></div></section>
+<section class="especial seccion" id="u3-6" data-menu="3.6 Modelos fundacionales" data-transition="fade"><div class="divisor"><span class="numero">3.6</span><h2>Modelos fundacionales</h2><ul class=puntos><li>Modelos que razonan</li><li>Cuantización</li><li>Cuánta memoria necesita un modelo</li><li>Ficha del modelo y licencia</li></ul></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.6 Modelos fundacionales</p><h2>Modelos fundacionales</h2></header><div class="cuerpo"><p>Un <strong>modelo fundacional</strong> es un modelo grande preentrenado de forma general que sirve de base para muchas tareas. Del modelo base al asistente que usas hay varias fases (sesión 2): preentrenamiento, ajuste con instrucciones, alineamiento y, en algunos, entrenamiento para razonar.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.6 Modelos fundacionales</p><h2>Modelos que razonan</h2></header><div class="cuerpo"><p>Algunos modelos (como <code>qwen3:4b</code>) generan primero un razonamiento interno y después la respuesta. Ollama separa ese razonamiento en el campo <code>reasoning</code>. Mejora la calidad en problemas de varios pasos, pero <strong>gasta muchos más tokens y tiempo</strong>: en el laboratorio de la sesión 2 viste que tarda bastante más que <code>granite4:micro</code> en responder lo mismo.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.6 Modelos fundacionales</p><h2>Cuantización <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Los pesos se entrenan con 16 bits por parámetro. <strong>Cuantizar</strong> es representarlos con menos bits (8, 5, 4...) a cambio de una pequeña pérdida de calidad. Es lo que permite ejecutar un modelo de 8B en un portátil.</p><div class="tabla"><table>
+<thead>
+<tr>
+<th>Formato</th>
+<th>Bits por parámetro (aprox.)</th>
+<th>Memoria de un modelo de 8B</th>
+<th>Calidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FP16 / BF16</td>
+<td>16</td>
+<td>~15 GB</td>
+<td>Referencia</td>
+</tr>
+<tr>
+<td>Q8_0</td>
+<td>8,5</td>
+<td>~8 GB</td>
+<td>Casi idéntica</td>
+</tr>
+<tr>
+<td>Q5_K_M</td>
+<td>5,7</td>
+<td>~5,4 GB</td>
+<td>Muy buena</td>
+</tr>
+<tr>
+<td>Q4_K_M</td>
+<td>4,8</td>
+<td>~4,5 GB</td>
+<td>Buena: el estándar en local</td>
+</tr>
+<tr>
+<td>Q2_K</td>
+<td>3</td>
+<td>~3 GB</td>
+<td>Notablemente peor</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.6 Modelos fundacionales</p><h2>Cuantización <span class="parte">2/2</span></h2></header><div class="cuerpo"><p><strong>GGUF</strong> es el formato de fichero de llama.cpp, el motor que usan por dentro Ollama y LM Studio. Contiene los pesos cuantizados, el tokenizador y la plantilla de chat.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.6 Modelos fundacionales</p><h2>Cuánta memoria necesita un modelo</h2></header><div class="cuerpo"><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>memoria_pesos ≈ parámetros × bits / 8
+memoria_caché_KV ≈ 2 × capas × cabezas_kv × dimensión_cabeza × tokens_de_contexto × 2 bytes
+memoria_total ≈ (pesos + caché KV) × 1,1   (margen del motor)</code></pre></div><p>En un portátil de 16 GB, el sistema operativo, el IDE y el navegador ocupan 6-7 GB: quedan unos 8 GB para el modelo y su contexto. Por eso el curso usa modelos de 3-4B en local y el servidor para los grandes. Lo calcularás en el ejercicio 2.</p></div></section>
+<section><header class="cabecera"><p class="antetitulo">3.6 Modelos fundacionales</p><h2>Ficha del modelo y licencia</h2></header><div class="cuerpo"><p>Antes de usar un modelo en un proyecto revisa su ficha (<em>model card</em>): tamaño, ventana de contexto, idiomas, si admite herramientas, datos de entrenamiento declarados, resultados en evaluaciones y licencia. En Ollama: <code>ollama show granite4:micro</code>.</p></div></section>
+<section data-menu="Errores frecuentes"><header class="cabecera"><p class="antetitulo">Sesión 3</p><h2>Errores frecuentes</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Error</th>
+<th>Síntoma</th>
+<th>Solución</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No ampliar <code>num_ctx</code> con documentos largos</td>
+<td>El modelo ignora el principio del documento</td>
+<td>Fija <code>num_ctx</code> suficiente (y vigila la memoria)</td>
+</tr>
+<tr>
+<td>Medir velocidad en la primera llamada</td>
+<td>Tiempos enormes</td>
+<td>La primera llamada carga el modelo: descártala</td>
+</tr>
+<tr>
+<td>Comparar tokens de modelos distintos con tiktoken</td>
+<td>Cifras que no cuadran</td>
+<td>Usa <code>prompt_eval_count</code> de Ollama para el modelo concreto</td>
+</tr>
+<tr>
+<td>Pedir aritmética exacta al LLM</td>
+<td>Resultados erróneos con seguridad</td>
+<td>Que el modelo llame a una función de cálculo (sesión 9)</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section data-menu="Para saber más"><header class="cabecera"><p class="antetitulo">Sesión 3</p><h2>Para saber más</h2></header><div class="cuerpo"><ul>
+<li>Andrej Karpathy, <em>Let's build the GPT Tokenizer</em> (vídeo y código): <a href="https://github.com/karpathy/minbpe" target="_blank" rel="noopener">github.com/karpathy/minbpe</a></li>
+<li>Jay Alammar, <em>The Illustrated Transformer</em>: <a href="https://jalammar.github.io/illustrated-transformer/" target="_blank" rel="noopener">jalammar.github.io/illustrated-transformer</a></li>
+<li>Liu et al. (2023), <em>Lost in the Middle</em>: <a href="https://arxiv.org/abs/2307.03172" target="_blank" rel="noopener">arxiv.org/abs/2307.03172</a></li>
+<li>Documentación de los parámetros de Ollama: <a href="https://docs.ollama.com/modelfile" target="_blank" rel="noopener">docs.ollama.com/modelfile</a></li>
+</ul></div></section>
+<section class="especial seccion practica" id="laboratorio" data-menu="Laboratorio guiado" data-transition="fade"><div class="divisor"><span class="numero">Lab</span><h2>Laboratorio guiado</h2><ul class=puntos><li>Ejercicio 1. Tokens y coste (laboratorio, 35 min)</li><li>Ejercicio 2. ¿Cabe este modelo en mi portátil? (laboratorio, 35 min)</li><li>Ejercicio 3. La aguja en el pajar (Reto 1, 70 min)</li><li>Ejercicio 4. Muestreo y benchmark (Reto 2, 56 min)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Cómo se trabaja</h2></header><div class="cuerpo"><p>Completa cada fichero sustituyendo los <code>raise NotImplementedError</code> por tu código. Comprueba tu trabajo con:</p><div class="codigo"><div class="barra-codigo"><span class="lenguaje">terminal</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>pytest<span class="w"> </span>sesion_03_llm_tokens_contexto<span class="w"> </span>-v</code></pre></div><p>Cada ejercicio alimenta un experimento del cuaderno de tu equipo (<code>PRACTICA_03.md</code>). Anota los resultados a medida que los obtengas.</p><blockquote>
+<p><code>tiktoken</code> descarga un fichero pequeño con la codificación la primera vez que se usa. Si no tienes conexión, pide al docente la copia de la caché.</p>
+</blockquote></div></section>
+<section class="ejercicio" data-menu="Ejercicio 1. Tokens y coste (laboratorio, 35 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Tokens y coste (laboratorio, 35 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Fichero: <code>s03_ej1_tokens.py</code></p><ol>
+<li><code>contar_tokens(texto, codificacion)</code> y <code>trozos(texto, codificacion)</code>: usa <code>tiktoken.get_encoding(...)</code>, <code>encode</code> y <code>decode</code>. La concatenación de los trozos debe reconstruir el texto original.</li>
+<li><code>tokens_por_palabra(texto)</code>: tokens / palabras, con 2 decimales (0.0 si no hay palabras).</li>
+<li><code>estimar_coste(...)</code>: coste con precios por millón de tokens, 4 decimales.</li>
+<li><code>coste_mensual(...)</code>: peticiones al día × días × coste por petición, 2 decimales.</li>
+<li><code>comparar_textos(textos)</code>: una fila por texto con nombre, palabras, tokens y tokens por palabra.</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 1. Tokens y coste (laboratorio, 35 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>Experimento para el cuaderno: compara un párrafo de un documento de Atlántica con su traducción al inglés, un bloque de código y una tabla con números. Ejecuta también <code>ejemplos/02_tokens_del_modelo.py</code>: ¿coinciden los tokens de tiktoken con los de cada modelo?</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 2. ¿Cabe este modelo en mi portátil? (laboratorio, 35 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 2. ¿Cabe este modelo en mi portátil? (laboratorio, 35 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s03_ej2_memoria.py</code></p><ol>
+<li><code>memoria_pesos_gb(miles_de_millones, bits)</code>.</li>
+<li><code>memoria_kv_gb(capas, cabezas_kv, dim_cabeza, contexto, bytes_por_valor)</code>.</li>
+<li><code>memoria_total_gb(...)</code>: pesos según el formato (<code>BITS_FORMATO</code>) más caché KV, más el margen. <code>ValueError</code> si el formato no existe.</li>
+<li><code>cabe(memoria, ram_gb, reservada_gb)</code>: compara con la RAM libre (16 GB menos 7 GB reservados por defecto).</li>
+<li><code>contexto_maximo(...)</code>: el mayor contexto en múltiplos de 1.024 que cabe.</li>
+</ol><p>Experimento para el cuaderno: calcula la memoria de <code>granite4:micro</code> (3B), <code>qwen3:4b</code> y un modelo de 8B en Q4_K_M con 4K, 8K y 32K de contexto. Después ejecuta <code>ejemplos/04_memoria_del_modelo.py</code> y compara tu cálculo con lo que mide Ollama.</p></div></section>
+<section class="ejercicio" data-menu="Ejercicio 3. La aguja en el pajar (Reto 1, 70 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. La aguja en el pajar (Reto 1, 70 min) <span class="parte">1/2</span></h2></header><div class="cuerpo"><p>Fichero: <code>s03_ej3_aguja.py</code></p><ol>
+<li><code>construir_pajar(n_frases, aguja, posicion)</code>: frases de relleno en orden (repitiendo la lista) y la aguja insertada antes de la frase de índice <code>round(posicion * n_frases)</code>. <code>ValueError</code> si la posición no está entre 0 y 1.</li>
+<li><code>encontrada(respuesta, valor)</code>: el valor aparece en la respuesta ignorando espacios y puntos.</li>
+<li><code>tabla(resultados)</code>: tabla Markdown con «sí» o «no».</li>
+</ol></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 3. La aguja en el pajar (Reto 1, 70 min) <span class="parte">2/2</span></h2></header><div class="cuerpo"><p>La función <code>prueba(...)</code> ya está hecha: llama a la API nativa de Ollama fijando <code>num_ctx</code>. Ejecuta el fichero (tarda unos minutos). Responde en el cuaderno:</p><ul>
+<li>¿Qué pasa cuando el texto supera <code>num_ctx</code>? ¿Qué parte del texto se pierde?</li>
+<li>¿Influye la posición de la aguja?</li>
+<li>¿Cuánto tarda con 400 frases y <code>num_ctx</code> 8192 frente a 2048?</li>
+</ul></div></section>
+<section class="ejercicio" data-menu="Ejercicio 4. Muestreo y benchmark (Reto 2, 56 min)"><header class="cabecera"><p class="antetitulo">Laboratorio guiado</p><h2>Ejercicio 4. Muestreo y benchmark (Reto 2, 56 min)</h2></header><div class="cuerpo"><p>Fichero: <code>s03_ej4_muestreo_benchmark.py</code></p><ol>
+<li><code>generar_varias(prompt, temperatura, n)</code>.</li>
+<li><code>diversidad(respuestas)</code>: proporción de respuestas distintas, sin distinguir mayúsculas ni espacios de los extremos.</li>
+<li><code>experimento_temperatura(prompt, temperaturas, n)</code>.</li>
+<li><code>resumen(muestras)</code>: media, mínimo y máximo con 1 decimal.</li>
+</ol><p><code>benchmark(...)</code> ya está hecha. Para medir el servidor compartido añade a tu <code>.env</code>:</p><div class="codigo plano"><div class="barra-codigo"><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code>SERVIDOR_CURSO_URL=&lt;URL que te dé el docente&gt;
+SERVIDOR_CURSO_CLAVE=&lt;clave de tu equipo&gt;
+SERVIDOR_CURSO_MODELO=&lt;modelo grande del servidor&gt;</code></pre></div></div></section>
+<section class="especial seccion practica" id="practica" data-menu="Práctica de equipo" data-transition="fade"><div class="divisor"><span class="numero">Equipo</span><h2>Cuaderno de experimentos</h2><ul class=puntos><li>Estructura de cada experimento</li><li>Los cinco experimentos</li><li>Conclusiones finales</li><li>Entrega</li><li>Criterios de evaluación (0 a 3 puntos cada uno)</li></ul></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 3. Cuaderno de experimentos</p><h2>Entregables de hoy</h2></header><div class="cuerpo"><p>Entregable del equipo: <code>docs/cuaderno_experimentos.md</code> (o un cuaderno <code>.ipynb</code> con sus conclusiones en Markdown).</p><p>Un cuaderno de experimentos es el documento en el que un equipo técnico deja constancia de <strong>qué hipótesis probó, cómo, qué obtuvo y qué decide</strong>. Es la costumbre que separa la intuición («parece que va mejor») de la ingeniería («con 8K de contexto el modelo encuentra el dato en 6 de 6 pruebas y tarda el doble»).</p></div></section>
+<section class="ejercicio" data-menu="Estructura de cada experimento"><header class="cabecera"><p class="antetitulo">Práctica 3. Cuaderno de experimentos</p><h2>Estructura de cada experimento</h2></header><div class="cuerpo"><div class="codigo"><div class="barra-codigo"><span class="lenguaje">Markdown</span><button class="copiar" type="button" title="Copiar el código">Copiar</button></div><pre><code><span class="gu">## Experimento N. Título</span>
+
+<span class="k">-</span><span class="w"> </span><span class="gs">**Hipótesis:**</span> lo que creemos que va a pasar, antes de probarlo.
+<span class="k">-</span><span class="w"> </span><span class="gs">**Método:**</span> qué ejecutamos, con qué modelo, parámetros y número de repeticiones.
+<span class="k">-</span><span class="w"> </span><span class="gs">**Resultados:**</span> tabla con los datos obtenidos (no capturas de pantalla).
+<span class="k">-</span><span class="w"> </span><span class="gs">**Conclusión:**</span> qué aprendemos y qué decisión tomamos para nuestro asistente.</code></pre></div></div></section>
+<section class="ejercicio" data-menu="Los cinco experimentos"><header class="cabecera"><p class="antetitulo">Práctica 3. Cuaderno de experimentos</p><h2>Los cinco experimentos</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>N.º</th>
+<th>Experimento</th>
+<th>Ejercicio</th>
+<th>Decisión que alimenta para el reto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Tokens en español, en inglés, en código y en tablas, con tiktoken y con el recuento de cada modelo</td>
+<td>1</td>
+<td>¿Cuántos tokens ocupan nuestros documentos? ¿Cuánto costaría el asistente con un servicio de pago?</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Memoria de tres modelos con tres tamaños de contexto: cálculo frente a medición</td>
+<td>2</td>
+<td>¿Qué modelo y qué contexto máximo usamos en el portátil?</td>
+</tr>
+<tr>
+<td>3</td>
+<td>La aguja en el pajar con dos longitudes, tres posiciones y dos <code>num_ctx</code></td>
+<td>3</td>
+<td>¿Qué <code>num_ctx</code> necesitamos? ¿Podemos meter todos los documentos en el contexto o hace falta RAG?</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Diversidad de respuestas con tres temperaturas</td>
+<td>4</td>
+<td>¿Qué temperatura usamos para cada tipo de tarea del asistente?</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Velocidad del portátil frente al servidor compartido</td>
+<td>4</td>
+<td>¿Qué partes del trabajo hacemos en local y cuáles en el servidor?</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="ejercicio"><header class="cabecera"><p class="antetitulo">Práctica 3. Cuaderno de experimentos · Los cinco experimentos</p><h2>Datos de vuestro reto para el experimento 1 y el 3</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Reto</th>
+<th>Textos para medir tokens</th>
+<th>Contexto que necesitaría el asistente</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R1 · DevAssist</td>
+<td><code>04_guia_estilo_python.md</code> y <code>codigo/tarifas/calculo.py</code></td>
+<td>Guía + arquitectura + fichero de código</td>
+</tr>
+<tr>
+<td>R2 · InfraPilot</td>
+<td><code>06_politica_infraestructura_cloud.md</code> y <code>07_catalogo_modulos_terraform.md</code></td>
+<td>Política + catálogo + procedimiento de cambios</td>
+</tr>
+<tr>
+<td>R3 · PMO Copilot</td>
+<td>Las cuatro actas y <code>backlog.json</code></td>
+<td>Actas de un mes + metodología + backlog</td>
+</tr>
+</tbody>
+</table></div><p>Para el experimento 3, repetid la prueba usando como pajar vuestros documentos reales en lugar de las frases de relleno.</p></div></section>
+<section class="ejercicio" data-menu="Conclusiones finales"><header class="cabecera"><p class="antetitulo">Práctica 3. Cuaderno de experimentos</p><h2>Conclusiones finales</h2></header><div class="cuerpo"><p>Cerrad el cuaderno con una sección <strong>«Decisiones para el asistente»</strong> de 5 a 10 líneas: modelo por defecto, <code>num_ctx</code>, temperatura por tipo de tarea, qué se ejecuta en local y qué en el servidor, y si los documentos caben en el contexto o necesitáis RAG.</p></div></section>
+<section class="ejercicio" data-menu="Entrega"><header class="cabecera"><p class="antetitulo">Práctica 3. Cuaderno de experimentos</p><h2>Entrega</h2></header><div class="cuerpo"><ol>
+<li><code>docs/cuaderno_experimentos.md</code> con los cinco experimentos y las decisiones.</li>
+<li>Commit: <code>Sesión 3: cuaderno de experimentos</code>.</li>
+</ol></div></section>
+<section class="ejercicio" data-menu="Criterios de evaluación (0 a 3 puntos cada uno)"><header class="cabecera"><p class="antetitulo">Práctica 3. Cuaderno de experimentos</p><h2>Criterios de evaluación (0 a 3 puntos cada uno)</h2></header><div class="cuerpo"><div class="tabla"><table>
+<thead>
+<tr>
+<th>Criterio</th>
+<th>3 puntos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Método</td>
+<td>Hipótesis previas, parámetros documentados y repeticiones</td>
+</tr>
+<tr>
+<td>Evidencias</td>
+<td>Tablas con datos propios y reproducibles</td>
+</tr>
+<tr>
+<td>Interpretación</td>
+<td>Explica los resultados con los conceptos de los apuntes</td>
+</tr>
+<tr>
+<td>Decisiones</td>
+<td>Concretas y derivadas de los datos</td>
+</tr>
+</tbody>
+</table></div></div></section>
+<section class="especial inicio" id="fin" data-menu="Fin de la sesión" data-transition="fade"><div class="portada final"><div class="formas" aria-hidden="true"><i></i><i></i><i></i></div><p class="modulo">Fin de la sesión 3</p><h1>Qué es un LLM: tokens, contexto y modelos fundacionales</h1><div class="acciones"><a class="boton" href="sesion_04.html">Sesión 4. Limitaciones y alucinaciones · Prompt engineering <span aria-hidden="true">→</span></a><a class="boton secundario" href="index.html">Índice del curso</a><a class="boton secundario" href="#/agenda">Volver al contenido</a></div></div></section>
+</div>
+<div class="pie-curso"><a href="index.html" title="Índice del curso">Sesión 3. Qué es un LLM: tokens, contexto y modelos fundacionales</a><span class="donde"></span></div>
+<div class="herramientas">
+<button type="button" data-accion="menu" title="Índice de la presentación (M)">☰ Índice</button>
+<button type="button" data-accion="general" title="Vista general (Esc)">▦</button>
+<button type="button" data-accion="pantalla" title="Pantalla completa (F)">⛶</button>
+</div>
+<nav class="menu" aria-label="Índice de la presentación"><p class="rotulo">Sesión 3. Qué es un LLM: tokens, contexto y modelos fundacionales</p><ol></ol>
+<p class="otros"><a href="index.html">Índice del curso</a> · <a href="sesion_04.html">Sesión 4 →</a></p></nav>
+</div>
+<script src="recursos/reveal.js"></script>
+<script src="recursos/notes.js"></script>
+<script src="recursos/search.js"></script>
+<script src="recursos/zoom.js"></script>
+<script src="recursos/curso.js"></script>
+
+</body>
+</html>
