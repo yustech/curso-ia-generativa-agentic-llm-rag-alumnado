@@ -343,7 +343,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .seccion-indice { margin-top: 3rem; }
 pre.mermaid { background: var(--panel); text-align: center; }
 </style>
-<script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs";var oscuro = document.documentElement.getAttribute("data-theme") === "dark" || (!document.documentElement.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);mermaid.initialize({ startOnLoad: true, theme: oscuro ? "dark" : "default" });</script>
+<script src="presentacion/recursos/mermaid.min.js"></script><script>var oscuro = document.documentElement.getAttribute("data-theme") === "dark" || (!document.documentElement.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);mermaid.initialize({ startOnLoad: true, theme: oscuro ? "dark" : "default" });</script>
 </head>
 <body>
 <header class="barra">

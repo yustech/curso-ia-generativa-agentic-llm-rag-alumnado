@@ -41,8 +41,11 @@ from pygments.util import ClassNotFound
 
 HERRAMIENTAS = Path(__file__).resolve().parent
 PLANTILLA = HERRAMIENTAS / "plantilla"
-MERMAID_ESM = "https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.esm.min.mjs"
-MERMAID_JS = "https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js"
+# Copia local de mermaid 11.4.1 (licencia MIT) en plantilla/presentacion_recursos, para que los
+# diagramas se dibujen sin conexión. Es la versión clásica (no ESM): un módulo ES no se puede
+# cargar desde file:// y los HTML se abren con doble clic. Rutas relativas a docs/ y a docs/presentacion/.
+MERMAID_DOCS = "presentacion/recursos/mermaid.min.js"
+MERMAID_JS = "recursos/mermaid.min.js"
 MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre",
          "noviembre", "diciembre"]
 TIPOS = {"T": "Teoría", "P": "Práctica", "pausa": "Pausa"}
@@ -408,8 +411,8 @@ def pagina_doc(ctx: Contexto, titulo: str, cuerpo: str, toc: str, nav: str = "",
     css = leer(PLANTILLA / "docs.css") + CSS_EXTRA
     script_mermaid = ""
     if mermaid:
-        script_mermaid = (f'<script type="module">import mermaid from "{MERMAID_ESM}";'
-                          'var oscuro = document.documentElement.getAttribute("data-theme") === "dark" || '
+        script_mermaid = (f'<script src="{MERMAID_DOCS}"></script>'
+                          '<script>var oscuro = document.documentElement.getAttribute("data-theme") === "dark" || '
                           '(!document.documentElement.getAttribute("data-theme") && matchMedia("(prefers-color-scheme: dark)").matches);'
                           'mermaid.initialize({ startOnLoad: true, theme: oscuro ? "dark" : "default" });</script>')
     aviso = ('<div class="aviso-profe">Versión del profesor: contiene material que no se publica en el repositorio del alumnado.</div>'
